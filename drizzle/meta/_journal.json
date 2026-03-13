@@ -1,0 +1,76 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1772730013993,
+      "tag": "20260305170013_medical_centennial",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772797419170,
+      "tag": "20260306114339_add_location_map_embed_url",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772805319379,
+      "tag": "20260306135519_fancy_living_mummy",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772869077406,
+      "tag": "20260307073757_add_certification",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1772871451255,
+      "tag": "20260307081731_add_short_desc_and_category_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1772941607978,
+      "tag": "20260308034647_add-schema-indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772955029932,
+      "tag": "20260308073029_add-product-application-portofolio",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1772957106627,
+      "tag": "20260308080506_drop-product-portofolio",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1772963537161,
+      "tag": "20260308095217_brainy_mattie_franklin",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1762761600000,
+      "tag": "20250311120000_drop_display_order_social_media_contact",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { pgTable, timestamp, text, foreignKey } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, text, foreignKey, index } from "drizzle-orm/pg-core";
 import { uuid } from "drizzle-orm/pg-core";
 import { product } from "./product";
 
@@ -14,4 +14,5 @@ export const productExellence = pgTable("product-exellence", {
         foreignColumns: [product.productId],
         name: "fk_product_exellence_product_id",
     }),
+    index("product_exellence_product_id_idx").on(table.productId),
 ]);

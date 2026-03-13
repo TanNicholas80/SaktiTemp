@@ -1,0 +1,186 @@
+{
+  "locationSection": {
+    "badge": "Office Locations",
+    "title": "Our Offices",
+    "subtitle": "Visit our offices or contact our team for tempered glass project consultation.",
+    "headOffice": "Head Office",
+    "branchOffice": "Branch Office",
+    "openGoogleMaps": "Open In Google Maps"
+  },
+  "footerSection": {
+    "quickLinks": "Quick Links",
+    "products": "Products",
+    "contact": "Contact",
+    "companyDesc": "High Quality Tempered Glass Manufacturing With European Standards. Premium Glass Solutions For Commercial, Residential, And Architectural Projects.",
+    "slogan": "\"We Understand What You Need\"",
+    "noProducts": "No categories",
+    "copyright": "© 2026 SAKTITEMP®. All Rights Reserved."
+  },
+  "contactContentSection": {
+    "contactBadge": "CONTACT US",
+    "contactTitle": "Contact Information",
+    "formBadge": "SEND MESSAGE",
+    "formTitle": "How Can We Help You?",
+    "formDesc": "Fill out the form below and our team will contact you within 24 hours.",
+    "headOffice": "Head Office",
+    "branchOffice": "Branch Office",
+    "followUs": "Follow Us",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Your Name",
+    "phone": "Phone Number",
+    "phonePlaceholder": "+62 812 xxxx xxxx",
+    "location": "Location",
+    "locationPlaceholder": "Select City / Project Area",
+    "projectType": "Project Type",
+    "projectTypePlaceholder": "Select Project Type",
+    "projectTypeResidential": "Residential",
+    "projectTypeCommercial": "Commercial",
+    "projectTypeArchitecture": "Architecture",
+    "projectTypeInterior": "Interior",
+    "projectTypeOther": "Other",
+    "message": "Message",
+    "messagePlaceholder": "Describe your glass project needs...",
+    "submit": "Send Message",
+    "successMessage": "Message sent successfully. We will contact you within 24 hours.",
+    "errorMessage": "Failed to send message. Please try again."
+  },
+  "contactSection": {
+    "badge": "Contact Us",
+    "title": "Let's Realize Your Dream Project",
+    "subtitle": "Our team is ready to assist your tempered glass needs. Please contact or send a message through the form below.",
+    "sendMessage": "Send Message",
+    "sendMessageDesc": "Fill out the form below and we will contact you shortly.",
+    "name": "Name",
+    "phone": "Phone Number",
+    "projectDetails": "Project Details",
+    "namePlaceholder": "Enter your name",
+    "phonePlaceholder": "+62 812 xxxx xxxx",
+    "projectPlaceholder": "Describe your project needs ...",
+    "submit": "Send Message",
+    "chatWhatsApp": "Chat Via WhatsApp",
+    "headOffice": "Head Office",
+    "branchOffice": "Branch Office",
+    "successMessage": "Message sent successfully. We will contact you shortly.",
+    "errorMessage": "Failed to send message. Please try again."
+  },
+  "portofolioSection": {
+    "badge": "Portfolio",
+    "title": "Our Best Projects",
+    "subtitle": "View Our Collection Of Tempered Glass Projects That We Have Completed For Various Clients And Needs.",
+    "all": "All",
+    "viewAll": "View All Projects",
+    "viewDetail": "View Details",
+    "noProjects": "No portfolio projects available yet.",
+    "noProjectsDescription": "Our project collection will be available soon. Please check back later.",
+    "noFilterMatch": "No projects in this category.",
+    "noFilterMatchDescription": "Try selecting another category or show All.",
+    "relatedTitle": "See Our Other Projects",
+    "viewAllProjects": "View All Projects",
+    "relatedEmpty": "No other projects available yet.",
+    "relatedEmptyDesc": "Visit our portfolio page to explore our project collection."
+  },
+  "blogSection": {
+    "badge": "Blog & Articles",
+    "title": "Industry Insights",
+    "viewAll": "View All Articles",
+    "readMore": "Read More"
+  },
+  "articleSection": {
+    "searchPlaceholder": "Search Glass Articles...",
+    "filterCategory": "Filter Category",
+    "filterAll": "All",
+    "filterLabel": "Filter articles",
+    "readMore": "Read More",
+    "noArticles": "No matching articles found.",
+    "noArticlesDescription": "Try changing the filter or search keywords."
+  },
+  "articleDetailSection": {
+    "back": "Back",
+    "consultationTitle": "Need Consultation?",
+    "consultationDesc": "Our team is ready to help with your tempered glass project needs. Contact us for a free consultation.",
+    "consultationCta": "Project Consultation",
+    "otherArticles": "Other Articles",
+    "otherArticlesEmpty": "No other articles yet.",
+    "otherArticlesEmptyDesc": "Visit our article page to see our collection.",
+    "viewAllArticles": "View All Articles",
+    "readMore": "Read More"
+  },
+  "benefitSection": {
+    "badge": "Why Choose Us",
+    "title": "SAKTITEMP® Advantages",
+    "subtitle": "We Combine Precision, Quality, and Reliability to Provide the Best Tempered Glass Solutions for Your Project."
+  },
+  "hero": {
+    "consultation": "Project Consultation",
+    "calculateGlass": "Calculate Glass Requirements",
+    "scroll": "Scroll"
+  },
+  "certificationSection": {
+    "badge": "Certification",
+    "title": "Certifications & Standards",
+    "description": "Our Products Meet National And International Quality Standards, Ensuring Safety And Reliability In Every Project."
+  },
+  "videoSection": {
+    "badge": "Our Profile Video",
+    "title": "Get to Know Us Better",
+    "subtitle": "A company profile video showcasing our production facilities, work culture, and commitment to quality.",
+    "playVideo": "Play video"
+  },
+  "serviceSection": {
+    "badge": "How To Order",
+    "title": "Choose The Service That Fits Your Needs",
+    "subtitle": "SAKTITEMP Provides Two Service Options: Bring Your Glass For Processing, Or Order Ready-Made Tempered Glass Directly From Us.",
+    "ctaTitle": "Need A Custom Glass Solution?",
+    "ctaDesc": "Our team is ready to help design a glass solution tailored to your project specifications. Consult your needs now.",
+    "ctaBtn": "Consult Project"
+  },
+  "industrySection": {
+    "badge": "Industries We Serve",
+    "title": "Focus Industries"
+  },
+  "visionMissionSection": {
+    "pillLabel": "Company Goals And Objectives",
+    "title": "Our Vision & Mission",
+    "subtitle": "We Provide Services For Various Industrial Sectors With Diverse Quality Standards And Precision.",
+    "visionTitle": "Vision",
+    "visionDesc": "To Become A High-Quality Tempered Glass Brand With European Standards.",
+    "missionTitle": "Mission",
+    "missionPoint1": "Providing Quality Tempered Glass Products With Latest Technology.",
+    "missionPoint2": "Optimizing Energy And Material Utilization Through Responsible And Sustainable Production Processes.",
+    "missionPoint3": "Focus On Technical Skills, Quality Control And A Tidy Work Culture."
+  },
+  "aboutContentSection": {
+    "preHeading": "WHO ARE WE?",
+    "mainHeading": "Who We Are",
+    "paragraph1": "**SAKTITEMP®** is a tempered glass manufacturer with over 15 years of experience, delivering international standard glass solutions for residential, commercial, and modern architectural projects.",
+    "paragraph2": "We offer various high-quality tempered glass types, including [[tempered glass]], [[laminated glass]], [[insulated glass]], [[decorative glass]], and more—all meeting international safety standards. Find the best glass solution for your needs here!",
+    "cta": "View Our Portfolio",
+    "ctaArrow": "→"
+  },
+  "productSection": {
+    "searchPlaceholder": "Search Glass Products...",
+    "filterCategory": "Filter By Category",
+    "filterThickness": "Filter By Thickness",
+    "filterUsage": "Filter By Usage",
+    "filterAll": "All",
+    "filterAllThickness": "All Thickness",
+    "filterAllUsage": "All Usage",
+    "recommendedTitle": "Recommended Products",
+    "displayingCount": "Displaying {count} Products",
+    "viewDetail": "View Product Details",
+    "noProducts": "No products match your filters."
+  },
+  "nav": {
+    "home": "Home",
+    "aboutUs": "About Us",
+    "company": "About Company",
+    "companyDesc": "About SAKTITEMP",
+    "contact": "Contact Us",
+    "contactDesc": "SAKTITEMP Company Profile",
+    "products": "Products",
+    "portofolio": "Portofolio",
+    "calculator": "Calculator",
+    "article": "Article",
+    "consultation": "Project Consultation"
+  }
+}

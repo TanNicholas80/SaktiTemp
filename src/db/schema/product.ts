@@ -1,4 +1,4 @@
-import { pgTable, timestamp, uniqueIndex, varchar, text, boolean, integer, foreignKey } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, uniqueIndex, index, varchar, text, boolean, integer, foreignKey } from "drizzle-orm/pg-core";
 import { uuid } from "drizzle-orm/pg-core";
 import { categoryProduct } from "./category-product";
 
@@ -7,6 +7,7 @@ export const product = pgTable("product", {
     categoryProductId: uuid("category_product_id").references(() => categoryProduct.categoryProductId),
     productName: varchar("product_name").notNull(),
     productSlug: varchar("product_slug").notNull(),
+    productShortDescription: varchar("product_short_description", { length: 500 }).notNull().default(""),
     productDescription: text("product_description").notNull(),
     productImageUrl: varchar("product_image_url").notNull(),
     productImagePublicId: varchar("product_image_public_id").notNull(),
@@ -22,4 +23,7 @@ export const product = pgTable("product", {
         name: "fk_product_category_product_id",
     }),
     uniqueIndex("product_slug_unique").on(table.productSlug),
+    index("product_category_product_id_idx").on(table.categoryProductId),
+    index("product_is_published_at_idx").on(table.productIsPublishedAt),
+    index("product_views_idx").on(table.productViews),
 ]);

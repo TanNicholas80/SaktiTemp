@@ -1,0 +1,186 @@
+{
+  "locationSection": {
+    "badge": "办公室位置",
+    "title": "我们的办公室",
+    "subtitle": "参观我们的办公室或联系我们的团队进行钢化玻璃项目咨询。",
+    "headOffice": "总部",
+    "branchOffice": "分公司",
+    "openGoogleMaps": "在谷歌地图中打开"
+  },
+  "footerSection": {
+    "quickLinks": "快速链接",
+    "products": "产品",
+    "contact": "联系方式",
+    "companyDesc": "采用欧洲标准的高质量钢化玻璃制造。为商业、住宅和建筑项目提供优质玻璃解决方案。",
+    "slogan": "\"We Understand What You Need\"",
+    "noProducts": "暂无分类",
+    "copyright": "© 2026 SAKTITEMP®. 版权所有。"
+  },
+  "contactContentSection": {
+    "contactBadge": "联系我们",
+    "contactTitle": "联系信息",
+    "formBadge": "发送消息",
+    "formTitle": "我们如何帮助您？",
+    "formDesc": "填写以下表格，我们的团队将在24小时内与您联系。",
+    "headOffice": "总部",
+    "branchOffice": "分公司",
+    "followUs": "关注我们",
+    "fullName": "全名",
+    "fullNamePlaceholder": "您的姓名",
+    "phone": "电话号码",
+    "phonePlaceholder": "+62 812 xxxx xxxx",
+    "location": "位置",
+    "locationPlaceholder": "选择城市/项目区域",
+    "projectType": "项目类型",
+    "projectTypePlaceholder": "选择项目类型",
+    "projectTypeResidential": "住宅",
+    "projectTypeCommercial": "商业",
+    "projectTypeArchitecture": "建筑",
+    "projectTypeInterior": "室内",
+    "projectTypeOther": "其他",
+    "message": "消息",
+    "messagePlaceholder": "描述您的玻璃项目需求...",
+    "submit": "发送消息",
+    "successMessage": "消息发送成功。我们将在24小时内与您联系。",
+    "errorMessage": "发送失败。请重试。"
+  },
+  "contactSection": {
+    "badge": "联系我们",
+    "title": "让我们实现您的梦想项目",
+    "subtitle": "我们的团队随时准备协助您的钢化玻璃需求。请通过下方的表格联系我们或发送消息。",
+    "sendMessage": "发送消息",
+    "sendMessageDesc": "填写下面的表格，我们将尽快与您联系。",
+    "name": "姓名",
+    "phone": "电话号码",
+    "projectDetails": "项目详情",
+    "namePlaceholder": "请输入您的姓名",
+    "phonePlaceholder": "+62 812 xxxx xxxx",
+    "projectPlaceholder": "描述您的项目需求...",
+    "submit": "发送消息",
+    "chatWhatsApp": "WhatsApp 聊天",
+    "headOffice": "总部",
+    "branchOffice": "分公司",
+    "successMessage": "消息发送成功。我们将尽快与您联系。",
+    "errorMessage": "发送失败。请重试。"
+  },
+  "portofolioSection": {
+    "badge": "作品集",
+    "title": "我们最好的项目",
+    "subtitle": "查看我们为不同客户和需求完成的钢化玻璃项目集合。",
+    "all": "全部",
+    "viewAll": "查看所有项目",
+    "viewDetail": "查看详情",
+    "noProjects": "暂无作品集项目。",
+    "noProjectsDescription": "我们的项目合集即将推出，请稍后再来查看。",
+    "noFilterMatch": "此分类下暂无项目。",
+    "noFilterMatchDescription": "请尝试选择其他分类或显示全部。",
+    "relatedTitle": "查看我们的其他项目",
+    "viewAllProjects": "查看所有项目",
+    "relatedEmpty": "暂无其他项目。",
+    "relatedEmptyDesc": "访问我们的作品集页面以浏览项目合集。"
+  },
+  "blogSection": {
+    "badge": "博客与文章",
+    "title": "行业洞察",
+    "viewAll": "查看所有文章",
+    "readMore": "阅读更多"
+  },
+  "articleSection": {
+    "searchPlaceholder": "搜索玻璃文章...",
+    "filterCategory": "筛选分类",
+    "filterAll": "全部",
+    "filterLabel": "筛选文章",
+    "readMore": "阅读更多",
+    "noArticles": "未找到匹配的文章。",
+    "noArticlesDescription": "请尝试更改筛选条件或搜索关键词。"
+  },
+  "articleDetailSection": {
+    "back": "返回",
+    "consultationTitle": "需要咨询？",
+    "consultationDesc": "我们的团队随时准备帮助您满足钢化玻璃项目需求。联系我们获取免费咨询。",
+    "consultationCta": "项目咨询",
+    "otherArticles": "其他文章",
+    "otherArticlesEmpty": "暂无其他文章。",
+    "otherArticlesEmptyDesc": "访问我们的文章页面查看我们的收藏。",
+    "viewAllArticles": "查看所有文章",
+    "readMore": "阅读更多"
+  },
+  "benefitSection": {
+    "badge": "为什么选择我们",
+    "title": "SAKTITEMP® 优势",
+    "subtitle": "我们结合精准、质量和可靠性，为您的项目提供最佳钢化玻璃解决方案。"
+  },
+  "hero": {
+    "consultation": "项目咨询",
+    "calculateGlass": "计算玻璃需求",
+    "scroll": "滚动"
+  },
+  "certificationSection": {
+    "badge": "认证",
+    "title": "认证与标准",
+    "description": "我们的产品符合国内外质量标准，确保每个项目的安全性和可靠性。"
+  },
+  "videoSection": {
+    "badge": "我们的形象视频",
+    "title": "更了解我们",
+    "subtitle": "展示我们生产设施、工作文化和对品质承诺的公司形象视频。",
+    "playVideo": "播放视频"
+  },
+  "serviceSection": {
+    "badge": "订购方式",
+    "title": "选择适合您需求的服务",
+    "subtitle": "SAKTITEMP 提供两种服务选择：携带您的玻璃来加工，或直接向我们订购成品钢化玻璃。",
+    "ctaTitle": "需要定制玻璃解决方案？",
+    "ctaDesc": "我们的团队随时准备帮助设计符合您项目规格的玻璃解决方案。立即咨询您的需求。",
+    "ctaBtn": "咨询项目"
+  },
+  "industrySection": {
+    "badge": "我们服务的行业",
+    "title": "重点行业"
+  },
+  "visionMissionSection": {
+    "pillLabel": "公司目标与宗旨",
+    "title": "我们的愿景与使命",
+    "subtitle": "我们为各工业领域提供具有不同质量标准和精度的服务。",
+    "visionTitle": "愿景",
+    "visionDesc": "成为具有欧洲标准的高品质钢化玻璃品牌。",
+    "missionTitle": "使命",
+    "missionPoint1": "以最新技术提供优质钢化玻璃产品。",
+    "missionPoint2": "通过负责任和可持续的生产流程优化能源和材料的利用。",
+    "missionPoint3": "专注于技术技能、质量控制和整洁的工作文化。"
+  },
+  "aboutContentSection": {
+    "preHeading": "我们是谁？",
+    "mainHeading": "关于我们",
+    "paragraph1": "**SAKTITEMP®** 是拥有超过15年经验的钢化玻璃制造商，为住宅、商业和现代建筑项目提供符合国际标准的玻璃解决方案。",
+    "paragraph2": "我们提供各种高品质钢化玻璃类型，包括[[钢化玻璃]]、[[夹层玻璃]]、[[中空玻璃]]、[[装饰玻璃]]等，全部符合国际安全标准。在此找到最适合您需求的玻璃解决方案！",
+    "cta": "查看我们的作品集",
+    "ctaArrow": "→"
+  },
+  "productSection": {
+    "searchPlaceholder": "搜索玻璃产品...",
+    "filterCategory": "按分类筛选",
+    "filterThickness": "按厚度筛选",
+    "filterUsage": "按用途筛选",
+    "filterAll": "全部",
+    "filterAllThickness": "全部厚度",
+    "filterAllUsage": "全部用途",
+    "recommendedTitle": "推荐产品",
+    "displayingCount": "显示 {count} 个产品",
+    "viewDetail": "查看产品详情",
+    "noProducts": "没有符合筛选条件的产品。"
+  },
+  "nav": {
+    "home": "首页",
+    "aboutUs": "关于我们",
+    "company": "关于公司",
+    "companyDesc": "关于 SAKTITEMP",
+    "contact": "联系我们",
+    "contactDesc": "SAKTITEMP 公司简介",
+    "products": "产品",
+    "portofolio": "作品集",
+    "calculator": "计算器",
+    "article": "文章",
+    "consultation": "项目咨询"
+  }
+}

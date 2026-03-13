@@ -9,6 +9,7 @@ export const location = pgTable("location", {
     locationType: locationType("location_type").notNull(),
     locationAddress: text("location_address").notNull(),
     locationMapUrl: text("location_map_url").notNull(),
+    locationMapEmbedUrl: text("location_map_embed_url").notNull(),
     locationIsPublished: boolean("location_is_published").notNull().default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),

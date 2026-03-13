@@ -1,0 +1,183 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import { PageHeaderWithBack } from "@/components/layout/page-header-with-back";
+import {
+  HeroSectionForm,
+  type HeroSectionFormValues,
+  type BreadcrumbItem,
+} from "@/components/hero-section";
+import { updateHeroSectionSchema } from "@/lib/validations/hero-section";
+
+export default function EditHeroSectionPage() {
+  const params = useParams();
+  const router = useRouter();
+  const id = String(params.id ?? "");
+
+  const [loading, setLoading] = React.useState(true);
+  const [submitting, setSubmitting] = React.useState(false);
+  const [formErrors, setFormErrors] = React.useState<Record<string, string>>({});
+  const [values, setValues] = React.useState<HeroSectionFormValues>({
+    pageKey: "",
+    preHeading: "",
+    mainHeading: "",
+    subHeading: "",
+    description: "",
+    image: null,
+    breadcrumbItems: [],
+    scrollIndicatorText: "SCROLL",
+    scrollIndicatorVisible: true,
+    published: true,
+  });
+
+  React.useEffect(() => {
+    if (!id) return;
+    fetch(`/api/admin/hero-section/${id}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("Gagal memuat data");
+        return r.json();
+      })
+      .then((item) => {
+        const breadcrumbItems: BreadcrumbItem[] = Array.isArray(
+          item.breadcrumbItems
+        )
+          ? item.breadcrumbItems.map((b: { label?: string; href?: string }) => ({
+              label: b?.label ?? "",
+              href: b?.href ?? "/",
+            }))
+          : [];
+
+        setValues({
+          pageKey: item.pageKey ?? "",
+          preHeading: item.preHeading ?? "",
+          mainHeading: item.mainHeading ?? "",
+          subHeading: item.subHeading ?? "",
+          description: item.description ?? "",
+          image: item.backgroundImageUrl
+            ? {
+                url: item.backgroundImageUrl,
+                publicId: item.backgroundImagePublicId ?? "",
+              }
+            : null,
+          breadcrumbItems,
+          scrollIndicatorText: item.scrollIndicatorText ?? "SCROLL",
+          scrollIndicatorVisible: item.scrollIndicatorVisible ?? true,
+          published: item.isPublished ?? true,
+        });
+      })
+      .catch(() => toast.error("Gagal memuat data hero section"))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setFormErrors({});
+
+    if (!values.image) {
+      setFormErrors({
+        backgroundImageUrl: "Gambar background wajib diunggah",
+        backgroundImagePublicId: "Gambar background wajib diunggah",
+      });
+      return;
+    }
+
+    const data = {
+      pageKey: values.pageKey.trim().toLowerCase(),
+      preHeading: values.preHeading.trim() || null,
+      mainHeading: values.mainHeading.trim(),
+      subHeading: values.subHeading.trim(),
+      description: values.description.trim(),
+      backgroundImageUrl: values.image.url,
+      backgroundImagePublicId: values.image.publicId,
+      breadcrumbItems:
+        values.breadcrumbItems.filter((b) => b.label || b.href).length > 0
+          ? values.breadcrumbItems.filter((b) => b.label || b.href)
+          : null,
+      scrollIndicatorText: values.scrollIndicatorText.trim() || "SCROLL",
+      scrollIndicatorVisible: values.scrollIndicatorVisible,
+      isPublished: values.published,
+    };
+
+    const parsed = updateHeroSectionSchema.safeParse(data);
+    if (!parsed.success) {
+      const errors: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        const path = String(issue.path[0] ?? "");
+        if (path && !errors[path]) errors[path] = issue.message;
+      }
+      setFormErrors(errors);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/admin/hero-section/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsed.data),
+      });
+      const json = await res.json();
+
+      if (!res.ok) {
+        toast.error(json.error ?? "Gagal memperbarui hero section");
+        if (json.details?.fieldErrors) {
+          setFormErrors(
+            Object.fromEntries(
+              Object.entries(json.details.fieldErrors).map(([k, v]) => [
+                k,
+                Array.isArray(v) ? v[0] : String(v),
+              ])
+            )
+          );
+        }
+        return;
+      }
+
+      toast.success("Hero section berhasil diperbarui");
+      router.push("/admin/hero-section");
+    } catch {
+      toast.error("Gagal memperbarui hero section");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-[200px] items-center justify-center">
+        <p className="text-muted-foreground">Memuat...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <PageHeaderWithBack
+        title="Edit Hero Section"
+        description="Perbarui data hero section"
+        backHref="/admin/hero-section"
+      />
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <HeroSectionForm
+          values={values}
+          onChange={setValues}
+          errors={formErrors}
+        />
+        <div className="flex gap-2">
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Menyimpan..." : "Simpan"}
+          </Button>
+          <Button type="button" variant="outline" asChild>
+            <Link href="/admin/hero-section">Batal</Link>
+          </Button>
+        </div>
+      </form>
+    </div>
+  );
+}

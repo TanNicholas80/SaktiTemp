@@ -1,4 +1,4 @@
-import { pgTable, timestamp, varchar, text, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, varchar, text, integer, boolean, index } from "drizzle-orm/pg-core";
 import { uuid } from "drizzle-orm/pg-core";
 
 export const carousel = pgTable("carousel", {
@@ -12,4 +12,6 @@ export const carousel = pgTable("carousel", {
     carouselIsPublished: boolean("carousel_is_published").notNull().default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
-})
+}, (table) => [
+    index("carousel_order_idx").on(table.carouselOrder),
+])

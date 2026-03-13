@@ -1,4 +1,4 @@
-import { pgTable, timestamp, uniqueIndex, varchar, text, boolean, integer, foreignKey } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, uniqueIndex, index, varchar, text, boolean, integer, foreignKey } from "drizzle-orm/pg-core";
 import { uuid } from "drizzle-orm/pg-core";
 import { categoryBlog } from "./category-blog";
 
@@ -7,6 +7,7 @@ export const blog = pgTable("blog", {
     categoryBlogId: uuid("category_blog_id").references(() => categoryBlog.categoryBlogId),
     blogTitle: varchar("blog_title").notNull(),
     blogSlug: varchar("blog_slug").notNull(),
+    blogExcerpt: varchar("blog_excerpt", { length: 500 }).notNull().default(""),
     blogContent: text("blog_content").notNull(),
     blogImageUrl: varchar("blog_image_url").notNull(),
     blogImagePublicId: varchar("blog_image_public_id").notNull(),
@@ -22,4 +23,7 @@ export const blog = pgTable("blog", {
         name: "fk_blog_category_blog_id",
     }),
     uniqueIndex("blog_slug_unique").on(table.blogSlug),
+    index("blog_category_blog_id_idx").on(table.categoryBlogId),
+    index("blog_is_published_at_idx").on(table.blogIsPublishedAt),
+    index("blog_views_idx").on(table.blogViews),
 ]);

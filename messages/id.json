@@ -1,0 +1,186 @@
+{
+  "locationSection": {
+    "badge": "Lokasi Kantor",
+    "title": "Kantor Kami",
+    "subtitle": "Kunjungi kantor kami atau hubungi tim untuk konsultasi proyek kaca tempered Anda.",
+    "headOffice": "Kantor Pusat",
+    "branchOffice": "Kantor Cabang",
+    "openGoogleMaps": "Buka Di Google Maps"
+  },
+  "footerSection": {
+    "quickLinks": "Quick Links",
+    "products": "Produk",
+    "contact": "Kontak",
+    "companyDesc": "Manufaktur Kaca Tempered Berkualitas Tinggi Dengan Standar Eropa. Solusi Kaca Premium Untuk Proyek Komersial, Residensial, Dan Arsitektur.",
+    "slogan": "\"We Understand What You Need\"",
+    "noProducts": "Tidak ada kategori",
+    "copyright": "© 2026 SAKTITEMP®. All Rights Reserved."
+  },
+  "contactContentSection": {
+    "contactBadge": "KONTAK KAMI",
+    "contactTitle": "Informasi Kontak",
+    "formBadge": "KIRIM PESAN",
+    "formTitle": "Bagaimana Kami Bisa Membantu Anda?",
+    "formDesc": "Isi form di bawah dan tim kami akan menghubungi Anda dalam 24 jam.",
+    "headOffice": "Kantor Pusat",
+    "branchOffice": "Kantor Cabang",
+    "followUs": "Ikuti Kami",
+    "fullName": "Nama Lengkap",
+    "fullNamePlaceholder": "Nama Anda",
+    "phone": "No. Telepon",
+    "phonePlaceholder": "+62 812 xxxx xxxx",
+    "location": "Lokasi",
+    "locationPlaceholder": "Pilih Kota / Area Proyek",
+    "projectType": "Jenis Proyek",
+    "projectTypePlaceholder": "Pilih Jenis Proyek",
+    "projectTypeResidential": "Residensial",
+    "projectTypeCommercial": "Komersial",
+    "projectTypeArchitecture": "Arsitektur",
+    "projectTypeInterior": "Interior",
+    "projectTypeOther": "Lainnya",
+    "message": "Pesan",
+    "messagePlaceholder": "Jelaskan kebutuhan proyek kaca Anda...",
+    "submit": "Kirim Pesan",
+    "successMessage": "Pesan berhasil dikirim. Kami akan menghubungi Anda dalam 24 jam.",
+    "errorMessage": "Gagal mengirim pesan. Silakan coba lagi."
+  },
+  "contactSection": {
+    "badge": "Hubungi Kami",
+    "title": "Mari Wujudkan Proyek Impian Anda",
+    "subtitle": "Tim kami siap membantu kebutuhan kaca tempered Anda. Silakan hubungi atau kirim pesan melalui formulir di bawah.",
+    "sendMessage": "Kirim Pesan",
+    "sendMessageDesc": "Isi formulir di bawah dan kami akan menghubungi Anda segera.",
+    "name": "Nama",
+    "phone": "No. Telepon",
+    "projectDetails": "Detail Proyek",
+    "namePlaceholder": "Masukkan nama Anda",
+    "phonePlaceholder": "+62 812 xxxx xxxx",
+    "projectPlaceholder": "Jelaskan kebutuhan proyek Anda ...",
+    "submit": "Kirim Pesan",
+    "chatWhatsApp": "Chat Via WhatsApp",
+    "headOffice": "Kantor Pusat",
+    "branchOffice": "Kantor Cabang",
+    "successMessage": "Pesan berhasil dikirim. Kami akan segera menghubungi Anda.",
+    "errorMessage": "Gagal mengirim pesan. Silakan coba lagi."
+  },
+  "portofolioSection": {
+    "badge": "Portfolio",
+    "title": "Proyek Terbaik Kami",
+    "subtitle": "Lihat Koleksi Proyek Kaca Tempered Yang Telah Kami Selesaikan Untuk Berbagai Klien Dan Kebutuhan.",
+    "all": "Semua",
+    "viewAll": "Lihat Semua Proyek",
+    "viewDetail": "Lihat Detail",
+    "noProjects": "Belum ada proyek portofolio tersedia.",
+    "noProjectsDescription": "Koleksi proyek kami akan segera hadir. Silakan periksa kembali nanti.",
+    "noFilterMatch": "Tidak ada proyek dalam kategori ini.",
+    "noFilterMatchDescription": "Coba pilih kategori lain atau tampilkan Semua.",
+    "relatedTitle": "Lihat Proyek Kami Lainnya",
+    "viewAllProjects": "Lihat Semua Proyek",
+    "relatedEmpty": "Belum ada proyek lain yang tersedia.",
+    "relatedEmptyDesc": "Kunjungi halaman portfolio kami untuk melihat koleksi proyek kami."
+  },
+  "blogSection": {
+    "badge": "Blog & Artikel",
+    "title": "Wawasan Industri",
+    "viewAll": "Lihat Semua Artikel",
+    "readMore": "Baca Selengkapnya"
+  },
+  "articleSection": {
+    "searchPlaceholder": "Cari Artikel Kaca...",
+    "filterCategory": "Filter Kategori",
+    "filterAll": "Semua",
+    "filterLabel": "Filter artikel",
+    "readMore": "Baca Selengkapnya",
+    "noArticles": "Tidak ada artikel yang sesuai.",
+    "noArticlesDescription": "Coba ubah filter atau kata kunci pencarian."
+  },
+  "articleDetailSection": {
+    "back": "Kembali",
+    "consultationTitle": "Butuh Konsultasi?",
+    "consultationDesc": "Tim kami siap membantu kebutuhan kaca tempered untuk proyek Anda. Hubungi kami untuk konsultasi gratis.",
+    "consultationCta": "Konsultasi Proyek",
+    "otherArticles": "Artikel Lainnya",
+    "otherArticlesEmpty": "Belum ada artikel lainnya.",
+    "otherArticlesEmptyDesc": "Kunjungi halaman artikel untuk melihat koleksi kami.",
+    "viewAllArticles": "Lihat Semua Artikel",
+    "readMore": "Baca Selengkapnya"
+  },
+  "benefitSection": {
+    "badge": "Mengapa Pilih Kami",
+    "title": "Keunggulan SAKTITEMP®",
+    "subtitle": "Kami Menggabungkan Presisi, Kualitas, Dan Keandalan Untuk Memberikan Solusi Kaca Tempered Terbaik Bagi Proyek Anda."
+  },
+  "hero": {
+    "consultation": "Konsultasi Proyek",
+    "calculateGlass": "Hitung Kebutuhan Kaca",
+    "scroll": "Scroll"
+  },
+  "certificationSection": {
+    "badge": "Sertifikasi",
+    "title": "Sertifikasi & Standar",
+    "description": "Produk Kami Telah Memenuhi Standar Kualitas Nasional Dan Internasional, Menjamin Keamanan Serta Keandalan Di Setiap Proyek."
+  },
+  "videoSection": {
+    "badge": "Video Profil Kami",
+    "title": "Kenali Kami Lebih Dekat",
+    "subtitle": "Video profil perusahaan yang menampilkan fasilitas produksi, budaya kerja, dan komitmen kami terhadap kualitas.",
+    "playVideo": "Putar video"
+  },
+  "serviceSection": {
+    "badge": "Cara Order",
+    "title": "Pilih Layanan Sesuai Kebutuhan Anda",
+    "subtitle": "SAKTITEMP Menyediakan Dua Opsi Layanan: Bawa Kaca Anda Untuk Diproses, Atau Pesan Kaca Tempered Siap Pakai Langsung Dari Kami.",
+    "ctaTitle": "Butuh Solusi Kaca Kustom?",
+    "ctaDesc": "Tim kami siap membantu merancang solusi kaca sesuai spesifikasi proyek Anda. Konsultasikan kebutuhan Anda sekarang.",
+    "ctaBtn": "Konsultasi Proyek"
+  },
+  "industrySection": {
+    "badge": "Industri Yang Kami Layani",
+    "title": "Fokus Industri"
+  },
+  "visionMissionSection": {
+    "pillLabel": "Tujuan Dan Sasaran Perusahaan",
+    "title": "Visi & Misi Kami",
+    "subtitle": "Kami Menyediakan Layanan Untuk Berbagai Sektor Industri Dengan Standar Kualitas Dan Presisi Yang Beragam.",
+    "visionTitle": "Visi",
+    "visionDesc": "Menjadi Brand Kaca Tempered Yang Berkualitas Tinggi Berstandar Eropa.",
+    "missionTitle": "Misi",
+    "missionPoint1": "Menyediakan Produk Kaca Tempered Berkualitas Dengan Teknologi Terkini.",
+    "missionPoint2": "Mengoptimalkan Pemanfaatan Energi Dan Material Melalui Proses Produksi Yang Bertanggung Jawab Dan Berkelanjutan.",
+    "missionPoint3": "Fokus Pada Skill Teknis, Kontrol Kualitas Dan Budaya Kerja Rapi."
+  },
+  "aboutContentSection": {
+    "preHeading": "SIAPA KAMI?",
+    "mainHeading": "Siapa Kami",
+    "paragraph1": "**SAKTITEMP®** adalah manufaktur kaca tempered dengan pengalaman lebih dari 15 tahun, menghadirkan solusi kaca berstandar internasional untuk proyek residensial, komersial, dan arsitektur modern.",
+    "paragraph2": "Kami menawarkan berbagai jenis kaca tempered berkualitas tinggi, termasuk [[tempered glass]], [[laminated glass]], [[insulated glass]], [[decorative glass]], dan banyak lagi, semuanya memenuhi standar keamanan internasional. Temukan solusi kaca terbaik untuk kebutuhan Anda di sini!",
+    "cta": "Lihat Portfolio Kami",
+    "ctaArrow": "→"
+  },
+  "productSection": {
+    "searchPlaceholder": "Cari Produk Kaca...",
+    "filterCategory": "Filter By Category",
+    "filterThickness": "Filter By Ketebalan",
+    "filterUsage": "Filter By Penggunaan",
+    "filterAll": "Semua",
+    "filterAllThickness": "Semua Ketebalan",
+    "filterAllUsage": "Semua Penggunaan",
+    "recommendedTitle": "Rekomendasi Produk",
+    "displayingCount": "Menampilkan {count} Produk",
+    "viewDetail": "Lihat Detail Produk",
+    "noProducts": "Tidak ada produk yang sesuai dengan filter."
+  },
+  "nav": {
+    "home": "Home",
+    "aboutUs": "Tentang Kami",
+    "company": "Tentang Perusahaan",
+    "companyDesc": "Tentang SAKTITEMP",
+    "contact": "Hubungi Kami",
+    "contactDesc": "Profil Perusahaan SAKTITEMP",
+    "products": "Produk",
+    "portofolio": "Portofolio",
+    "calculator": "Kalkulator",
+    "article": "Artikel",
+    "consultation": "Konsultasi Proyek"
+  }
+}
