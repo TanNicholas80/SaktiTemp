@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { thickness } from "@/db/schema/thickness";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createThicknessSchema } from "@/lib/validations/thickness";
+import { translateAndSaveThickness } from "@/lib/translate/entity-translators";
 import { and, eq } from "drizzle-orm";
 
 export async function GET() {
@@ -69,6 +71,9 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    translateAndSaveThickness(inserted).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("product");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

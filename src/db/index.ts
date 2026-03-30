@@ -23,6 +23,37 @@ import * as contactSchema from "./schema/contact";
 import * as heroSectionSchema from "./schema/hero-section";
 import * as productApplicationSchema from "./schema/product-application";
 import * as productApplicationPortofolioSchema from "./schema/product-application-portofolio";
+import * as contentCacheSchema from "./schema/content-cache";
+import * as glassTypesSchema from "./schema/glass_types";
+import * as glassPricesSchema from "./schema/glass_prices";
+import * as processingCategoriesSchema from "./schema/processing_categories";
+import * as processingPricesSchema from "./schema/processing_prices";
+import * as modificationSchema from "./schema/modification";
+
+import * as benefitTranslationsSchema from "./schema/benefit-translations";
+import * as blogTranslationsSchema from "./schema/blog-translations";
+import * as carouselTranslationsSchema from "./schema/carousel-translations";
+import * as categoryBlogTranslationsSchema from "./schema/category-blog-translations";
+import * as categoryPortofolioTranslationsSchema from "./schema/category-portofolio-translations";
+import * as categoryProductTranslationsSchema from "./schema/category-product-translations";
+import * as companyStatTranslationsSchema from "./schema/company-stat-translations";
+import * as contactTranslationsSchema from "./schema/contact-translations";
+import * as heroSectionTranslationsSchema from "./schema/hero-section-translations";
+import * as locationTranslationsSchema from "./schema/location-translations";
+import * as portofolioTranslationsSchema from "./schema/portofolio-translations";
+import * as portofolioTypeTranslationsSchema from "./schema/portofolio-type-translations";
+import * as productTranslationsSchema from "./schema/product-translations";
+import * as productApplicationTranslationsSchema from "./schema/product-application-translations";
+import * as productExellenceTranslationsSchema from "./schema/product-exellence-translations";
+import * as serviceTranslationsSchema from "./schema/service-translations";
+import * as certificationTranslationsSchema from "./schema/certification-translations";
+import * as glassTypesTranslationsSchema from "./schema/glass-types-translations";
+import * as glassPricesTranslationsSchema from "./schema/glass-prices-translations";
+import * as modificationTranslationsSchema from "./schema/modification-translations";
+import * as processingCategoriesTranslationsSchema from "./schema/processing-categories-translations";
+import * as processingPricesTranslationsSchema from "./schema/processing-prices-translations";
+import * as socialMediaTranslationsSchema from "./schema/social-media-translations";
+import * as thicknessTranslationsSchema from "./schema/thickness-translations";
 
 const schema = {
   ...blogSchema,
@@ -47,6 +78,37 @@ const schema = {
   ...heroSectionSchema,
   ...productApplicationSchema,
   ...productApplicationPortofolioSchema,
+  ...contentCacheSchema,
+  ...glassTypesSchema,
+  ...glassPricesSchema,
+  ...processingCategoriesSchema,
+  ...processingPricesSchema,
+  ...modificationSchema,
+
+  ...benefitTranslationsSchema,
+  ...blogTranslationsSchema,
+  ...carouselTranslationsSchema,
+  ...categoryBlogTranslationsSchema,
+  ...categoryPortofolioTranslationsSchema,
+  ...categoryProductTranslationsSchema,
+  ...companyStatTranslationsSchema,
+  ...contactTranslationsSchema,
+  ...heroSectionTranslationsSchema,
+  ...locationTranslationsSchema,
+  ...portofolioTranslationsSchema,
+  ...portofolioTypeTranslationsSchema,
+  ...productTranslationsSchema,
+  ...productApplicationTranslationsSchema,
+  ...productExellenceTranslationsSchema,
+  ...serviceTranslationsSchema,
+  ...certificationTranslationsSchema,
+  ...glassTypesTranslationsSchema,
+  ...glassPricesTranslationsSchema,
+  ...modificationTranslationsSchema,
+  ...processingCategoriesTranslationsSchema,
+  ...processingPricesTranslationsSchema,
+  ...socialMediaTranslationsSchema,
+  ...thicknessTranslationsSchema,
 };
 
 export const pool = new Pool({

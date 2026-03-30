@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-import type { ServiceOutput } from "@/lib/translate/translate-service";
+import type { ServiceOutput } from "@/lib/translate";
 
 gsap.registerPlugin(ScrollTrigger);
 

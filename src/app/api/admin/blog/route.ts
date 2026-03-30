@@ -5,9 +5,11 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { blog } from "@/db/schema/blog";
 import { categoryBlog } from "@/db/schema/category-blog";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { createBlogSchema } from "@/lib/validations/blog";
+import { translateAndSaveBlog } from "@/lib/translate/entity-translators";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -111,6 +113,9 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    translateAndSaveBlog(inserted).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("blog");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

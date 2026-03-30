@@ -4,9 +4,11 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { categoryPortofolio } from "@/db/schema/category-portofolio";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { updateCategoryPortofolioSchema } from "@/lib/validations/category-portofolio";
+import { translateAndSaveCategoryPortofolio } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -90,6 +92,12 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(categoryPortofolio.categoryPortofolioId, id))
       .returning();
 
+    translateAndSaveCategoryPortofolio(updated, {
+      categoryPortofolioName: existing.categoryPortofolioName,
+      categoryPortofolioDescription: existing.categoryPortofolioDescription,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("portofolio");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -123,6 +131,7 @@ export async function DELETE(_request: Request, { params }: Params) {
       .delete(categoryPortofolio)
       .where(eq(categoryPortofolio.categoryPortofolioId, id));
 
+    await revalidateContentCache("portofolio");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const createThicknessSchema = z.object({
   thicknessValue: z
-    .number()
-    .int("Nilai harus bilangan bulat")
+    .number({ error: "Nilai harus berupa angka" })
+    .finite("Nilai harus berupa angka yang valid")
     .positive("Nilai harus positif"),
   thicknessUnit: z
     .string()
@@ -13,8 +13,8 @@ export const createThicknessSchema = z.object({
 
 export const updateThicknessSchema = z.object({
   thicknessValue: z
-    .number()
-    .int("Nilai harus bilangan bulat")
+    .number({ error: "Nilai harus berupa angka" })
+    .finite("Nilai harus berupa angka yang valid")
     .positive("Nilai harus positif")
     .optional(),
   thicknessUnit: z

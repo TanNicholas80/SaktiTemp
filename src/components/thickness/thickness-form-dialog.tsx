@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+  parseThicknessValueInput,
+  thicknessValueToInputString,
+} from "@/lib/utils/thickness-input";
 
 export type ThicknessFormValues = {
   thicknessValue: number;
@@ -40,29 +44,39 @@ export function ThicknessFormDialog({
   submitting,
   errors,
 }: ThicknessFormDialogProps) {
-  const [value, setValue] = React.useState(
-    String(defaultValues.thicknessValue || "")
+  const [value, setValue] = React.useState(() =>
+    thicknessValueToInputString(defaultValues.thicknessValue)
   );
   const [unit, setUnit] = React.useState(
     defaultValues.thicknessUnit || "mm"
   );
+  const [localError, setLocalError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (open) {
-      setValue(String(defaultValues.thicknessValue || ""));
+      setValue(thicknessValueToInputString(defaultValues.thicknessValue));
       setUnit(defaultValues.thicknessUnit || "mm");
+      setLocalError(null);
     }
   }, [open, defaultValues.thicknessValue, defaultValues.thicknessUnit]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const numValue = Number.parseInt(value, 10);
-    if (Number.isNaN(numValue) || numValue <= 0) return;
+    setLocalError(null);
+    const numValue = parseThicknessValueInput(value);
+    if (numValue === null) {
+      setLocalError(
+        "Masukkan angka positif (contoh: 5, 5.5, 6,5 atau 8)"
+      );
+      return;
+    }
     onSubmit({
       thicknessValue: numValue,
       thicknessUnit: unit.trim(),
     });
   }
+
+  const valueErrorMsg = errors.thicknessValue ?? localError ?? undefined;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -72,21 +86,25 @@ export function ThicknessFormDialog({
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <Field>
-            <FieldLabel htmlFor="thicknessValue">Nilai (mm)</FieldLabel>
+            <FieldLabel htmlFor="thicknessValue">
+              Nilai ketebalan
+            </FieldLabel>
             <Input
               id="thicknessValue"
-              type="number"
-              min={1}
+              type="text"
+              inputMode="decimal"
+              autoComplete="off"
               value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="5"
-              aria-invalid={!!errors.thicknessValue}
+              onChange={(e) => {
+                setLocalError(null);
+                setValue(e.target.value);
+              }}
+              placeholder="5, 5.5, 6,5 …"
+              aria-invalid={!!valueErrorMsg}
             />
             <FieldError
               errors={
-                errors.thicknessValue
-                  ? [{ message: errors.thicknessValue }]
-                  : []
+                valueErrorMsg ? [{ message: valueErrorMsg }] : []
               }
             />
           </Field>

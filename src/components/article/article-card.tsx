@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { markViewIntent } from "@/lib/utils/view-intent";
 
 export type ArticleCardData = {
   blogId: string;
@@ -54,6 +55,7 @@ export function ArticleCard({
   return (
     <Link
       href={`/article/${blog.blogSlug}`}
+      onClick={() => markViewIntent("article", blog.blogSlug)}
       className={cn(
         "group block transition-all duration-300 hover:-translate-y-1 hover:shadow-lg",
         className

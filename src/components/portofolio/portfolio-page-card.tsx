@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { markViewIntent } from "@/lib/utils/view-intent";
 
 export type PortfolioPageCardData = {
   portofolioId: string;
@@ -33,7 +34,11 @@ export function PortfolioPageCard({ item, viewDetailText }: PortfolioPageCardPro
 
   return (
     <article className="group h-full">
-      <Link href={`/portofolio/${item.portofolioSlug}`} className="block h-full">
+      <Link
+        href={`/portofolio/${item.portofolioSlug}`}
+        onClick={() => markViewIntent("portofolio", item.portofolioSlug)}
+        className="block h-full"
+      >
         <div
           className={cn(
             "flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm",

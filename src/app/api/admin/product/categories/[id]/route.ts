@@ -4,6 +4,8 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { categoryProduct } from "@/db/schema/category-product";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
+import { translateAndSaveCategoryProduct } from "@/lib/translate/entity-translators";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { updateCategoryProductSchema } from "@/lib/validations/category-product";
@@ -82,6 +84,11 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(categoryProduct.categoryProductId, id))
       .returning();
 
+    translateAndSaveCategoryProduct(updated, {
+      categoryProductName: existing.categoryProductName,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("product");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -115,6 +122,7 @@ export async function DELETE(_request: Request, { params }: Params) {
       .delete(categoryProduct)
       .where(eq(categoryProduct.categoryProductId, id));
 
+    await revalidateContentCache("product");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

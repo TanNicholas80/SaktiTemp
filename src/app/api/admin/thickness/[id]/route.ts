@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { thickness } from "@/db/schema/thickness";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateThicknessSchema } from "@/lib/validations/thickness";
+import { translateAndSaveThickness } from "@/lib/translate/entity-translators";
 import { and, eq } from "drizzle-orm";
 
 type Params = { params: Promise<{ id: string }> };
@@ -71,6 +73,11 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(thickness.thicknessId, id))
       .returning();
 
+    translateAndSaveThickness(updated, {
+      thicknessUnit: existing.thicknessUnit,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("product");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -100,6 +107,8 @@ export async function DELETE(_request: Request, { params }: Params) {
     }
 
     await db.delete(thickness).where(eq(thickness.thicknessId, id));
+
+    await revalidateContentCache("product");
     return new NextResponse(null, { status: 204 });
   } catch {
     return NextResponse.json(

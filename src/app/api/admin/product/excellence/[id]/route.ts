@@ -4,6 +4,8 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { productExellence } from "@/db/schema/product-exellence";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
+import { translateAndSaveProductExellence } from "@/lib/translate/entity-translators";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateProductExcellenceSchema } from "@/lib/validations/product-excellence";
 
@@ -52,6 +54,11 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(productExellence.productExellenceId, id))
       .returning();
 
+    translateAndSaveProductExellence(updated, {
+      productExellenceDescription: existing.productExellenceDescription,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("product");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -85,6 +92,7 @@ export async function DELETE(_request: Request, { params }: Params) {
       .delete(productExellence)
       .where(eq(productExellence.productExellenceId, id));
 
+    await revalidateContentCache("product");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

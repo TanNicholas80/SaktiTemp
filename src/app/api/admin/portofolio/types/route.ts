@@ -4,9 +4,11 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { portofolioType } from "@/db/schema/portofolio-type";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { createPortofolioTypeSchema } from "@/lib/validations/portofolio-type";
+import { translateAndSavePortofolioType } from "@/lib/translate/entity-translators";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -81,6 +83,9 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    translateAndSavePortofolioType(inserted).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("portofolio");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

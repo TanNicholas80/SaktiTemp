@@ -1,8 +1,32 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 
 import { eq } from "drizzle-orm";
 
 import { AboutContentSection, VisionMissionSection } from "@/components/about";
+
+export const metadata: Metadata = {
+  title: "Tentang Perusahaan",
+  description:
+    "Mengenal SAKTITEMP® lebih dekat — sejarah, visi misi, sertifikasi, dan komitmen kami dalam menghadirkan kaca tempered berkualitas tinggi berstandar Eropa.",
+  keywords: [
+    "tentang saktitemp",
+    "profil perusahaan kaca tempered",
+    "pabrik kaca tempered indonesia",
+    "produsen kaca tempered",
+    "visi misi saktitemp",
+    "sertifikasi kaca tempered",
+    "kualitas kaca tempered",
+    "pabrik kaca bangunan",
+    "manufaktur kaca tempered",
+  ],
+  openGraph: {
+    title: "Tentang Perusahaan | SAKTITEMP®",
+    description:
+      "Sejarah, visi misi, dan komitmen SAKTITEMP® dalam industri kaca tempered Indonesia.",
+    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+  },
+};
 import { BenefitSection } from "@/components/benefit";
 import { CertificationSection } from "@/components/certification";
 import { CompanyStatsSection } from "@/components/company-stat";
@@ -11,6 +35,8 @@ import { ServiceSection } from "@/components/service";
 import { VideoSection } from "@/components/video";
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";
+import { cachedQuery } from "@/lib/cache/content-cache-helpers";
+import { contentCacheKey } from "@/lib/cache";
 import { db } from "@/db";
 import { benefit } from "@/db/schema/benefit";
 import { certification } from "@/db/schema/certification";
@@ -20,14 +46,15 @@ import { heroSection } from "@/db/schema/hero-section";
 import { service } from "@/db/schema/service";
 import { socialMedia } from "@/db/schema/social-media";
 import {
-  translateBenefitsAndStats,
-  translateCertifications,
-  translateCategoryPortofolios,
-  translateCategoryProducts,
-  translateContacts,
-  translateHeroSection,
-  translateServices,
-} from "@/lib/translate";
+  applyHeroSectionTranslation,
+  applyBenefitTranslations,
+  applyCompanyStatTranslations,
+  applyCategoryProductTranslations,
+  applyContactTranslations,
+  applyCertificationTranslations,
+  applyCategoryPortofolioTranslations,
+  applyServiceTranslations,
+} from "@/lib/translate/get-translated";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -50,198 +77,236 @@ export default async function AboutCompanyPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [
-    heroRow,
-    contactRows,
-    categoryProductRows,
-    categoryPortofolioRows,
-    benefitRows,
-    socialMediaRows,
-    companyStatRows,
-    certificationRows,
-    serviceRows,
-  ] = await Promise.all([
-      db.query.heroSection.findFirst({
-        where: eq(heroSection.pageKey, "about"),
-        columns: {
-          heroSectionId: true,
-          pageKey: true,
-          preHeading: true,
-          mainHeading: true,
-          subHeading: true,
-          description: true,
-          backgroundImageUrl: true,
-          scrollIndicatorText: true,
-          scrollIndicatorVisible: true,
-        },
-      }),
-      db.query.contact.findMany({
-        columns: {
-          contactId: true,
-          contactType: true,
-          contactLabel: true,
-          contactValue: true,
-          contactValueExtra: true,
-          contactIcon: true,
-        },
-        where: eq(contact.isPublished, true),
-      }),
-      db.query.categoryProduct.findMany({
-        columns: {
-          categoryProductId: true,
-          categoryProductName: true,
-          categoryProductSlug: true,
-        },
-      }),
-      db.query.categoryPortofolio.findMany({
-        columns: {
-          categoryPortofolioId: true,
-          categoryPortofolioName: true,
-          categoryPortofolioSlug: true,
-          categoryPortofolioIcon: true,
-          categoryPortofolioImage: true,
-          categoryPortofolioDescription: true,
-        },
-        orderBy: (c, { asc }) => [asc(c.createdAt)],
-      }),
-      db.query.benefit.findMany({
-        columns: {
-          benefitId: true,
-          benefitName: true,
-          benefitDescription: true,
-          benefitIcon: true,
-        },
-        where: eq(benefit.benefitIsPublished, true),
-      }),
-      db.query.socialMedia.findMany({
-        columns: {
-          socialMediaId: true,
-          platformName: true,
-          profileUrl: true,
-          iconName: true,
-        },
-        where: eq(socialMedia.isPublished, true),
-      }),
-      db.query.companyStat.findMany({
-        columns: {
-          companyStatId: true,
-          value: true,
-          label: true,
-          displayOrder: true,
-        },
-        where: eq(companyStat.isPublished, true),
-        orderBy: (s, { asc }) => [asc(s.displayOrder)],
-      }),
-      db.query.certification.findMany({
-        columns: {
-          certificationId: true,
-          name: true,
-          image: true,
-          displayOrder: true,
-        },
-        where: eq(certification.isPublished, true),
-        orderBy: (c, { asc }) => [asc(c.displayOrder)],
-      }),
-      db.query.service.findMany({
-        columns: {
-          serviceId: true,
-          serviceName: true,
-          serviceDescription: true,
-          serviceIcon: true,
-          serviceIsPublished: true,
-          servicePoints: true,
-          serviceBtnText: true,
-          serviceBtnLink: true,
-        },
-        where: eq(service.serviceIsPublished, true),
-        orderBy: (s, { asc }) => [asc(s.createdAt)],
-      }),
-    ]);
+  const companyData = await cachedQuery(
+    contentCacheKey("about", "company"),
+    async () => {
+      const [
+        heroRow,
+        contactRows,
+        categoryProductRows,
+        categoryPortofolioRows,
+        benefitRows,
+        socialMediaRows,
+        companyStatRows,
+        certificationRows,
+        serviceRows,
+      ] = await Promise.all([
+        db.query.heroSection.findFirst({
+          where: eq(heroSection.pageKey, "about"),
+          columns: {
+            heroSectionId: true,
+            pageKey: true,
+            preHeading: true,
+            mainHeading: true,
+            subHeading: true,
+            description: true,
+            backgroundImageUrl: true,
+            scrollIndicatorText: true,
+            scrollIndicatorVisible: true,
+          },
+        }),
+        db.query.contact.findMany({
+          columns: {
+            contactId: true,
+            contactType: true,
+            contactLabel: true,
+            contactValue: true,
+            contactValueExtra: true,
+            contactIcon: true,
+          },
+          where: eq(contact.isPublished, true),
+        }),
+        db.query.categoryProduct.findMany({
+          columns: {
+            categoryProductId: true,
+            categoryProductName: true,
+            categoryProductSlug: true,
+          },
+        }),
+        db.query.categoryPortofolio.findMany({
+          columns: {
+            categoryPortofolioId: true,
+            categoryPortofolioName: true,
+            categoryPortofolioSlug: true,
+            categoryPortofolioIcon: true,
+            categoryPortofolioImage: true,
+            categoryPortofolioDescription: true,
+          },
+          orderBy: (c, { asc }) => [asc(c.createdAt)],
+        }),
+        db.query.benefit.findMany({
+          columns: {
+            benefitId: true,
+            benefitName: true,
+            benefitDescription: true,
+            benefitIcon: true,
+          },
+          where: eq(benefit.benefitIsPublished, true),
+        }),
+        db.query.socialMedia.findMany({
+          columns: {
+            socialMediaId: true,
+            platformName: true,
+            profileUrl: true,
+            iconName: true,
+          },
+          where: eq(socialMedia.isPublished, true),
+        }),
+        db.query.companyStat.findMany({
+          columns: {
+            companyStatId: true,
+            value: true,
+            label: true,
+            displayOrder: true,
+          },
+          where: eq(companyStat.isPublished, true),
+          orderBy: (s, { asc }) => [asc(s.displayOrder)],
+        }),
+        db.query.certification.findMany({
+          columns: {
+            certificationId: true,
+            name: true,
+            image: true,
+            displayOrder: true,
+          },
+          where: eq(certification.isPublished, true),
+          orderBy: (c, { asc }) => [asc(c.displayOrder)],
+        }),
+        db.query.service.findMany({
+          columns: {
+            serviceId: true,
+            serviceName: true,
+            serviceDescription: true,
+            serviceIcon: true,
+            serviceIsPublished: true,
+            servicePoints: true,
+            serviceBtnText: true,
+            serviceBtnLink: true,
+          },
+          where: eq(service.serviceIsPublished, true),
+          orderBy: (s, { asc }) => [asc(s.createdAt)],
+        }),
+      ]);
 
-  const rawHero = heroRow
-    ? {
-        heroSectionId: heroRow.heroSectionId,
-        pageKey: heroRow.pageKey,
-        preHeading: heroRow.preHeading,
-        mainHeading: heroRow.mainHeading,
-        subHeading: heroRow.subHeading,
-        description: heroRow.description,
-        backgroundImageUrl: heroRow.backgroundImageUrl,
-        scrollIndicatorText: heroRow.scrollIndicatorText,
-        scrollIndicatorVisible: heroRow.scrollIndicatorVisible,
-      }
-    : FALLBACK_HERO;
+      const rawHero = heroRow
+        ? {
+            heroSectionId: heroRow.heroSectionId,
+            pageKey: heroRow.pageKey,
+            preHeading: heroRow.preHeading,
+            mainHeading: heroRow.mainHeading,
+            subHeading: heroRow.subHeading,
+            description: heroRow.description,
+            backgroundImageUrl: heroRow.backgroundImageUrl,
+            scrollIndicatorText: heroRow.scrollIndicatorText,
+            scrollIndicatorVisible: heroRow.scrollIndicatorVisible,
+          }
+        : FALLBACK_HERO;
 
-  const hero = await translateHeroSection(rawHero, locale);
+      const rawBenefits = benefitRows.map((r) => ({
+        benefitId: r.benefitId,
+        benefitName: r.benefitName,
+        benefitDescription: r.benefitDescription,
+        benefitIcon: r.benefitIcon,
+      }));
+      const rawStats = companyStatRows.map((r) => ({
+        companyStatId: r.companyStatId,
+        value: r.value,
+        label: r.label,
+        displayOrder: r.displayOrder,
+      }));
 
-  const rawBenefits = benefitRows.map((r) => ({
-    benefitId: r.benefitId,
-    benefitName: r.benefitName,
-    benefitDescription: r.benefitDescription,
-    benefitIcon: r.benefitIcon,
-  }));
-  const rawStats = companyStatRows.map((r) => ({
-    companyStatId: r.companyStatId,
-    value: r.value,
-    label: r.label,
-    displayOrder: r.displayOrder,
-  }));
+      const rawContacts = contactRows.map((r) => ({
+        contactId: r.contactId,
+        contactType: r.contactType,
+        contactLabel: r.contactLabel,
+        contactValue: r.contactValue,
+        contactValueExtra: r.contactValueExtra,
+        contactIcon: r.contactIcon,
+      }));
 
-  const { benefits, stats } = await translateBenefitsAndStats(
+      const rawCategoryProducts = categoryProductRows.map((r) => ({
+        categoryProductId: r.categoryProductId,
+        categoryProductName: r.categoryProductName,
+        categoryProductSlug: r.categoryProductSlug,
+      }));
+
+      const rawSocialMedia = socialMediaRows.map((r) => ({
+        socialMediaId: r.socialMediaId,
+        platformName: r.platformName,
+        profileUrl: r.profileUrl,
+        iconName: r.iconName,
+      }));
+
+      const rawCertifications = certificationRows.map((r) => ({
+        certificationId: r.certificationId,
+        name: r.name,
+        image: r.image,
+        displayOrder: r.displayOrder,
+      }));
+
+      const rawIndustries = categoryPortofolioRows.map((r) => ({
+        categoryPortofolioId: r.categoryPortofolioId,
+        categoryPortofolioName: r.categoryPortofolioName,
+        categoryPortofolioSlug: r.categoryPortofolioSlug,
+        categoryPortofolioIcon: r.categoryPortofolioIcon || "Building2",
+        categoryPortofolioImage: r.categoryPortofolioImage || "",
+        categoryPortofolioDescription: r.categoryPortofolioDescription || "",
+      }));
+
+      const rawServices = serviceRows.map((r) => ({
+        serviceId: r.serviceId,
+        serviceName: r.serviceName,
+        serviceDescription: r.serviceDescription,
+        serviceIcon: r.serviceIcon,
+        serviceIsPublished: r.serviceIsPublished,
+        servicePoints: (r.servicePoints as string[]) ?? [],
+        serviceBtnText: r.serviceBtnText,
+        serviceBtnLink: r.serviceBtnLink,
+      }));
+
+      return {
+        rawHero,
+        rawBenefits,
+        rawStats,
+        rawContacts,
+        rawCategoryProducts,
+        rawSocialMedia,
+        rawCertifications,
+        rawIndustries,
+        rawServices,
+      };
+    }
+  );
+
+  const {
+    rawHero,
     rawBenefits,
     rawStats,
+    rawContacts,
+    rawCategoryProducts,
+    rawSocialMedia,
+    rawCertifications,
+    rawIndustries,
+    rawServices,
+  } = companyData;
+
+  const hero = await applyHeroSectionTranslation(rawHero, locale);
+
+  const benefits = await applyBenefitTranslations(rawBenefits, locale);
+  const stats = await applyCompanyStatTranslations(rawStats, locale);
+
+  const categories = await applyCategoryProductTranslations(
+    rawCategoryProducts,
     locale
   );
 
-  const rawContacts = contactRows.map((r) => ({
-    contactId: r.contactId,
-    contactType: r.contactType,
-    contactLabel: r.contactLabel,
-    contactValue: r.contactValue,
-    contactValueExtra: r.contactValueExtra,
-    contactIcon: r.contactIcon,
-  }));
+  const contacts = await applyContactTranslations(rawContacts, locale);
 
-  const categories = await translateCategoryProducts(
-    categoryProductRows.map((r) => ({
-      categoryProductId: r.categoryProductId,
-      categoryProductName: r.categoryProductName,
-      categoryProductSlug: r.categoryProductSlug,
-    })),
-    locale
-  );
+  const certifications = await applyCertificationTranslations(rawCertifications, locale);
 
-  const contacts = await translateContacts(rawContacts, locale);
+  const industries = await applyCategoryPortofolioTranslations(rawIndustries, locale);
 
-  const rawCertifications = certificationRows.map((r) => ({
-    certificationId: r.certificationId,
-    name: r.name,
-    image: r.image,
-    displayOrder: r.displayOrder,
-  }));
-  const certifications = await translateCertifications(rawCertifications, locale);
-
-  const rawIndustries = categoryPortofolioRows.map((r) => ({
-    categoryPortofolioId: r.categoryPortofolioId,
-    categoryPortofolioName: r.categoryPortofolioName,
-    categoryPortofolioSlug: r.categoryPortofolioSlug,
-    categoryPortofolioIcon: r.categoryPortofolioIcon || "Building2",
-    categoryPortofolioImage: r.categoryPortofolioImage || "",
-    categoryPortofolioDescription: r.categoryPortofolioDescription || "",
-  }));
-  const industries = await translateCategoryPortofolios(rawIndustries, locale);
-
-  const rawServices = serviceRows.map((r) => ({
-    serviceId: r.serviceId,
-    serviceName: r.serviceName,
-    serviceDescription: r.serviceDescription,
-    serviceIcon: r.serviceIcon,
-    serviceIsPublished: r.serviceIsPublished,
-    servicePoints: (r.servicePoints as string[]) ?? [],
-    serviceBtnText: r.serviceBtnText,
-    serviceBtnLink: r.serviceBtnLink,
-  }));
-  const services = await translateServices(rawServices, locale);
+  const services = await applyServiceTranslations(rawServices, locale);
 
   return (
     <div className="w-full">
@@ -256,12 +321,7 @@ export default async function AboutCompanyPage({ params }: Props) {
       <ServiceSection services={services} />
       <FooterSection
         contacts={contacts}
-        socialMedia={socialMediaRows.map((r) => ({
-          socialMediaId: r.socialMediaId,
-          platformName: r.platformName,
-          profileUrl: r.profileUrl,
-          iconName: r.iconName,
-        }))}
+        socialMedia={rawSocialMedia}
         categories={categories}
       />
     </div>

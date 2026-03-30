@@ -37,7 +37,10 @@ export type ProductDetailSectionProps = {
 function useProductView(productSlug: string) {
   React.useEffect(() => {
     if (!productSlug) return;
-    fetch(`/api/product/${productSlug}/view`, { method: "POST" }).catch(() => {});
+    import("@/lib/utils/view-intent").then(({ consumeViewIntent }) => {
+      if (!consumeViewIntent("product", productSlug)) return;
+      fetch(`/api/product/${productSlug}/view`, { method: "POST" }).catch(() => {});
+    });
   }, [productSlug]);
 }
 

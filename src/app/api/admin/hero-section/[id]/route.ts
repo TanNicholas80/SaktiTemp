@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { and, eq, ne } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { heroSection } from "@/db/schema/hero-section";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateHeroSectionSchema } from "@/lib/validations/hero-section";
+import { translateAndSaveHeroSection } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -126,6 +128,16 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(heroSection.heroSectionId, id))
       .returning();
 
+    translateAndSaveHeroSection(updated, {
+      preHeading: existing.preHeading,
+      mainHeading: existing.mainHeading,
+      subHeading: existing.subHeading,
+      description: existing.description,
+      scrollIndicatorText: existing.scrollIndicatorText,
+      breadcrumbItems: existing.breadcrumbItems,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("hero");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -157,6 +169,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(heroSection).where(eq(heroSection.heroSectionId, id));
 
+    await revalidateContentCache("hero");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

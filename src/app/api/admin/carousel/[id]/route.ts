@@ -4,8 +4,10 @@ import { and, eq, ne } from "drizzle-orm";
 
 import { db } from "@/db";
 import { carousel } from "@/db/schema/carousel";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateCarouselSchema } from "@/lib/validations/carousel";
+import { translateAndSaveCarousel } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -118,6 +120,13 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(carousel.carouselId, id))
       .returning();
 
+    translateAndSaveCarousel(updated, {
+      carouselHeading: existing.carouselHeading,
+      carouselSubheading: existing.carouselSubheading,
+      carouselDescription: existing.carouselDescription,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("carousel");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -149,6 +158,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(carousel).where(eq(carousel.carouselId, id));
 
+    await revalidateContentCache("carousel");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

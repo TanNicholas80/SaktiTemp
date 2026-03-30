@@ -5,6 +5,8 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { productApplication } from "@/db/schema/product-application";
 import { product } from "@/db/schema/product";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
+import { translateAndSaveProductApplication } from "@/lib/translate/entity-translators";
 import { deleteProductImageFile } from "@/lib/utils/product-image";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
@@ -141,6 +143,12 @@ export async function PATCH(request: Request, { params }: Params) {
       await deleteProductImageFile(oldPublicId);
     }
 
+    translateAndSaveProductApplication(updated, {
+      productApplicationName: existing.productApplicationName,
+      productApplicationDescription: existing.productApplicationDescription,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("product");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -178,6 +186,7 @@ export async function DELETE(_request: Request, { params }: Params) {
       .delete(productApplication)
       .where(eq(productApplication.productApplicationId, id));
 
+    await revalidateContentCache("product");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

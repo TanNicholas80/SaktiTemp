@@ -6,8 +6,10 @@ import { db } from "@/db";
 import { portofolio } from "@/db/schema/portofolio";
 import { categoryPortofolio } from "@/db/schema/category-portofolio";
 import { productApplicationPortofolio } from "@/db/schema/product-application-portofolio";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createPortofolioSchema } from "@/lib/validations/portofolio";
+import { translateAndSavePortofolio } from "@/lib/translate/entity-translators";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -126,6 +128,9 @@ export async function POST(request: Request) {
       );
     }
 
+    translateAndSavePortofolio(inserted).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("portofolio");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

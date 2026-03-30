@@ -16,8 +16,40 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SaktiTemp Admin",
-  description: "Portal admin SaktiTemp",
+  metadataBase: new URL("https://www.saktitemp.com"),
+  title: {
+    default: "SAKTITEMP® Tempered Glass",
+    template: "%s | SAKTITEMP®",
+  },
+  description:
+    "Produsen kaca tempered berkualitas tinggi berstandar Eropa untuk proyek komersial, residensial, dan arsitektur.",
+  icons: {
+    icon: [
+      {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+        sizes: "32x32",
+      },
+    ],
+    apple: [
+      {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+        sizes: "180x180",
+      },
+    ],
+    shortcut: "/favicon.ico",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "SAKTITEMP®",
+    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@saktitemp",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -26,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="id" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

@@ -4,9 +4,11 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { portofolioType } from "@/db/schema/portofolio-type";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { updatePortofolioTypeSchema } from "@/lib/validations/portofolio-type";
+import { translateAndSavePortofolioType } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -78,6 +80,11 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(portofolioType.portofolioTypeId, id))
       .returning();
 
+    translateAndSavePortofolioType(updated, {
+      portofolioTypeName: existing.portofolioTypeName,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("portofolio");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -111,6 +118,7 @@ export async function DELETE(_request: Request, { params }: Params) {
       .delete(portofolioType)
       .where(eq(portofolioType.portofolioTypeId, id));
 
+    await revalidateContentCache("portofolio");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

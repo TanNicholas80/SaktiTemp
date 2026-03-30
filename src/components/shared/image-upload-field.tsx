@@ -19,6 +19,7 @@ type ImageUploadFieldProps = {
   disabled?: boolean;
   className?: string;
   error?: string;
+  size?: "default" | "compact";
   /** Folder untuk simpan file: "blog" (default), "product", "portofolio", "carousel", "hero", "certification", atau "category" */
   folder?: "blog" | "product" | "portofolio" | "carousel" | "hero" | "certification" | "category";
 };
@@ -29,6 +30,7 @@ export function ImageUploadField({
   disabled,
   className,
   error,
+  size = "default",
   folder = "blog",
 }: ImageUploadFieldProps) {
   const [uploading, setUploading] = React.useState(false);
@@ -100,7 +102,8 @@ export function ImageUploadField({
     <div className={cn("space-y-2", className)}>
       <div
         className={cn(
-          "border-input flex min-h-[180px] flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all duration-200",
+          "border-input flex flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all duration-200",
+          size === "compact" ? "min-h-[120px]" : "min-h-[180px]",
           error && "border-destructive",
           value && "border-solid",
           isDragOver && "border-primary bg-primary/5"
@@ -114,7 +117,10 @@ export function ImageUploadField({
             <img
               src={value.url}
               alt="Preview"
-              className="mx-auto max-h-48 rounded-md object-cover"
+              className={cn(
+                "mx-auto rounded-md object-cover",
+                size === "compact" ? "max-h-28" : "max-h-48"
+              )}
             />
             {!disabled && (
               <Button

@@ -8,6 +8,8 @@ import { categoryProduct } from "@/db/schema/category-product";
 import { productThickness } from "@/db/schema/product-thickness";
 import { thickness } from "@/db/schema/thickness";
 import { productExellence } from "@/db/schema/product-exellence";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
+import { translateAndSaveProductWithExcellences } from "@/lib/translate/entity-translators";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { createProductSchema } from "@/lib/validations/product";
@@ -196,15 +198,34 @@ export async function POST(request: Request) {
       );
     }
 
+    let insertedExcellences: {
+      productExellenceId: string;
+      productExellenceDescription: string;
+    }[] = [];
     if (parsed.data.excellences?.length) {
-      await db.insert(productExellence).values(
-        parsed.data.excellences.map((e) => ({
-          productId,
-          productExellenceDescription: e.productExellenceDescription,
-        }))
-      );
+      insertedExcellences = await db
+        .insert(productExellence)
+        .values(
+          parsed.data.excellences.map((e) => ({
+            productId,
+            productExellenceDescription: e.productExellenceDescription,
+          }))
+        )
+        .returning({
+          productExellenceId: productExellence.productExellenceId,
+          productExellenceDescription: productExellence.productExellenceDescription,
+        });
     }
 
+    translateAndSaveProductWithExcellences({
+      productId: inserted.productId,
+      productName: inserted.productName,
+      productShortDescription: inserted.productShortDescription,
+      productDescription: inserted.productDescription,
+      excellences: insertedExcellences,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("product");
     return NextResponse.json(inserted);
   } catch (err) {
     console.error(err);

@@ -8,7 +8,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-import type { HeroSectionOutput } from "@/lib/translate";
+import type { HeroBreadcrumbItem, HeroSectionOutput } from "@/lib/translate";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,7 +27,10 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const scrollText = hero.scrollIndicatorText ?? t("scroll");
-  const breadcrumbItems = hero.breadcrumbItems ?? [];
+  const rawBreadcrumbs = hero.breadcrumbItems;
+  const breadcrumbItems: HeroBreadcrumbItem[] = Array.isArray(rawBreadcrumbs)
+    ? (rawBreadcrumbs as HeroBreadcrumbItem[])
+    : [];
 
   // Parse *teks* menjadi <em>teks</em> untuk subHeading (contoh: "Presisi *Dan* Kualitas")
   const renderSubHeading = (text: string) => {

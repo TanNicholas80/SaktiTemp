@@ -19,6 +19,7 @@ import {
   Phone,
   BarChart3,
   LayoutPanelTop,
+  Calculator,
   type LucideIcon,
 } from "lucide-react";
 
@@ -60,6 +61,15 @@ const defaultNavItems: NavItem[] = [
     name: "User",
     href: "/admin/users",
     icon: Users,
+  },
+  {
+    name: "Calculator",
+    icon: Calculator,
+    items: [
+      { name: "Daftar PriceList Kaca", href: "/admin/price-list/glass" },
+      { name: "Daftar PriceList Modifikasi", href: "/admin/price-list/modification" },
+      { name: "Daftar PriceList Additional", href: "/admin/price-list/additional-service" },
+    ],
   },
   {
     name: "Blog",

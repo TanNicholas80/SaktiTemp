@@ -5,6 +5,8 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { product } from "@/db/schema/product";
 import { productExellence } from "@/db/schema/product-exellence";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
+import { translateAndSaveProductExellence } from "@/lib/translate/entity-translators";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createProductExcellenceSchema } from "@/lib/validations/product-excellence";
 
@@ -71,6 +73,11 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    translateAndSaveProductExellence(inserted).catch((err) =>
+      console.error("Translation failed:", err)
+    );
+
+    await revalidateContentCache("product");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

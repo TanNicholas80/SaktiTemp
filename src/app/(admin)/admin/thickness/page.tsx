@@ -194,7 +194,7 @@ export default function ThicknessPage() {
     <div className="space-y-6">
       <PageHeader
         title="Ketebalan"
-        description="Kelola daftar ketebalan master (5mm, 6mm, 8mm, dll.) untuk produk kaca"
+        description="Kelola ketebalan master untuk produk kaca (bilangan bulat atau desimal, mis. 5, 6,5, 8 mm)"
         action={
           <Button
             onClick={() => {
@@ -218,7 +218,7 @@ export default function ThicknessPage() {
             </EmptyMedia>
             <EmptyTitle>Belum ada ketebalan</EmptyTitle>
             <EmptyDescription>
-              Tambahkan ketebalan seperti 5mm, 6mm, 8mm, 10mm, 12mm untuk digunakan di produk.
+              Tambahkan ketebalan seperti 5 mm, 6,5 mm, 8 mm (titik atau koma untuk desimal).
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>

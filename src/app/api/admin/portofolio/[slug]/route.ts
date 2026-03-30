@@ -12,8 +12,10 @@ import { productApplication } from "@/db/schema/product-application";
 import { product } from "@/db/schema/product";
 import { productThickness } from "@/db/schema/product-thickness";
 import { thickness } from "@/db/schema/thickness";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updatePortofolioSchema } from "@/lib/validations/portofolio";
+import { translateAndSavePortofolio } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -285,6 +287,15 @@ export async function PATCH(request: Request, { params }: Params) {
       await deletePortofolioImageFile(oldPublicId);
     }
 
+    translateAndSavePortofolio(updated, {
+      portofolioName: existing.portofolioName,
+      portofolioShortDescription: existing.portofolioShortDescription,
+      portofolioAbout: existing.portofolioAbout,
+      portofolioClient: existing.portofolioClient,
+      portofolioLocation: existing.portofolioLocation,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("portofolio");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -322,6 +333,7 @@ export async function DELETE(_request: Request, { params }: Params) {
       .delete(portofolio)
       .where(eq(portofolio.portofolioId, existing.portofolioId));
 
+    await revalidateContentCache("portofolio");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

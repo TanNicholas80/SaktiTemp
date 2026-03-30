@@ -1,5 +1,6 @@
+import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages, getTimeZone, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { LandingNavbar } from "@/components/layout/landing-navbar";
@@ -14,6 +15,24 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+const BASE_URL = "https://www.saktitemp.com";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const canonicalPath = locale === "id" ? "" : `/${locale}`;
+  return {
+    alternates: {
+      canonical: `${BASE_URL}${canonicalPath}`,
+      languages: {
+        id: `${BASE_URL}/`,
+        en: `${BASE_URL}/en`,
+        "zh-CN": `${BASE_URL}/zh`,
+        "x-default": `${BASE_URL}/`,
+      },
+    },
+  };
+}
+
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
 
@@ -22,10 +41,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   setRequestLocale(locale);
-  const messages = await getMessages();
+  const [messages, timeZone] = await Promise.all([getMessages(), getTimeZone()]);
 
   return (
-    <NextIntlClientProvider messages={messages}>
+    <NextIntlClientProvider messages={messages} timeZone={timeZone}>
       <div className="min-h-screen flex flex-col">
         <LandingNavbar />
         <main className="flex-1">{children}</main>

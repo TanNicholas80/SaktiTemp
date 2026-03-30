@@ -1,12 +1,41 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
 
 import { desc, eq, or } from "drizzle-orm";
 
+export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: "Portfolio Proyek",
+  description:
+    "Lebih dari 200 proyek kaca tempered premium telah diselesaikan SAKTITEMP® di seluruh Indonesia — dari gedung komersial hingga villa mewah.",
+  keywords: [
+    "portofolio kaca tempered",
+    "proyek kaca tempered",
+    "contoh pemasangan kaca tempered",
+    "portfolio kaca bangunan",
+    "project kaca gedung",
+    "project kaca rumah",
+    "kaca fasad gedung",
+    "kaca railing tangga",
+    "kaca balkon",
+    "hasil proyek saktitemp",
+  ],
+  openGraph: {
+    title: "Portfolio Proyek | SAKTITEMP®",
+    description:
+      "Jelajahi portofolio proyek kaca tempered SAKTITEMP® dari seluruh Indonesia.",
+    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+  },
+};
+
 import { CompanyStatsSection } from "@/components/company-stat";
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";
 import { PortfolioPageContent } from "@/components/portofolio/portfolio-page-content";
+import { cachedQuery } from "@/lib/cache/content-cache-helpers";
+import { contentCacheKey } from "@/lib/cache";
 import { db } from "@/db";
 import { categoryPortofolio } from "@/db/schema/category-portofolio";
 import { companyStat } from "@/db/schema/company-stat";
@@ -15,13 +44,13 @@ import { heroSection } from "@/db/schema/hero-section";
 import { portofolio } from "@/db/schema/portofolio";
 import { socialMedia } from "@/db/schema/social-media";
 import {
-  translateBenefitsAndStats,
-  translateCategoryPortofolios,
-  translateCategoryProducts,
-  translateContacts,
-  translateHeroSection,
-  translatePortofolios,
-} from "@/lib/translate";
+  applyCompanyStatTranslations,
+  applyCategoryPortofolioTranslations,
+  applyCategoryProductTranslations,
+  applyContactTranslations,
+  applyHeroSectionTranslation,
+  applyPortofolioTranslations,
+} from "@/lib/translate/get-translated";
 import type { PortfolioPageCardData } from "@/components/portofolio/portfolio-page-card";
 
 type Props = {
@@ -51,7 +80,7 @@ export default async function PortfolioPage({ params }: Props) {
 
   const t = await getTranslations("portofolioSection");
 
-  const [
+  const {
     heroRow,
     statsRows,
     categoryRows,
@@ -59,92 +88,122 @@ export default async function PortfolioPage({ params }: Props) {
     contactRows,
     socialMediaRows,
     categoryProductRows,
-  ] = await Promise.all([
-    db.query.heroSection.findFirst({
-      where: or(
-        eq(heroSection.pageKey, "portfolio"),
-        eq(heroSection.pageKey, "portofolio")
-      ),
-      columns: {
-        heroSectionId: true,
-        pageKey: true,
-        preHeading: true,
-        mainHeading: true,
-        subHeading: true,
-        description: true,
-        backgroundImageUrl: true,
-        scrollIndicatorText: true,
-        scrollIndicatorVisible: true,
-        breadcrumbItems: true,
-      },
-    }),
-    db.query.companyStat.findMany({
-      columns: {
-        companyStatId: true,
-        value: true,
-        label: true,
-        displayOrder: true,
-      },
-      where: eq(companyStat.isPublished, true),
-      orderBy: (s, { asc }) => [asc(s.displayOrder)],
-    }),
-    db.query.categoryPortofolio.findMany({
-      columns: {
-        categoryPortofolioId: true,
-        categoryPortofolioName: true,
-        categoryPortofolioSlug: true,
-        categoryPortofolioIcon: true,
-        categoryPortofolioImage: true,
-        categoryPortofolioDescription: true,
-      },
-    }),
-    db
-      .select({
-        portofolioId: portofolio.portofolioId,
-        portofolioName: portofolio.portofolioName,
-        portofolioSlug: portofolio.portofolioSlug,
-        portofolioShortDescription: portofolio.portofolioShortDescription,
-        portofolioLocation: portofolio.portofolioLocation,
-        portofolioImageUrl: portofolio.portofolioImageUrl,
-        portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
-        categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
-        categoryPortofolioSlug: categoryPortofolio.categoryPortofolioSlug,
-      })
-      .from(portofolio)
-      .leftJoin(
-        categoryPortofolio,
-        eq(portofolio.categoryPortofolioId, categoryPortofolio.categoryPortofolioId)
-      )
-      .where(eq(portofolio.portofolioIsPublished, true))
-      .orderBy(desc(portofolio.portofolioIsPublishedAt)),
-    db.query.contact.findMany({
-      columns: {
-        contactId: true,
-        contactType: true,
-        contactLabel: true,
-        contactValue: true,
-        contactValueExtra: true,
-        contactIcon: true,
-      },
-      where: eq(contact.isPublished, true),
-    }),
-    db.query.socialMedia.findMany({
-      columns: {
-        socialMediaId: true,
-        platformName: true,
-        profileUrl: true,
-        iconName: true,
-      },
-      where: eq(socialMedia.isPublished, true),
-    }),
-    db.query.categoryProduct.findMany({
-      columns: {
-        categoryProductId: true,
-        categoryProductName: true,
-        categoryProductSlug: true,
-      },
-    }),
-  ]);
+  } = await cachedQuery(contentCacheKey("portofolio", "list"), async () => {
+    const [
+      heroRaw,
+      statsRaw,
+      categoryRaw,
+      portofolioRaw,
+      contactRaw,
+      socialMediaRaw,
+      categoryProductRaw,
+    ] = await Promise.all([
+      db.query.heroSection.findFirst({
+        where: or(
+          eq(heroSection.pageKey, "portfolio"),
+          eq(heroSection.pageKey, "portofolio")
+        ),
+        columns: {
+          heroSectionId: true,
+          pageKey: true,
+          preHeading: true,
+          mainHeading: true,
+          subHeading: true,
+          description: true,
+          backgroundImageUrl: true,
+          scrollIndicatorText: true,
+          scrollIndicatorVisible: true,
+          breadcrumbItems: true,
+        },
+      }),
+      db.query.companyStat.findMany({
+        columns: {
+          companyStatId: true,
+          value: true,
+          label: true,
+          displayOrder: true,
+        },
+        where: eq(companyStat.isPublished, true),
+        orderBy: (s, { asc }) => [asc(s.displayOrder)],
+      }),
+      db.query.categoryPortofolio.findMany({
+        columns: {
+          categoryPortofolioId: true,
+          categoryPortofolioName: true,
+          categoryPortofolioSlug: true,
+          categoryPortofolioIcon: true,
+          categoryPortofolioImage: true,
+          categoryPortofolioDescription: true,
+        },
+      }),
+      db
+        .select({
+          portofolioId: portofolio.portofolioId,
+          portofolioName: portofolio.portofolioName,
+          portofolioSlug: portofolio.portofolioSlug,
+          portofolioShortDescription: portofolio.portofolioShortDescription,
+          portofolioLocation: portofolio.portofolioLocation,
+          portofolioImageUrl: portofolio.portofolioImageUrl,
+          portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
+          categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
+          categoryPortofolioSlug: categoryPortofolio.categoryPortofolioSlug,
+        })
+        .from(portofolio)
+        .leftJoin(
+          categoryPortofolio,
+          eq(portofolio.categoryPortofolioId, categoryPortofolio.categoryPortofolioId)
+        )
+        .where(eq(portofolio.portofolioIsPublished, true))
+        .orderBy(desc(portofolio.portofolioIsPublishedAt)),
+      db.query.contact.findMany({
+        columns: {
+          contactId: true,
+          contactType: true,
+          contactLabel: true,
+          contactValue: true,
+          contactValueExtra: true,
+          contactIcon: true,
+        },
+        where: eq(contact.isPublished, true),
+      }),
+      db.query.socialMedia.findMany({
+        columns: {
+          socialMediaId: true,
+          platformName: true,
+          profileUrl: true,
+          iconName: true,
+        },
+        where: eq(socialMedia.isPublished, true),
+      }),
+      db.query.categoryProduct.findMany({
+        columns: {
+          categoryProductId: true,
+          categoryProductName: true,
+          categoryProductSlug: true,
+        },
+      }),
+    ]);
+
+    return {
+      heroRow: heroRaw,
+      statsRows: statsRaw,
+      categoryRows: categoryRaw,
+      portofolioRows: portofolioRaw.map((r) => ({
+        portofolioId: r.portofolioId,
+        portofolioName: r.portofolioName,
+        portofolioSlug: r.portofolioSlug,
+        portofolioShortDescription: r.portofolioShortDescription,
+        portofolioLocation: r.portofolioLocation,
+        portofolioImageUrl: r.portofolioImageUrl,
+        portofolioIsPublishedAt: r.portofolioIsPublishedAt.toISOString(),
+        categoryPortofolioName: r.categoryPortofolioName,
+        categoryPortofolioSlug: r.categoryPortofolioSlug,
+      })),
+      contactRows: contactRaw,
+      socialMediaRows: socialMediaRaw,
+      categoryProductRows: categoryProductRaw,
+    };
+  });
 
   const rawHero = heroRow
     ? {
@@ -187,17 +246,17 @@ export default async function PortfolioPage({ params }: Props) {
     portofolioShortDescription: r.portofolioShortDescription ?? "",
     portofolioLocation: r.portofolioLocation,
     portofolioImageUrl: r.portofolioImageUrl,
-    portofolioIsPublishedAt: r.portofolioIsPublishedAt.toISOString(),
+    portofolioIsPublishedAt: r.portofolioIsPublishedAt,
     categoryName: r.categoryPortofolioName,
     categorySlug: r.categoryPortofolioSlug,
   }));
 
-  const [hero, { stats }, categoriesTranslated, portofoliosTranslated] =
+  const [hero, stats, categoriesTranslated, portofoliosTranslated] =
     await Promise.all([
-      translateHeroSection(rawHero, locale),
-      translateBenefitsAndStats([], rawStats, locale),
-      translateCategoryPortofolios(rawCategories, locale),
-      translatePortofolios(rawPortofolios, locale),
+      applyHeroSectionTranslation(rawHero, locale),
+      applyCompanyStatTranslations(rawStats, locale),
+      applyCategoryPortofolioTranslations(rawCategories, locale),
+      applyPortofolioTranslations(rawPortofolios, locale),
     ]);
 
   const portofolioCards: PortfolioPageCardData[] = portofoliosTranslated.map(
@@ -229,8 +288,8 @@ export default async function PortfolioPage({ params }: Props) {
   }));
 
   const [contacts, categories] = await Promise.all([
-    translateContacts(rawContacts, locale),
-    translateCategoryProducts(
+    applyContactTranslations(rawContacts, locale),
+    applyCategoryProductTranslations(
       categoryProductRows.map((r) => ({
         categoryProductId: r.categoryProductId,
         categoryProductName: r.categoryProductName,
@@ -242,7 +301,7 @@ export default async function PortfolioPage({ params }: Props) {
 
   return (
     <div className="w-full">
-      <PageHeroSection hero={hero} />
+      <PageHeroSection hero={hero!} />
       <CompanyStatsSection stats={stats} />
       <PortfolioPageContent
         portofolios={portofolioCards}

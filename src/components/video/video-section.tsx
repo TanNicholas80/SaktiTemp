@@ -21,6 +21,7 @@ export function VideoSection() {
   const sectionRef = React.useRef<HTMLElement>(null);
   const videoColRef = React.useRef<HTMLDivElement>(null);
   const textColRef = React.useRef<HTMLDivElement>(null);
+  const bgOverlayRef = React.useRef<HTMLDivElement>(null);
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
 
@@ -50,9 +51,14 @@ export function VideoSection() {
 
   React.useEffect(() => {
     const ctx = gsap.context(() => {
-      if (videoColRef.current) {
+      const videoCol = videoColRef.current;
+      const textCol = textColRef.current;
+      const bgOverlay = bgOverlayRef.current;
+      const video = videoRef.current;
+
+      if (videoCol) {
         gsap.fromTo(
-          videoColRef.current,
+          videoCol,
           { opacity: 0, x: -40 },
           {
             opacity: 1,
@@ -60,15 +66,16 @@ export function VideoSection() {
             duration: 0.9,
             ease: "power3.out",
             scrollTrigger: {
-              trigger: videoColRef.current,
+              trigger: videoCol,
               start: "top 88%",
               toggleActions: "play none none none",
             },
           }
         );
       }
-      if (textColRef.current) {
-        const nodes = textColRef.current.querySelectorAll("[data-animate-video]");
+
+      if (textCol) {
+        const nodes = textCol.querySelectorAll("[data-animate-video]");
         gsap.fromTo(
           nodes,
           { opacity: 0, y: 24 },
@@ -79,12 +86,36 @@ export function VideoSection() {
             stagger: 0.1,
             ease: "power3.out",
             scrollTrigger: {
-              trigger: textColRef.current,
+              trigger: textCol,
               start: "top 88%",
               toggleActions: "play none none none",
             },
           }
         );
+      }
+
+      if (bgOverlay && textCol) {
+        gsap.set(bgOverlay, { transformOrigin: "right center", scaleX: 0 });
+
+        gsap.to(bgOverlay, {
+          scaleX: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: textCol,
+            start: "top 90%",
+            end: "top 40%",
+            scrub: 0.7,
+            onEnter: () => {
+              if (video && video.paused) {
+                video
+                  .play()
+                  .catch(() => {
+                    // autoplay mungkin diblokir browser, biarkan user klik manual
+                  });
+              }
+            },
+          },
+        });
       }
     }, sectionRef);
 
@@ -178,8 +209,12 @@ export function VideoSection() {
             sizes="(max-width: 768px) 100vw, 70vw"
             priority={false}
           />
-          {/* Red-maroon overlay */}
-          <div className="absolute inset-0 bg-primary/70" aria-hidden />
+          {/* Red-maroon overlay (animated from right to left) */}
+          <div
+            ref={bgOverlayRef}
+            className="absolute inset-0 bg-primary/70"
+            aria-hidden
+          />
           {/* Content */}
           <div
             className={cn(

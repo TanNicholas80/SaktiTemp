@@ -1,62 +1,173 @@
-export { translateCarouselSlides } from "./translate-batch";
-export type { CarouselSlideInput, CarouselSlideOutput } from "./translate-batch";
-export { translateBenefitsAndStats } from "./translate-benefit-stat";
-export { translateBlogs } from "./translate-blog";
-export { translateBlogDetail } from "./translate-blog-detail";
-export type { BlogInput, BlogOutput } from "./translate-blog";
-export type { BlogDetailInput, BlogDetailOutput } from "./translate-blog-detail";
-export { translatePortofolios } from "./translate-portofolio";
-export type {
-  PortofolioInput,
-  PortofolioOutput,
-} from "./translate-portofolio";
+// Re-export DB-based translation helpers
 export {
-  translateContacts,
-  translateLocations,
-} from "./translate-contact";
-export type {
-  ContactInput,
-  ContactOutput,
-  LocationInput,
-  LocationOutput,
-} from "./translate-contact";
-export { translateCategoryProducts } from "./translate-category-product";
-export { translateCategoryBlogs } from "./translate-category-blog";
-export { translateHeroSection } from "./translate-hero-section";
-export type {
-  HeroSectionInput,
-  HeroSectionOutput,
-} from "./translate-hero-section";
-export type {
-  CategoryProductInput,
-  CategoryProductOutput,
-} from "./translate-category-product";
-export type {
-  CategoryBlogInput,
-  CategoryBlogOutput,
-} from "./translate-category-blog";
-export type {
-  BenefitInput,
-  BenefitOutput,
-  CompanyStatInput,
-  CompanyStatOutput,
-} from "./translate-benefit-stat";
-export { translateCertifications } from "./translate-certification";
-export type {
-  CertificationInput,
-  CertificationOutput,
-} from "./translate-certification";
-export { translateCategoryPortofolios } from "./translate-category-portofolio";
-export type {
-  CategoryPortofolioInput,
-  CategoryPortofolioOutput,
-} from "./translate-category-portofolio";
-export { translateServices } from "./translate-service";
-export type { ServiceInput, ServiceOutput } from "./translate-service";
-export { translateProducts } from "./translate-product";
-export type { ProductInput, ProductOutput } from "./translate-product";
-export { translatePortofolioTypes } from "./translate-portofolio-type";
-export type {
-  PortofolioTypeInput,
-  PortofolioTypeOutput,
-} from "./translate-portofolio-type";
+  applyCarouselTranslations,
+  applyBenefitTranslations,
+  applyCompanyStatTranslations,
+  applyBlogTranslations,
+  applyBlogDetailTranslations,
+  applyBlogWithCategoryTranslations,
+  applyCategoryBlogTranslations,
+  applyCategoryPortofolioTranslations,
+  applyCategoryProductTranslations,
+  applyContactTranslations,
+  applyLocationTranslations,
+  applyHeroSectionTranslation,
+  applyPortofolioTranslations,
+  applyPortofolioDetailTranslations,
+  applyPortofolioTypeTranslations,
+  applyProductTranslations,
+  applyProductApplicationTranslations,
+  applyProductExellenceTranslations,
+  applyServiceTranslations,
+  applyCertificationTranslations,
+  applyGlassTypesTranslations,
+  applyGlassPricesTranslations,
+  applyModificationTranslations,
+  applyProcessingCategoriesTranslations,
+  applyProcessingPricesTranslations,
+  applySocialMediaTranslations,
+  applyThicknessTranslations,
+} from "./get-translated";
+
+// Re-export entity translators (used by admin API routes)
+export {
+  translateAndSaveBenefit,
+  translateAndSaveBlog,
+  translateAndSaveCarousel,
+  translateAndSaveCategoryBlog,
+  translateAndSaveCategoryPortofolio,
+  translateAndSaveCategoryProduct,
+  translateAndSaveCompanyStat,
+  translateAndSaveContact,
+  translateAndSaveHeroSection,
+  translateAndSaveLocation,
+  translateAndSavePortofolio,
+  translateAndSavePortofolioType,
+  translateAndSaveProduct,
+  translateAndSaveProductWithExcellences,
+  translateAndSaveProductApplication,
+  translateAndSaveProductExellence,
+  translateAndSaveService,
+  translateAndSaveCertification,
+  translateAndSaveGlassType,
+  translateAndSaveGlassPrice,
+  translateAndSaveModification,
+  translateAndSaveProcessingCategory,
+  translateAndSaveProcessingPrice,
+  translateAndSaveSocialMedia,
+  translateAndSaveThickness,
+} from "./entity-translators";
+
+// Backward-compatible type aliases used by components
+export type BenefitInput = { benefitId: string; benefitName: string; benefitDescription: string; benefitIcon: string };
+export type BenefitOutput = BenefitInput;
+
+export type CompanyStatInput = { companyStatId: string; value: string; label: string; displayOrder: number };
+export type CompanyStatOutput = CompanyStatInput;
+
+export type BlogInput = {
+  blogId: string; blogTitle: string; blogSlug: string; blogExcerpt: string;
+  blogImageUrl: string; blogIsPublishedAt: string;
+  categoryName: string | null; categorySlug: string | null;
+};
+export type BlogOutput = BlogInput;
+
+export type BlogDetailInput = {
+  blogId: string; blogTitle: string; blogSlug: string; blogExcerpt: string;
+  blogContent: string; blogImageUrl: string; blogIsPublishedAt: string;
+  categoryName: string | null; categorySlug: string | null;
+};
+export type BlogDetailOutput = BlogDetailInput;
+
+export type CategoryBlogInput = { categoryBlogId: string; categoryBlogName: string };
+export type CategoryBlogOutput = CategoryBlogInput;
+
+export type CategoryProductInput = { categoryProductId: string; categoryProductName: string; categoryProductSlug: string };
+export type CategoryProductOutput = CategoryProductInput;
+
+export type CategoryPortofolioInput = {
+  categoryPortofolioId: string;
+  categoryPortofolioName: string;
+  categoryPortofolioSlug: string;
+  categoryPortofolioIcon: string;
+  categoryPortofolioImage: string;
+  categoryPortofolioDescription?: string;
+};
+export type CategoryPortofolioOutput = CategoryPortofolioInput;
+
+export type ContactInput = {
+  contactId: string; contactType: string; contactLabel: string;
+  contactValue: string; contactValueExtra: string | null; contactIcon: string;
+};
+export type ContactOutput = ContactInput;
+
+export type LocationInput = {
+  locationId: string;
+  locationCity: string;
+  locationType: "branch" | "head";
+  locationAddress: string;
+  locationMapUrl: string;
+  locationMapEmbedUrl: string;
+};
+export type LocationOutput = LocationInput;
+
+/** Item breadcrumb hero (sesuai jsonb di DB). */
+export type HeroBreadcrumbItem = { label: string; href: string };
+
+export type HeroSectionInput = {
+  heroSectionId: string;
+  pageKey: string;
+  preHeading: string | null;
+  mainHeading: string;
+  subHeading: string;
+  description: string;
+  backgroundImageUrl: string;
+  backgroundImagePublicId?: string | null;
+  breadcrumbItems?: HeroBreadcrumbItem[] | null;
+  scrollIndicatorText: string | null;
+  scrollIndicatorVisible: boolean;
+  isPublished?: boolean;
+};
+export type HeroSectionOutput = HeroSectionInput;
+
+export type PortofolioInput = {
+  portofolioId: string; portofolioName: string; portofolioSlug: string;
+  portofolioShortDescription: string; portofolioLocation: string;
+  portofolioImageUrl: string; portofolioIsPublishedAt: string;
+  categoryName: string | null; categorySlug: string | null;
+};
+export type PortofolioOutput = PortofolioInput;
+
+export type PortofolioTypeInput = { portofolioTypeId: string; portofolioTypeName: string; portofolioTypeSlug: string };
+export type PortofolioTypeOutput = PortofolioTypeInput;
+
+export type ProductInput = {
+  productId: string; productName: string; productShortDescription: string; productDescription: string;
+};
+export type ProductOutput = ProductInput;
+
+export type ServiceInput = {
+  serviceId: string;
+  serviceName: string;
+  serviceDescription: string;
+  serviceIcon: string;
+  serviceIsPublished: boolean;
+  servicePoints: string[];
+  serviceBtnText: string;
+  serviceBtnLink: string;
+};
+export type ServiceOutput = ServiceInput;
+
+export type CertificationInput = {
+  certificationId: string;
+  name: string;
+  image: string;
+  displayOrder: number;
+};
+export type CertificationOutput = CertificationInput;
+
+export type CarouselSlideInput = {
+  carouselId: string; carouselHeading: string; carouselSubheading: string;
+  carouselDescription: string; carouselImageUrl: string; carouselOrder: number;
+};
+export type CarouselSlideOutput = CarouselSlideInput;

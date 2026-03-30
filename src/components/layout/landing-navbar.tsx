@@ -72,7 +72,7 @@ export function LandingNavbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="mx-auto flex h-14 min-h-14 max-w-7xl items-center justify-between gap-2 px-3 sm:px-4 md:px-5 lg:h-16 lg:gap-4 lg:px-8">
         {/* Mobile hamburger + Logo */}
         <div className="flex min-w-0 flex-1 items-center gap-2 lg:flex-initial">

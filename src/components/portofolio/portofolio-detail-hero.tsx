@@ -28,7 +28,10 @@ type PortofolioDetailHeroProps = {
 function usePortofolioView(slug: string, enabled: boolean) {
   React.useEffect(() => {
     if (!enabled || !slug) return;
-    fetch(`/api/portofolio/${slug}/view`, { method: "POST" }).catch(() => {});
+    import("@/lib/utils/view-intent").then(({ consumeViewIntent }) => {
+      if (!consumeViewIntent("portofolio", slug)) return;
+      fetch(`/api/portofolio/${slug}/view`, { method: "POST" }).catch(() => {});
+    });
   }, [slug, enabled]);
 }
 

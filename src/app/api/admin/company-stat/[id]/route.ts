@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { and, eq, ne } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { companyStat } from "@/db/schema/company-stat";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateCompanyStatSchema } from "@/lib/validations/company-stat";
+import { translateAndSaveCompanyStat } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -111,6 +113,11 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(companyStat.companyStatId, id))
       .returning();
 
+    translateAndSaveCompanyStat(updated, {
+      label: existing.label,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("company-stat");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -142,6 +149,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(companyStat).where(eq(companyStat.companyStatId, id));
 
+    await revalidateContentCache("company-stat");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

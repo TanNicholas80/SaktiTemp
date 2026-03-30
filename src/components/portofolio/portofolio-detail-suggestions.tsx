@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/empty";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { markViewIntent } from "@/lib/utils/view-intent";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -141,6 +142,7 @@ export function PortofolioDetailSuggestions({
                 >
                   <Link
                     href={`/portofolio/${item.portofolioSlug}`}
+                    onClick={() => markViewIntent("portofolio", item.portofolioSlug)}
                     className="group block h-full"
                   >
                     <div

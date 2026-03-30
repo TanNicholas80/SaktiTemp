@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
@@ -15,7 +16,6 @@ import type { PortofolioDetailData } from "@/components/portofolio/types";
 import type { SuggestionCardData } from "@/components/portofolio/portofolio-detail-suggestions";
 import { db } from "@/db";
 import { categoryPortofolio } from "@/db/schema/category-portofolio";
-import { categoryProduct } from "@/db/schema/category-product";
 import { contact } from "@/db/schema/contact";
 import { portofolio } from "@/db/schema/portofolio";
 import { productApplication } from "@/db/schema/product-application";
@@ -25,14 +25,83 @@ import { product } from "@/db/schema/product";
 import { socialMedia } from "@/db/schema/social-media";
 import { thickness } from "@/db/schema/thickness";
 import {
-  translateCategoryProducts,
-  translateContacts,
-  translatePortofolios,
-} from "@/lib/translate";
+  applyCategoryProductTranslations,
+  applyContactTranslations,
+  applyPortofolioTranslations,
+} from "@/lib/translate/get-translated";
+import { routing } from "@/i18n/routing";
+import { PortofolioJsonLd } from "@/components/seo/json-ld";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
+
+export async function generateStaticParams() {
+  const rows = await db.query.portofolio.findMany({
+    where: (p, { eq: eqFn }) => eqFn(p.portofolioIsPublished, true),
+    columns: { portofolioSlug: true },
+  });
+  return rows.flatMap((r) =>
+    routing.locales.map((locale) => ({ locale, slug: r.portofolioSlug }))
+  );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const row = await db
+    .select({
+      portofolioName: portofolio.portofolioName,
+      portofolioShortDescription: portofolio.portofolioShortDescription,
+      portofolioLocation: portofolio.portofolioLocation,
+      portofolioClient: portofolio.portofolioClient,
+      portofolioImageUrl: portofolio.portofolioImageUrl,
+      categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
+    })
+    .from(portofolio)
+    .leftJoin(
+      categoryPortofolio,
+      eq(portofolio.categoryPortofolioId, categoryPortofolio.categoryPortofolioId)
+    )
+    .where(eq(portofolio.portofolioSlug, slug))
+    .limit(1)
+    .then((rows) => rows[0]);
+
+  if (!row) {
+    return { title: "Proyek tidak ditemukan", robots: { index: false, follow: false } };
+  }
+
+  const description = row.portofolioShortDescription
+    ?? `Proyek ${row.portofolioName} di ${row.portofolioLocation ?? "Indonesia"} untuk ${row.portofolioClient ?? "klien"}.`;
+
+  const baseKeywords = [
+    "portofolio kaca tempered",
+    "proyek kaca tempered",
+    "contoh proyek kaca",
+    "kaca tempered komersial",
+    "kaca tempered residensial",
+  ];
+
+  const dynamicKeywords: string[] = [
+    row.portofolioName,
+    row.portofolioLocation ?? "",
+    row.portofolioClient ?? "",
+    row.categoryPortofolioName ?? "",
+  ].filter(Boolean);
+
+  return {
+    title: row.portofolioName,
+    description,
+    openGraph: {
+      title: `${row.portofolioName} | SAKTITEMP®`,
+      description,
+      images: row.portofolioImageUrl
+        ? [{ url: row.portofolioImageUrl, width: 1200, height: 630 }]
+        : [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+    keywords: [...baseKeywords, ...dynamicKeywords],
+    alternates: { canonical: `/portofolio/${slug}` },
+  };
+}
 
 export default async function PortofolioDetailPage({ params }: Props) {
   const { locale, slug } = await params;
@@ -203,7 +272,7 @@ export default async function PortofolioDetailPage({ params }: Props) {
     categoryName: r.categoryPortofolioName,
   }));
 
-  const translatedSuggestions = await translatePortofolios(
+  const translatedSuggestions = await applyPortofolioTranslations(
     rawSuggestions.map((p) => ({
       portofolioId: p.portofolioId,
       portofolioName: p.portofolioName,
@@ -258,7 +327,7 @@ export default async function PortofolioDetailPage({ params }: Props) {
   ]);
 
   const [contacts, categories] = await Promise.all([
-    translateContacts(
+    applyContactTranslations(
       contactRows.map((r) => ({
         contactId: r.contactId,
         contactType: r.contactType,
@@ -269,7 +338,7 @@ export default async function PortofolioDetailPage({ params }: Props) {
       })),
       locale
     ),
-    translateCategoryProducts(
+    applyCategoryProductTranslations(
       categoryProductRows.map((r) => ({
         categoryProductId: r.categoryProductId,
         categoryProductName: r.categoryProductName,
@@ -281,8 +350,11 @@ export default async function PortofolioDetailPage({ params }: Props) {
 
   const t = await getTranslations("portofolioSection");
 
+  const pageUrl = `https://www.saktitemp.com/portofolio/${slug}`;
+
   return (
     <div className="w-full bg-white">
+      <PortofolioJsonLd portofolio={portofolioDetail} url={pageUrl} />
       <PortofolioDetailHero portofolio={portofolioDetail} variant="landing" />
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">

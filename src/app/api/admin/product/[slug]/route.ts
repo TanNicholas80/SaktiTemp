@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { eq, inArray } from "drizzle-orm";
+import { asc, eq, inArray } from "drizzle-orm";
 
 import { db } from "@/db";
 import { deleteProductImageFile } from "@/lib/utils/product-image";
@@ -13,6 +13,8 @@ import { productApplication } from "@/db/schema/product-application";
 import { productApplicationPortofolio } from "@/db/schema/product-application-portofolio";
 import { portofolio } from "@/db/schema/portofolio";
 import { portofolioType } from "@/db/schema/portofolio-type";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
+import { translateAndSaveProductWithExcellences } from "@/lib/translate/entity-translators";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateProductSchema } from "@/lib/validations/product";
 
@@ -218,6 +220,23 @@ export async function PATCH(request: Request, { params }: Params) {
       );
     }
 
+    const prevExcellenceRows = await db
+      .select({
+        productExellenceDescription: productExellence.productExellenceDescription,
+      })
+      .from(productExellence)
+      .where(eq(productExellence.productId, existing.productId))
+      .orderBy(asc(productExellence.createdAt));
+
+    const translatePrevious = {
+      productName: existing.productName,
+      productShortDescription: existing.productShortDescription,
+      productDescription: existing.productDescription,
+      excellenceDescriptions: prevExcellenceRows.map(
+        (r) => r.productExellenceDescription
+      ),
+    };
+
     const newSlug = parsed.data.productSlug?.trim();
     if (newSlug && newSlug !== slug) {
       const existingSlug = await db.query.product.findFirst({
@@ -299,6 +318,29 @@ export async function PATCH(request: Request, { params }: Params) {
       await deleteProductImageFile(oldPublicId);
     }
 
+    const finalExcellences = await db
+      .select({
+        productExellenceId: productExellence.productExellenceId,
+        productExellenceDescription: productExellence.productExellenceDescription,
+      })
+      .from(productExellence)
+      .where(eq(productExellence.productId, existing.productId))
+      .orderBy(asc(productExellence.createdAt));
+
+    if (updated) {
+      translateAndSaveProductWithExcellences(
+        {
+          productId: updated.productId,
+          productName: updated.productName,
+          productShortDescription: updated.productShortDescription,
+          productDescription: updated.productDescription,
+          excellences: finalExcellences,
+        },
+        translatePrevious
+      ).catch((err) => console.error("Translation failed:", err));
+    }
+
+    await revalidateContentCache("product");
     return NextResponse.json(updated);
   } catch (err) {
     console.error(err);
@@ -341,6 +383,7 @@ export async function DELETE(_request: Request, { params }: Params) {
       .where(eq(productExellence.productId, existing.productId));
     await db.delete(product).where(eq(product.productId, existing.productId));
 
+    await revalidateContentCache("product");
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error(err);

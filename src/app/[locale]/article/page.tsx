@@ -1,22 +1,50 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { desc, eq, or } from "drizzle-orm";
 
+export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: "Blog & Artikel",
+  description:
+    "Artikel edukatif dan referensi profesional tentang kaca tempered dari SAKTITEMP® — tips desain, panduan instalasi, dan wawasan industri.",
+  keywords: [
+    "artikel kaca tempered",
+    "blog kaca tempered",
+    "tips kaca tempered",
+    "panduan instalasi kaca",
+    "referensi desain kaca",
+    "informasi kaca bangunan",
+    "wawasan industri kaca",
+    "kaca safety",
+    "perawatan kaca tempered",
+    "saktitemp blog",
+  ],
+  openGraph: {
+    title: "Blog & Artikel | SAKTITEMP®",
+    description:
+      "Artikel edukatif dan referensi profesional tentang kaca tempered dari SAKTITEMP®.",
+    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+  },
+};
+
 import { ArticlePageContent } from "@/components/article";
 import { FooterSection } from "@/components/footer";
+import { cachedQuery } from "@/lib/cache/content-cache-helpers";
+import { contentCacheKey } from "@/lib/cache";
 import { db } from "@/db";
 import { blog } from "@/db/schema/blog";
 import { categoryBlog } from "@/db/schema/category-blog";
-import { categoryProduct } from "@/db/schema/category-product";
 import { contact } from "@/db/schema/contact";
 import { heroSection } from "@/db/schema/hero-section";
 import { socialMedia } from "@/db/schema/social-media";
 import {
-  translateBlogs,
-  translateCategoryBlogs,
-  translateCategoryProducts,
-  translateContacts,
-  translateHeroSection,
-} from "@/lib/translate";
+  applyBlogWithCategoryTranslations,
+  applyCategoryBlogTranslations,
+  applyCategoryProductTranslations,
+  applyContactTranslations,
+  applyHeroSectionTranslation,
+} from "@/lib/translate/get-translated";
 import type { ArticleCardData } from "@/components/article";
 import type { ArticleFeaturedCardData } from "@/components/article";
 import type { CategoryOption } from "@/components/article";
@@ -46,85 +74,112 @@ export default async function ArticlePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [
+  const {
     heroRow,
     blogRows,
     categoryRows,
     categoryProductRows,
     contactRows,
     socialMediaRows,
-  ] = await Promise.all([
-    db.query.heroSection.findFirst({
-      where: or(
-        eq(heroSection.pageKey, "articles"),
-        eq(heroSection.pageKey, "blog")
-      ),
-      columns: {
-        heroSectionId: true,
-        pageKey: true,
-        preHeading: true,
-        mainHeading: true,
-        subHeading: true,
-        description: true,
-        backgroundImageUrl: true,
-        scrollIndicatorText: true,
-        scrollIndicatorVisible: true,
-        breadcrumbItems: true,
-      },
-    }),
-    db
-      .select({
-        blogId: blog.blogId,
-        blogTitle: blog.blogTitle,
-        blogSlug: blog.blogSlug,
-        blogExcerpt: blog.blogExcerpt,
-        blogImageUrl: blog.blogImageUrl,
-        blogIsPublishedAt: blog.blogIsPublishedAt,
-        categoryBlogId: blog.categoryBlogId,
-        categoryBlogName: categoryBlog.categoryBlogName,
-      })
-      .from(blog)
-      .leftJoin(
-        categoryBlog,
-        eq(blog.categoryBlogId, categoryBlog.categoryBlogId)
-      )
-      .where(eq(blog.blogIsPublished, true))
-      .orderBy(desc(blog.blogIsPublishedAt)),
-    db.query.categoryBlog.findMany({
-      columns: {
-        categoryBlogId: true,
-        categoryBlogName: true,
-        categoryBlogSlug: true,
-      },
-    }),
-    db.query.categoryProduct.findMany({
-      columns: {
-        categoryProductId: true,
-        categoryProductName: true,
-        categoryProductSlug: true,
-      },
-    }),
-    db.query.contact.findMany({
-      columns: {
-        contactId: true,
-        contactType: true,
-        contactLabel: true,
-        contactValue: true,
-        contactValueExtra: true,
-        contactIcon: true,
-      },
-      where: eq(contact.isPublished, true),
-    }),
-    db.query.socialMedia.findMany({
-      columns: {
-        socialMediaId: true,
-        platformName: true,
-        profileUrl: true,
-        iconName: true,
-      },
-      where: eq(socialMedia.isPublished, true),
-    }),
-  ]);
+  } = await cachedQuery(contentCacheKey("article", "list"), async () => {
+    const [
+      heroRaw,
+      blogRaw,
+      categoryRaw,
+      categoryProductRaw,
+      contactRaw,
+      socialMediaRaw,
+    ] = await Promise.all([
+      db.query.heroSection.findFirst({
+        where: or(
+          eq(heroSection.pageKey, "articles"),
+          eq(heroSection.pageKey, "blog")
+        ),
+        columns: {
+          heroSectionId: true,
+          pageKey: true,
+          preHeading: true,
+          mainHeading: true,
+          subHeading: true,
+          description: true,
+          backgroundImageUrl: true,
+          scrollIndicatorText: true,
+          scrollIndicatorVisible: true,
+          breadcrumbItems: true,
+        },
+      }),
+      db
+        .select({
+          blogId: blog.blogId,
+          blogTitle: blog.blogTitle,
+          blogSlug: blog.blogSlug,
+          blogExcerpt: blog.blogExcerpt,
+          blogImageUrl: blog.blogImageUrl,
+          blogIsPublishedAt: blog.blogIsPublishedAt,
+          categoryBlogId: blog.categoryBlogId,
+          categoryBlogName: categoryBlog.categoryBlogName,
+        })
+        .from(blog)
+        .leftJoin(
+          categoryBlog,
+          eq(blog.categoryBlogId, categoryBlog.categoryBlogId)
+        )
+        .where(eq(blog.blogIsPublished, true))
+        .orderBy(desc(blog.blogIsPublishedAt)),
+      db.query.categoryBlog.findMany({
+        columns: {
+          categoryBlogId: true,
+          categoryBlogName: true,
+          categoryBlogSlug: true,
+        },
+      }),
+      db.query.categoryProduct.findMany({
+        columns: {
+          categoryProductId: true,
+          categoryProductName: true,
+          categoryProductSlug: true,
+        },
+      }),
+      db.query.contact.findMany({
+        columns: {
+          contactId: true,
+          contactType: true,
+          contactLabel: true,
+          contactValue: true,
+          contactValueExtra: true,
+          contactIcon: true,
+        },
+        where: eq(contact.isPublished, true),
+      }),
+      db.query.socialMedia.findMany({
+        columns: {
+          socialMediaId: true,
+          platformName: true,
+          profileUrl: true,
+          iconName: true,
+        },
+        where: eq(socialMedia.isPublished, true),
+      }),
+    ]);
+
+    return {
+      heroRow: heroRaw,
+      blogRows: blogRaw.map((r) => ({
+        blogId: r.blogId,
+        blogTitle: r.blogTitle,
+        blogSlug: r.blogSlug,
+        blogExcerpt: r.blogExcerpt,
+        blogImageUrl: r.blogImageUrl,
+        blogIsPublishedAt: r.blogIsPublishedAt.toISOString(),
+        categoryBlogId: r.categoryBlogId,
+        categoryBlogName: r.categoryBlogName,
+      })),
+      categoryRows: categoryRaw,
+      categoryProductRows: categoryProductRaw,
+      contactRows: contactRaw,
+      socialMediaRows: socialMediaRaw,
+    };
+  });
 
   const rawHero = heroRow
     ? {
@@ -143,9 +198,9 @@ export default async function ArticlePage({ params }: Props) {
       }
     : FALLBACK_HERO;
 
-  const hero = await translateHeroSection(rawHero, locale);
+  const hero = (await applyHeroSectionTranslation(rawHero, locale)) ?? rawHero;
 
-  const categories = await translateCategoryBlogs(
+  const categories = await applyCategoryBlogTranslations(
     categoryRows.map((c) => ({
       categoryBlogId: c.categoryBlogId,
       categoryBlogName: c.categoryBlogName,
@@ -160,44 +215,30 @@ export default async function ArticlePage({ params }: Props) {
     categoryBlogSlug: c.categoryBlogSlug,
   }));
 
-  const rawBlogsForTranslate = blogRows.map((r) => ({
-    blogId: r.blogId,
-    blogTitle: r.blogTitle,
-    blogSlug: r.blogSlug,
-    blogExcerpt: r.blogExcerpt ?? "",
-    blogImageUrl: r.blogImageUrl,
-    blogIsPublishedAt: r.blogIsPublishedAt.toISOString(),
-    categoryName: r.categoryBlogName,
-    categorySlug: null as string | null,
-  }));
-
-  const translatedBlogs = await translateBlogs(
-    rawBlogsForTranslate.map((b) => ({
-      blogId: b.blogId,
-      blogTitle: b.blogTitle,
-      blogSlug: b.blogSlug,
-      blogExcerpt: b.blogExcerpt,
-      blogImageUrl: b.blogImageUrl,
-      blogIsPublishedAt: b.blogIsPublishedAt,
-      categoryName: b.categoryName,
-      categorySlug: b.categorySlug,
+  const translatedBlogs = await applyBlogWithCategoryTranslations(
+    blogRows.map((r) => ({
+      blogId: r.blogId,
+      blogTitle: r.blogTitle,
+      blogSlug: r.blogSlug,
+      blogExcerpt: r.blogExcerpt ?? "",
+      blogImageUrl: r.blogImageUrl,
+      blogIsPublishedAt: r.blogIsPublishedAt,
+      categoryBlogId: r.categoryBlogId,
+      categoryName: r.categoryBlogName,
     })),
     locale
   );
 
-  const blogs: ArticleCardData[] = blogRows.map((r, i) => {
-    const t = translatedBlogs[i];
-    return {
-      blogId: r.blogId,
-      blogTitle: t?.blogTitle ?? r.blogTitle,
-      blogSlug: r.blogSlug,
-      blogExcerpt: t?.blogExcerpt ?? r.blogExcerpt ?? "",
-      blogImageUrl: r.blogImageUrl,
-      blogIsPublishedAt: r.blogIsPublishedAt.toISOString(),
-      categoryBlogId: r.categoryBlogId,
-      categoryName: t?.categoryName ?? r.categoryBlogName,
-    };
-  });
+  const blogs: ArticleCardData[] = translatedBlogs.map((t) => ({
+    blogId: t.blogId,
+    blogTitle: t.blogTitle,
+    blogSlug: t.blogSlug,
+    blogExcerpt: t.blogExcerpt,
+    blogImageUrl: t.blogImageUrl,
+    blogIsPublishedAt: t.blogIsPublishedAt,
+    categoryBlogId: t.categoryBlogId,
+    categoryName: t.categoryName,
+  }));
 
   const featuredBlog: ArticleFeaturedCardData | null =
     blogs.length > 0
@@ -213,7 +254,7 @@ export default async function ArticlePage({ params }: Props) {
         }
       : null;
 
-  const contacts = await translateContacts(
+  const contacts = await applyContactTranslations(
     contactRows.map((r) => ({
       contactId: r.contactId,
       contactType: r.contactType,
@@ -225,7 +266,7 @@ export default async function ArticlePage({ params }: Props) {
     locale
   );
 
-  const categoriesForFooter = await translateCategoryProducts(
+  const categoriesForFooter = await applyCategoryProductTranslations(
     categoryProductRows.map((c) => ({
       categoryProductId: c.categoryProductId,
       categoryProductName: c.categoryProductName,

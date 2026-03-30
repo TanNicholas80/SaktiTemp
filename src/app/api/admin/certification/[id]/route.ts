@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { and, eq, ne } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { certification } from "@/db/schema/certification";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateCertificationSchema } from "@/lib/validations/certification";
+import { translateAndSaveCertification } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -111,6 +113,11 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(certification.certificationId, id))
       .returning();
 
+    translateAndSaveCertification(updated, {
+      name: existing.name,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("certification");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -144,6 +151,7 @@ export async function DELETE(_request: Request, { params }: Params) {
       .delete(certification)
       .where(eq(certification.certificationId, id));
 
+    await revalidateContentCache("certification");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

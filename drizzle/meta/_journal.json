@@ -71,6 +71,20 @@
       "when": 1762761600000,
       "tag": "20250311120000_drop_display_order_social_media_contact",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1743258000000,
+      "tag": "20260329130000_glass_prices_composition",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1743261600000,
+      "tag": "20260329160000_thickness_value_double",
+      "breakpoints": true
     }
   ]
 }

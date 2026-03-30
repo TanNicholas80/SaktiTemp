@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { eq } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { location } from "@/db/schema/location";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateLocationSchema } from "@/lib/validations/location";
+import { translateAndSaveLocation } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -91,6 +93,12 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(location.locationId, id))
       .returning();
 
+    translateAndSaveLocation(updated, {
+      locationCity: existing.locationCity,
+      locationAddress: existing.locationAddress,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("location");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -122,6 +130,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(location).where(eq(location.locationId, id));
 
+    await revalidateContentCache("location");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

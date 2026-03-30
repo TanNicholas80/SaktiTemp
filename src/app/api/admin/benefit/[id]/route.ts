@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { eq } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { benefit } from "@/db/schema/benefit";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateBenefitSchema } from "@/lib/validations/benefit";
+import { translateAndSaveBenefit } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -87,6 +89,12 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(benefit.benefitId, id))
       .returning();
 
+    translateAndSaveBenefit(updated, {
+      benefitName: existing.benefitName,
+      benefitDescription: existing.benefitDescription,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("benefit");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -118,6 +126,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(benefit).where(eq(benefit.benefitId, id));
 
+    await revalidateContentCache("benefit");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

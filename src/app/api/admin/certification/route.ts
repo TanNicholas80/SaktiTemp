@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { asc, eq } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { certification } from "@/db/schema/certification";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createCertificationSchema } from "@/lib/validations/certification";
+import { translateAndSaveCertification } from "@/lib/translate/entity-translators";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -73,6 +75,9 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    translateAndSaveCertification(inserted).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("certification");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

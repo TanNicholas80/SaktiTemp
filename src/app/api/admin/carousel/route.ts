@@ -4,8 +4,10 @@ import { asc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { carousel } from "@/db/schema/carousel";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createCarouselSchema } from "@/lib/validations/carousel";
+import { translateAndSaveCarousel } from "@/lib/translate/entity-translators";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -86,6 +88,9 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    translateAndSaveCarousel(inserted).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("carousel");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

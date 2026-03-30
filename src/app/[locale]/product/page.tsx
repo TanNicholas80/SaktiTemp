@@ -1,11 +1,42 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 
 import { desc, eq, inArray, isNotNull, or } from "drizzle-orm";
+
+export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: "Produk Kaca Tempered",
+  description:
+    "Temukan berbagai produk kaca tempered berkualitas tinggi dari SAKTITEMP® — mulai dari kaca railing, partisi, fasad, hingga kaca furniture untuk proyek Anda.",
+  keywords: [
+    "produk kaca tempered",
+    "jenis kaca tempered",
+    "kaca railing",
+    "kaca partisi",
+    "kaca fasad",
+    "kaca kanopi",
+    "kaca shower box",
+    "kaca furniture",
+    "kaca temper harga",
+    "kaca temper per m2",
+    "supplier kaca tempered",
+    "pabrik kaca tempered",
+  ],
+  openGraph: {
+    title: "Produk Kaca Tempered | SAKTITEMP®",
+    description:
+      "Temukan berbagai produk kaca tempered berkualitas tinggi dari SAKTITEMP®.",
+    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+  },
+};
 
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";
 import { ProductPageContent } from "@/components/product/product-page-content";
 import { ServiceSection } from "@/components/service";
+import { cachedQuery } from "@/lib/cache/content-cache-helpers";
+import { contentCacheKey } from "@/lib/cache";
 import { db } from "@/db";
 import { categoryProduct } from "@/db/schema/category-product";
 import { contact } from "@/db/schema/contact";
@@ -20,12 +51,13 @@ import { service } from "@/db/schema/service";
 import { socialMedia } from "@/db/schema/social-media";
 import { thickness } from "@/db/schema/thickness";
 import {
-  translateCategoryProducts,
-  translateHeroSection,
-  translatePortofolioTypes,
-  translateProducts,
-  translateServices,
-} from "@/lib/translate";
+  applyCategoryProductTranslations,
+  applyContactTranslations,
+  applyHeroSectionTranslation,
+  applyPortofolioTypeTranslations,
+  applyProductTranslations,
+  applyServiceTranslations,
+} from "@/lib/translate/get-translated";
 import type { ProductListCardData } from "@/components/product/product-list-card";
 import type {
   CategoryOption,
@@ -58,7 +90,7 @@ export default async function ProductPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [
+  const {
     heroRow,
     productRows,
     categoryRows,
@@ -67,178 +99,209 @@ export default async function ProductPage({ params }: Props) {
     serviceRows,
     contactRows,
     socialMediaRows,
-  ] = await Promise.all([
-    db.query.heroSection.findFirst({
-      where: or(
-        eq(heroSection.pageKey, "products"),
-        eq(heroSection.pageKey, "product")
-      ),
-      columns: {
-        heroSectionId: true,
-        pageKey: true,
-        preHeading: true,
-        mainHeading: true,
-        subHeading: true,
-        description: true,
-        backgroundImageUrl: true,
-        scrollIndicatorText: true,
-        scrollIndicatorVisible: true,
-        breadcrumbItems: true,
-      },
-    }),
-    db
-      .select({
-        productId: product.productId,
-        productName: product.productName,
-        productSlug: product.productSlug,
-        productShortDescription: product.productShortDescription,
-        productImageUrl: product.productImageUrl,
-        categoryProductId: product.categoryProductId,
-        categoryProductName: categoryProduct.categoryProductName,
-        categoryProductSlug: categoryProduct.categoryProductSlug,
-      })
-      .from(product)
-      .leftJoin(
-        categoryProduct,
-        eq(product.categoryProductId, categoryProduct.categoryProductId)
-      )
-      .where(eq(product.productIsPublished, true))
-      .orderBy(desc(product.productIsPublishedAt)),
-    db.query.categoryProduct.findMany({
-      columns: {
-        categoryProductId: true,
-        categoryProductName: true,
-        categoryProductSlug: true,
-      },
-    }),
-    db.query.thickness.findMany({
-      columns: {
-        thicknessId: true,
-        thicknessValue: true,
-        thicknessUnit: true,
-      },
-      orderBy: (t, { asc }) => [asc(t.thicknessValue)],
-    }),
-    db.query.portofolioType.findMany({
-      columns: {
-        portofolioTypeId: true,
-        portofolioTypeName: true,
-        portofolioTypeSlug: true,
-      },
-    }),
-    db.query.service.findMany({
-      columns: {
-        serviceId: true,
-        serviceName: true,
-        serviceDescription: true,
-        serviceIcon: true,
-        serviceIsPublished: true,
-        servicePoints: true,
-        serviceBtnText: true,
-        serviceBtnLink: true,
-      },
-      where: eq(service.serviceIsPublished, true),
-      orderBy: (s, { asc }) => [asc(s.createdAt)],
-    }),
-    db.query.contact.findMany({
-      columns: {
-        contactId: true,
-        contactType: true,
-        contactLabel: true,
-        contactValue: true,
-        contactValueExtra: true,
-        contactIcon: true,
-      },
-      where: eq(contact.isPublished, true),
-    }),
-    db.query.socialMedia.findMany({
-      columns: {
-        socialMediaId: true,
-        platformName: true,
-        profileUrl: true,
-        iconName: true,
-      },
-      where: eq(socialMedia.isPublished, true),
-    }),
-  ]);
-
-  const productIds = productRows.map((r) => r.productId);
-
-  const [thicknessJunctionRows, excellenceRows, productPortofolioTypeRows] =
-    await Promise.all([
-      productIds.length > 0
-        ? db
-            .select({
-              productId: productThickness.productId,
-              thicknessValue: thickness.thicknessValue,
-              thicknessUnit: thickness.thicknessUnit,
-            })
-            .from(productThickness)
-            .innerJoin(
-              thickness,
-              eq(productThickness.thicknessId, thickness.thicknessId)
-            )
-            .where(inArray(productThickness.productId, productIds))
-        : [],
-      productIds.length > 0
-        ? db
-            .select()
-            .from(productExellence)
-            .where(inArray(productExellence.productId, productIds))
-        : [],
+    thicknessByProduct,
+    excellenceByProduct,
+    productPortofolioTypeIds,
+  } = await cachedQuery(contentCacheKey("product", "list"), async () => {
+    const [
+      heroRaw,
+      productRaw,
+      categoryRaw,
+      thicknessRaw,
+      portofolioTypeRaw,
+      serviceRaw,
+      contactRaw,
+      socialMediaRaw,
+    ] = await Promise.all([
+      db.query.heroSection.findFirst({
+        where: or(
+          eq(heroSection.pageKey, "products"),
+          eq(heroSection.pageKey, "product")
+        ),
+        columns: {
+          heroSectionId: true,
+          pageKey: true,
+          preHeading: true,
+          mainHeading: true,
+          subHeading: true,
+          description: true,
+          backgroundImageUrl: true,
+          scrollIndicatorText: true,
+          scrollIndicatorVisible: true,
+          breadcrumbItems: true,
+        },
+      }),
       db
         .select({
-          productId: productApplication.productId,
-          portofolioTypeId: portofolio.portofolioTypeId,
+          productId: product.productId,
+          productName: product.productName,
+          productSlug: product.productSlug,
+          productShortDescription: product.productShortDescription,
+          productImageUrl: product.productImageUrl,
+          categoryProductId: product.categoryProductId,
+          categoryProductName: categoryProduct.categoryProductName,
+          categoryProductSlug: categoryProduct.categoryProductSlug,
+          productViews: product.productViews,
         })
-        .from(productApplication)
-        .innerJoin(
-          productApplicationPortofolio,
-          eq(
-            productApplication.productApplicationId,
-            productApplicationPortofolio.productApplicationId
-          )
+        .from(product)
+        .leftJoin(
+          categoryProduct,
+          eq(product.categoryProductId, categoryProduct.categoryProductId)
         )
-        .innerJoin(
-          portofolio,
-          eq(productApplicationPortofolio.portofolioId, portofolio.portofolioId)
-        )
-        .where(isNotNull(portofolio.portofolioTypeId)),
+        .where(eq(product.productIsPublished, true))
+        .orderBy(desc(product.productViews), desc(product.productIsPublishedAt)),
+      db.query.categoryProduct.findMany({
+        columns: {
+          categoryProductId: true,
+          categoryProductName: true,
+          categoryProductSlug: true,
+        },
+      }),
+      db.query.thickness.findMany({
+        columns: {
+          thicknessId: true,
+          thicknessValue: true,
+          thicknessUnit: true,
+        },
+        orderBy: (t, { asc }) => [asc(t.thicknessValue)],
+      }),
+      db.query.portofolioType.findMany({
+        columns: {
+          portofolioTypeId: true,
+          portofolioTypeName: true,
+          portofolioTypeSlug: true,
+        },
+      }),
+      db.query.service.findMany({
+        columns: {
+          serviceId: true,
+          serviceName: true,
+          serviceDescription: true,
+          serviceIcon: true,
+          serviceIsPublished: true,
+          servicePoints: true,
+          serviceBtnText: true,
+          serviceBtnLink: true,
+        },
+        where: eq(service.serviceIsPublished, true),
+        orderBy: (s, { asc }) => [asc(s.createdAt)],
+      }),
+      db.query.contact.findMany({
+        columns: {
+          contactId: true,
+          contactType: true,
+          contactLabel: true,
+          contactValue: true,
+          contactValueExtra: true,
+          contactIcon: true,
+        },
+        where: eq(contact.isPublished, true),
+      }),
+      db.query.socialMedia.findMany({
+        columns: {
+          socialMediaId: true,
+          platformName: true,
+          profileUrl: true,
+          iconName: true,
+        },
+        where: eq(socialMedia.isPublished, true),
+      }),
     ]);
 
-  const productPortofolioTypeIdsMap = new Map<string, string[]>();
-  for (const r of productPortofolioTypeRows) {
-    if (r.productId && r.portofolioTypeId) {
-      const arr = productPortofolioTypeIdsMap.get(r.productId) ?? [];
-      if (!arr.includes(r.portofolioTypeId)) arr.push(r.portofolioTypeId);
-      productPortofolioTypeIdsMap.set(r.productId, arr);
-    }
-  }
-  const productPortofolioTypeIds = Object.fromEntries(productPortofolioTypeIdsMap) as Record<string, string[]>;
+    const productIds = productRaw.map((r) => r.productId);
 
-  const thicknessByProduct = new Map<
-    string,
-    { productThicknessValue: number; productThicknessUnit: string }[]
-  >();
-  for (const t of thicknessJunctionRows) {
-    if (t.productId) {
-      const arr = thicknessByProduct.get(t.productId) ?? [];
-      arr.push({
-        productThicknessValue: t.thicknessValue,
-        productThicknessUnit: t.thicknessUnit,
-      });
-      thicknessByProduct.set(t.productId, arr);
-    }
-  }
+    const [thicknessJunctionRows, excellenceRows, productPortofolioTypeRows] =
+      await Promise.all([
+        productIds.length > 0
+          ? db
+              .select({
+                productId: productThickness.productId,
+                thicknessValue: thickness.thicknessValue,
+                thicknessUnit: thickness.thicknessUnit,
+              })
+              .from(productThickness)
+              .innerJoin(
+                thickness,
+                eq(productThickness.thicknessId, thickness.thicknessId)
+              )
+              .where(inArray(productThickness.productId, productIds))
+          : [],
+        productIds.length > 0
+          ? db
+              .select()
+              .from(productExellence)
+              .where(inArray(productExellence.productId, productIds))
+          : [],
+        db
+          .select({
+            productId: productApplication.productId,
+            portofolioTypeId: portofolio.portofolioTypeId,
+          })
+          .from(productApplication)
+          .innerJoin(
+            productApplicationPortofolio,
+            eq(
+              productApplication.productApplicationId,
+              productApplicationPortofolio.productApplicationId
+            )
+          )
+          .innerJoin(
+            portofolio,
+            eq(productApplicationPortofolio.portofolioId, portofolio.portofolioId)
+          )
+          .where(isNotNull(portofolio.portofolioTypeId)),
+      ]);
 
-  const excellenceByProduct = new Map<string, string[]>();
-  for (const e of excellenceRows) {
-    if (e.productId) {
-      const arr = excellenceByProduct.get(e.productId) ?? [];
-      arr.push(e.productExellenceDescription);
-      excellenceByProduct.set(e.productId, arr);
+    const productPortofolioTypeIdsMap = new Map<string, string[]>();
+    for (const r of productPortofolioTypeRows) {
+      if (r.productId && r.portofolioTypeId) {
+        const arr = productPortofolioTypeIdsMap.get(r.productId) ?? [];
+        if (!arr.includes(r.portofolioTypeId)) arr.push(r.portofolioTypeId);
+        productPortofolioTypeIdsMap.set(r.productId, arr);
+      }
     }
-  }
+    const productPortofolioTypeIdsResult = Object.fromEntries(
+      productPortofolioTypeIdsMap
+    ) as Record<string, string[]>;
+
+    const thicknessByProductResult: Record<
+      string,
+      { productThicknessValue: number; productThicknessUnit: string }[]
+    > = {};
+    for (const t of thicknessJunctionRows) {
+      if (t.productId) {
+        const arr = thicknessByProductResult[t.productId] ?? [];
+        arr.push({
+          productThicknessValue: t.thicknessValue,
+          productThicknessUnit: t.thicknessUnit,
+        });
+        thicknessByProductResult[t.productId] = arr;
+      }
+    }
+
+    const excellenceByProductResult: Record<string, string[]> = {};
+    for (const e of excellenceRows) {
+      if (e.productId) {
+        const arr = excellenceByProductResult[e.productId] ?? [];
+        arr.push(e.productExellenceDescription);
+        excellenceByProductResult[e.productId] = arr;
+      }
+    }
+
+    return {
+      heroRow: heroRaw,
+      productRows: productRaw,
+      categoryRows: categoryRaw,
+      thicknessRows: thicknessRaw,
+      portofolioTypeRows: portofolioTypeRaw,
+      serviceRows: serviceRaw,
+      contactRows: contactRaw,
+      socialMediaRows: socialMediaRaw,
+      thicknessByProduct: thicknessByProductResult,
+      excellenceByProduct: excellenceByProductResult,
+      productPortofolioTypeIds: productPortofolioTypeIdsResult,
+    };
+  });
 
   const rawHero = heroRow
     ? {
@@ -255,20 +318,19 @@ export default async function ProductPage({ params }: Props) {
       }
     : FALLBACK_HERO;
 
-  const hero = await translateHeroSection(rawHero, locale);
+  const hero = (await applyHeroSectionTranslation(rawHero, locale)) ?? rawHero;
 
-  const rawProducts: Parameters<typeof translateProducts>[0] = productRows.map(
-    (r) => ({
+  const translatedProducts = await applyProductTranslations(
+    productRows.map((r) => ({
       productId: r.productId,
       productName: r.productName,
       productShortDescription: r.productShortDescription,
       productDescription: "",
-      excellences: excellenceByProduct.get(r.productId) ?? [],
-    })
+    })),
+    locale
   );
-  const translatedProducts = await translateProducts(rawProducts, locale);
 
-  const categories = await translateCategoryProducts(
+  const categories = await applyCategoryProductTranslations(
     categoryRows.map((c) => ({
       categoryProductId: c.categoryProductId,
       categoryProductName: c.categoryProductName,
@@ -294,9 +356,8 @@ export default async function ProductPage({ params }: Props) {
       categoryName: r.categoryProductId
         ? categoryMap.get(r.categoryProductId) ?? r.categoryProductName
         : r.categoryProductName,
-      thicknesses: thicknessByProduct.get(r.productId) ?? [],
-      excellences:
-        t?.excellences ?? excellenceByProduct.get(r.productId) ?? [],
+      thicknesses: thicknessByProduct[r.productId] ?? [],
+      excellences: excellenceByProduct[r.productId] ?? [],
     };
   });
 
@@ -306,7 +367,7 @@ export default async function ProductPage({ params }: Props) {
     thicknessUnit: t.thicknessUnit,
   }));
 
-  const portofolioTypes = await translatePortofolioTypes(
+  const portofolioTypes = await applyPortofolioTypeTranslations(
     portofolioTypeRows.map((pt) => ({
       portofolioTypeId: pt.portofolioTypeId,
       portofolioTypeName: pt.portofolioTypeName,
@@ -339,23 +400,21 @@ export default async function ProductPage({ params }: Props) {
     serviceBtnText: r.serviceBtnText,
     serviceBtnLink: r.serviceBtnLink,
   }));
-  const services = await translateServices(rawServices, locale);
+  const services = await applyServiceTranslations(rawServices, locale);
 
-  const contacts = await import("@/lib/translate").then((m) =>
-    m.translateContacts(
-      contactRows.map((r) => ({
-        contactId: r.contactId,
-        contactType: r.contactType,
-        contactLabel: r.contactLabel,
-        contactValue: r.contactValue,
-        contactValueExtra: r.contactValueExtra,
-        contactIcon: r.contactIcon,
-      })),
-      locale
-    )
+  const contacts = await applyContactTranslations(
+    contactRows.map((r) => ({
+      contactId: r.contactId,
+      contactType: r.contactType,
+      contactLabel: r.contactLabel,
+      contactValue: r.contactValue,
+      contactValueExtra: r.contactValueExtra,
+      contactIcon: r.contactIcon,
+    })),
+    locale
   );
 
-  const categoriesForFooter = await translateCategoryProducts(
+  const categoriesForFooter = await applyCategoryProductTranslations(
     categoryRows.map((c) => ({
       categoryProductId: c.categoryProductId,
       categoryProductName: c.categoryProductName,

@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { eq } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { socialMedia } from "@/db/schema/social-media";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateSocialMediaSchema } from "@/lib/validations/social-media";
+import { translateAndSaveSocialMedia } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -87,6 +89,11 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(socialMedia.socialMediaId, id))
       .returning();
 
+    translateAndSaveSocialMedia(updated, {
+      platformName: existing.platformName,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("social-media");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -118,6 +125,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(socialMedia).where(eq(socialMedia.socialMediaId, id));
 
+    await revalidateContentCache("social-media");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

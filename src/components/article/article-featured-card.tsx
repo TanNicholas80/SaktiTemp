@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { markViewIntent } from "@/lib/utils/view-intent";
 
 export type ArticleFeaturedCardData = {
   blogId: string;
@@ -46,6 +47,7 @@ export function ArticleFeaturedCard({
   return (
     <Link
       href={`/article/${blog.blogSlug}`}
+      onClick={() => markViewIntent("article", blog.blogSlug)}
       className={cn(
         "group flex flex-col overflow-hidden rounded-xl border-0 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg lg:flex-row",
         className

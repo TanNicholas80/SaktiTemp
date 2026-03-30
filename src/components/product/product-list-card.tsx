@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { markViewIntent } from "@/lib/utils/view-intent";
 
 const MAX_THICKNESS_BADGES = 5;
 const MAX_EXCELLENCE_SHOW = 2;
@@ -130,6 +131,7 @@ export function ProductListCard({ product }: ProductListCardProps) {
         <div className="mt-2 border-t border-border pt-3 group-hover:border-primary-foreground/30">
           <Link
             href={`/product/${product.productSlug}`}
+            onClick={() => markViewIntent("product", product.productSlug)}
             className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors group-hover:text-primary-foreground hover:group-hover:underline"
           >
             {t("viewDetail")}

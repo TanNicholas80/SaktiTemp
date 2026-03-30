@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 
@@ -17,16 +18,79 @@ import { productExellence } from "@/db/schema/product-exellence";
 import { productThickness } from "@/db/schema/product-thickness";
 import { thickness } from "@/db/schema/thickness";
 import {
-  translateCategoryProducts,
-  translatePortofolioTypes,
-  translatePortofolios,
-  translateProducts,
-} from "@/lib/translate";
+  applyCategoryProductTranslations,
+  applyContactTranslations,
+  applyPortofolioTranslations,
+  applyPortofolioTypeTranslations,
+  applyProductTranslations,
+} from "@/lib/translate/get-translated";
 import type { ProductDetailData } from "@/components/product/types";
+import { routing } from "@/i18n/routing";
+import { ProductJsonLd } from "@/components/seo/json-ld";
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
+
+export async function generateStaticParams() {
+  const rows = await db.query.product.findMany({
+    where: (p, { eq: eqFn }) => eqFn(p.productIsPublished, true),
+    columns: { productSlug: true },
+  });
+  return rows.flatMap((r) =>
+    routing.locales.map((locale) => ({ locale, slug: r.productSlug }))
+  );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const row = await db
+    .select({
+      productName: product.productName,
+      productShortDescription: product.productShortDescription,
+      productImageUrl: product.productImageUrl,
+      categoryProductName: categoryProduct.categoryProductName,
+    })
+    .from(product)
+    .leftJoin(
+      categoryProduct,
+      eq(product.categoryProductId, categoryProduct.categoryProductId)
+    )
+    .where(eq(product.productSlug, slug))
+    .limit(1)
+    .then((rows) => rows[0]);
+
+  if (!row) {
+    return { title: "Produk tidak ditemukan", robots: { index: false, follow: false } };
+  }
+
+  const baseKeywords = [
+    "produk kaca tempered",
+    "jenis kaca tempered",
+    "kaca tempered bangunan",
+    "kaca tempered interior",
+    "kaca tempered eksterior",
+  ];
+
+  const dynamicKeywords: string[] = [
+    row.productName,
+    row.categoryProductName ?? "",
+  ].filter(Boolean);
+
+  return {
+    title: row.productName,
+    description: row.productShortDescription ?? undefined,
+    openGraph: {
+      title: `${row.productName} | SAKTITEMP®`,
+      description: row.productShortDescription ?? undefined,
+      images: row.productImageUrl
+        ? [{ url: row.productImageUrl, width: 1200, height: 630 }]
+        : [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+    keywords: [...baseKeywords, ...dynamicKeywords],
+    alternates: { canonical: `/product/${slug}` },
+  };
+}
 
 export default async function ProductDetailPage({ params }: Props) {
   const { locale, slug } = await params;
@@ -173,19 +237,18 @@ export default async function ProductDetailPage({ params }: Props) {
     contactRows,
     socialMediaRows,
   ] = await Promise.all([
-    translateProducts(
+    applyProductTranslations(
       [
         {
           productId: productRow.productId,
           productName: productRow.productName,
           productShortDescription: productRow.productShortDescription ?? "",
           productDescription: productRow.productDescription,
-          excellences: excellenceRows.map((e) => e.productExellenceDescription),
         },
       ],
       locale
     ),
-    translatePortofolioTypes(
+    applyPortofolioTypeTranslations(
       portofolioTypes.map((t) => ({
         portofolioTypeId: t.portofolioTypeId,
         portofolioTypeName: t.portofolioTypeName,
@@ -193,7 +256,7 @@ export default async function ProductDetailPage({ params }: Props) {
       })),
       locale
     ),
-    translatePortofolios(
+    applyPortofolioTranslations(
       filteredPortofolios.map((p) => ({
         portofolioId: p.portofolioId,
         portofolioName: p.portofolioName,
@@ -208,7 +271,7 @@ export default async function ProductDetailPage({ params }: Props) {
       locale
     ),
     productRow.categoryProductId
-      ? translateCategoryProducts(
+      ? applyCategoryProductTranslations(
           [
             {
               categoryProductId: productRow.categoryProductId,
@@ -219,7 +282,7 @@ export default async function ProductDetailPage({ params }: Props) {
           locale
         )
       : Promise.resolve([]),
-    translateCategoryProducts(
+    applyCategoryProductTranslations(
       categoryRowsForFooter.map((c) => ({
         categoryProductId: c.categoryProductId,
         categoryProductName: c.categoryProductName,
@@ -277,10 +340,9 @@ export default async function ProductDetailPage({ params }: Props) {
       productThicknessValue: t.thicknessValue,
       productThicknessUnit: t.thicknessUnit,
     })),
-    excellences: (
-      tProduct?.excellences ??
-      excellenceRows.map((e) => e.productExellenceDescription)
-    ).map((desc) => ({ productExellenceDescription: desc })),
+    excellences: excellenceRows.map((e) => ({
+      productExellenceDescription: e.productExellenceDescription,
+    })),
     productApplications: productApplicationRows.map((a) => ({
       productApplicationId: a.productApplicationId ?? "",
       productApplicationName: a.productApplicationName ?? "",
@@ -299,22 +361,23 @@ export default async function ProductDetailPage({ params }: Props) {
     })),
   };
 
-  const contacts = await import("@/lib/translate").then((m) =>
-    m.translateContacts(
-      contactRows.map((r) => ({
-        contactId: r.contactId,
-        contactType: r.contactType,
-        contactLabel: r.contactLabel,
-        contactValue: r.contactValue,
-        contactValueExtra: r.contactValueExtra,
-        contactIcon: r.contactIcon,
-      })),
-      locale
-    )
+  const contacts = await applyContactTranslations(
+    contactRows.map((r) => ({
+      contactId: r.contactId,
+      contactType: r.contactType,
+      contactLabel: r.contactLabel,
+      contactValue: r.contactValue,
+      contactValueExtra: r.contactValueExtra,
+      contactIcon: r.contactIcon,
+    })),
+    locale
   );
+
+  const pageUrl = `https://www.saktitemp.com/product/${slug}`;
 
   return (
     <div className="w-full bg-white">
+      <ProductJsonLd product={productDetail} url={pageUrl} />
       <ProductDetailSection product={productDetail} />
       <FooterSection
         contacts={contacts}

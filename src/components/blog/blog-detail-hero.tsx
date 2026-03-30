@@ -22,7 +22,12 @@ type BlogDetailHeroProps = {
 function useBlogView(slug: string, enabled: boolean) {
   React.useEffect(() => {
     if (!enabled || !slug) return;
-    fetch(`/api/article/${slug}/view`, { method: "POST" }).catch(() => {});
+    // Only count a view when user arrives from a listing click (intent).
+    // This also avoids double-counting from dev StrictMode and refresh.
+    import("@/lib/utils/view-intent").then(({ consumeViewIntent }) => {
+      if (!consumeViewIntent("article", slug)) return;
+      fetch(`/api/article/${slug}/view`, { method: "POST" }).catch(() => {});
+    });
   }, [slug, enabled]);
 }
 

@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { eq } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { contact } from "@/db/schema/contact";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateContactSchema } from "@/lib/validations/contact";
+import { translateAndSaveContact } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -91,6 +93,13 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(contact.contactId, id))
       .returning();
 
+    translateAndSaveContact(updated, {
+      contactLabel: existing.contactLabel,
+      contactValue: existing.contactValue,
+      contactValueExtra: existing.contactValueExtra,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("contact");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -122,6 +131,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(contact).where(eq(contact.contactId, id));
 
+    await revalidateContentCache("contact");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

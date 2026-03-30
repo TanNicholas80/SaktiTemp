@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { desc } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { service } from "@/db/schema/service";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createServiceSchema } from "@/lib/validations/service";
+import { translateAndSaveService } from "@/lib/translate/entity-translators";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -69,6 +71,9 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    translateAndSaveService(inserted).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("service");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

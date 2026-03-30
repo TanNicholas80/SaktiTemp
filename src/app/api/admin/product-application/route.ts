@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 import { eq } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
+import { translateAndSaveProductApplication } from "@/lib/translate/entity-translators";
 import { db } from "@/db";
 import { productApplication } from "@/db/schema/product-application";
 import { product } from "@/db/schema/product";
@@ -96,6 +98,11 @@ export async function POST(request: Request) {
       );
     }
 
+    translateAndSaveProductApplication(inserted).catch((err) =>
+      console.error("Translation failed:", err)
+    );
+
+    await revalidateContentCache("product");
     return NextResponse.json(inserted);
   } catch {
     return NextResponse.json(

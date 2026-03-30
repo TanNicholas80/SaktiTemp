@@ -6,8 +6,10 @@ import { db } from "@/db";
 import { deleteBlogImageFile } from "@/lib/utils/blog-image";
 import { blog } from "@/db/schema/blog";
 import { categoryBlog } from "@/db/schema/category-blog";
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateBlogSchema } from "@/lib/validations/blog";
+import { translateAndSaveBlog } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -146,6 +148,13 @@ export async function PATCH(request: Request, { params }: Params) {
       await deleteBlogImageFile(oldPublicId);
     }
 
+    translateAndSaveBlog(updated, {
+      blogTitle: existing.blogTitle,
+      blogExcerpt: existing.blogExcerpt,
+      blogContent: existing.blogContent,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("blog");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -182,6 +191,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(blog).where(eq(blog.blogId, existing.blogId));
 
+    await revalidateContentCache("blog");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(

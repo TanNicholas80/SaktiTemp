@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 
 import { eq } from "drizzle-orm";
 
+import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { db } from "@/db";
 import { service } from "@/db/schema/service";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateServiceSchema } from "@/lib/validations/service";
+import { translateAndSaveService } from "@/lib/translate/entity-translators";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -93,6 +95,14 @@ export async function PATCH(request: Request, { params }: Params) {
       .where(eq(service.serviceId, id))
       .returning();
 
+    translateAndSaveService(updated, {
+      serviceName: existing.serviceName,
+      serviceDescription: existing.serviceDescription,
+      servicePoints: existing.servicePoints,
+      serviceBtnText: existing.serviceBtnText,
+    }).catch((err) => console.error("Translation failed:", err));
+
+    await revalidateContentCache("service");
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json(
@@ -124,6 +134,7 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     await db.delete(service).where(eq(service.serviceId, id));
 
+    await revalidateContentCache("service");
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json(
