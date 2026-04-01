@@ -115,6 +115,22 @@
     "calculateGlass": "Hitung Kebutuhan Kaca",
     "scroll": "Scroll"
   },
+  "calculatorGuide": {
+    "startEstimate": "Mulai Hitung Estimasi",
+    "viewGuide": "Lihat Panduan",
+    "guideTitle": "Panduan Cepat Kalkulator SAKTITEMP",
+    "step1Title": "Pilih Spesifikasi Dasar",
+    "step1Body": "Tentukan jenis kaca, varian, dan ketebalan. Jangan lupa masukkan dimensi panjang dan lebar proyek Anda dalam satuan milimeter (mm).",
+    "step2Title": "Sesuaikan Kebutuhan (Add-On & Modifikasi)",
+    "step2Body": "Bagian ini opsional. Anda bisa menambahkan layanan proses lanjutan seperti gosok tepi (edging), bor lubang (hole), cowak, atau modifikasi visual (seperti deco-lami). Beberapa layanan bisa dikombinasikan sekaligus.",
+    "step3Title": "Atur Detail Produksi & Pengiriman",
+    "step3Body": "Pilih bentuk potongan, kecepatan produksi (normal/express), dan masukkan estimasi jarak dari Semarang atau Jakarta untuk menghitung ongkos kirim secara otomatis.",
+    "step4Title": "Dapatkan Estimasi & Konsultasi",
+    "step4Body": "Rincian harga akan terakumulasi. Jika sudah sesuai, gunakan tombol WhatsApp untuk mengirim draf rincian ke tim marketing kami guna verifikasi dan penawaran final.",
+    "specialSizeLabel": "Ukuran khusus:",
+    "specialSizeBody": "Untuk kaca dengan dimensi di atas 5100 mm, harga akan disesuaikan secara custom. Tim kami akan membantu perhitungannya secara langsung.",
+    "understandCta": "Saya Mengerti, Mulai Hitung"
+  },
   "certificationSection": {
     "badge": "Sertifikasi",
     "title": "Sertifikasi & Standar",

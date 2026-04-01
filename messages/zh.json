@@ -115,6 +115,22 @@
     "calculateGlass": "计算玻璃需求",
     "scroll": "滚动"
   },
+  "calculatorGuide": {
+    "startEstimate": "开始估算",
+    "viewGuide": "查看指南",
+    "guideTitle": "SAKTITEMP 计算器快速指南",
+    "step1Title": "选择基本规格",
+    "step1Body": "确定玻璃类型、花色和厚度。请输入项目的长度和宽度，单位为毫米（mm）。",
+    "step2Title": "按需调整（附加与加工）",
+    "step2Body": "此步骤可选。可添加磨边、打孔、凹槽或视觉加工（如装饰夹层）等服务，并可组合多项服务。",
+    "step3Title": "设置生产与配送细节",
+    "step3Body": "选择切割形状、生产速度（正常/加急），并输入与三宝垄或雅加达的大致距离以自动计算运费。",
+    "step4Title": "获取估算与咨询",
+    "step4Body": "价格明细会随操作累计。确认后可通过 WhatsApp 将草稿发给市场团队以便核实并最终报价。",
+    "specialSizeLabel": "特殊尺寸：",
+    "specialSizeBody": "单件尺寸超过 5100 mm 时按定制报价，我们的团队将直接协助计算。",
+    "understandCta": "我知道了，开始计算"
+  },
   "certificationSection": {
     "badge": "认证",
     "title": "认证与标准",

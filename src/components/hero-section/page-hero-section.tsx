@@ -14,9 +14,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 type PageHeroSectionProps = {
   hero: HeroSectionOutput;
+  /** Konten opsional di bawah deskripsi (mis. CTA kalkulator) — dianimasikan bersama hero */
+  afterDescription?: React.ReactNode;
 };
 
-export function PageHeroSection({ hero }: PageHeroSectionProps) {
+export function PageHeroSection({ hero, afterDescription }: PageHeroSectionProps) {
   const t = useTranslations("hero");
   const sectionRef = React.useRef<HTMLElement>(null);
   const breadcrumbRef = React.useRef<HTMLElement>(null);
@@ -24,6 +26,7 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
   const mainHeadingRef = React.useRef<HTMLHeadingElement>(null);
   const subHeadingRef = React.useRef<HTMLParagraphElement>(null);
   const descRef = React.useRef<HTMLParagraphElement>(null);
+  const ctaRef = React.useRef<HTMLDivElement>(null);
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const scrollText = hero.scrollIndicatorText ?? t("scroll");
@@ -46,6 +49,7 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
 
   React.useEffect(() => {
     const ctx = gsap.context(() => {
+      const baseDel = breadcrumbItems.length > 0 ? 0.25 : 0.2;
       const targets = [
         ...(breadcrumbItems.length > 0
           ? [{ ref: breadcrumbRef, y: 16, delay: 0 }]
@@ -54,22 +58,25 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
         { ref: mainHeadingRef, y: 28, delay: breadcrumbItems.length > 0 ? 0.13 : 0.08 },
         { ref: subHeadingRef, y: 24, delay: breadcrumbItems.length > 0 ? 0.19 : 0.14 },
         { ref: descRef, y: 20, delay: breadcrumbItems.length > 0 ? 0.25 : 0.2 },
+        ...(afterDescription
+          ? [{ ref: ctaRef, y: 20, delay: baseDel + 0.08 }]
+          : []),
       ] as { ref: React.RefObject<HTMLElement | null>; y: number; delay: number }[];
       targets.forEach(({ ref, y, delay }) => {
-        if (ref.current) {
-          gsap.fromTo(
-            ref.current,
-            { opacity: 0, y },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              delay,
-              ease: "power3.out",
-              overwrite: "auto",
-            }
-          );
-        }
+        const el = ref.current;
+        if (!el) return;
+        gsap.fromTo(
+          el,
+          { opacity: 0, y },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            delay,
+            ease: "power3.out",
+            overwrite: "auto",
+          }
+        );
       });
 
       if (scrollRef.current && hero.scrollIndicatorVisible) {
@@ -101,7 +108,7 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, [hero.scrollIndicatorVisible]);
+  }, [hero.scrollIndicatorVisible, afterDescription, breadcrumbItems.length]);
 
   return (
     <section
@@ -114,7 +121,9 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
         "lg:min-h-[520px]",
         "xl:min-h-[560px]",
         "min-[1920px]:min-h-[620px]",
-        "min-[2560px]:min-h-[680px]"
+        "min-[2560px]:min-h-[680px]",
+        afterDescription &&
+          "max-[475px]:aspect-[5/6] max-[475px]:min-h-[320px]"
       )}
     >
       {/* Background image or gradient fallback */}
@@ -146,10 +155,10 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
       />
 
       {/* Content */}
-      <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-8 md:p-10 lg:p-12 xl:p-14 min-[1920px]:p-16 min-[2560px]:p-20">
+      <div className="absolute inset-0 flex flex-col justify-between p-4 max-[475px]:pb-5 sm:p-6 sm:pb-8 md:p-10 lg:p-12 xl:p-14 min-[1920px]:p-16 min-[2560px]:p-20">
         <div
           className={cn(
-            "flex flex-col gap-3 sm:gap-4 md:gap-5",
+            "flex flex-col gap-2.5 max-[475px]:gap-2 sm:gap-4 md:gap-5",
             "max-w-full sm:max-w-[85%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[55%] min-[1920px]:max-w-[50%]"
           )}
         >
@@ -157,7 +166,7 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
             <nav
               ref={breadcrumbRef}
               aria-label="Breadcrumb"
-              className="flex flex-wrap items-center gap-1 text-sm text-white/90"
+              className="flex flex-wrap items-center gap-1 text-xs text-white/90 sm:text-sm"
             >
               {breadcrumbItems.map((item, i) => (
                 <span key={i} className="flex items-center gap-1">
@@ -192,24 +201,33 @@ export function PageHeroSection({ hero }: PageHeroSectionProps) {
 
           <h1
             ref={mainHeadingRef}
-            className="text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.5rem] xl:text-6xl min-[1920px]:text-7xl min-[2560px]:text-8xl leading-tight"
+            className="text-2xl font-bold uppercase tracking-tight text-white leading-tight sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl min-[1920px]:text-7xl min-[2560px]:text-8xl"
           >
             {hero.mainHeading}
           </h1>
 
           <p
             ref={subHeadingRef}
-            className="text-lg font-medium text-accent sm:text-xl md:text-2xl lg:text-3xl xl:text-[2rem] min-[1920px]:text-[2.5rem] transition-colors duration-200 hover:text-accent/90 [&>em]:italic"
+            className="text-base font-medium text-accent sm:text-lg md:text-lg lg:text-xl xl:text-2xl min-[1920px]:text-[2rem] transition-colors duration-200 hover:text-accent/90 [&>em]:italic"
           >
             {renderSubHeading(hero.subHeading)}
           </p>
 
           <p
             ref={descRef}
-            className="text-sm leading-relaxed text-white/95 sm:text-base md:text-lg lg:text-xl max-w-xl sm:max-w-2xl md:max-w-3xl"
+            className="text-xs leading-relaxed text-white/95 sm:text-sm md:text-sm lg:text-base xl:text-lg max-w-xl sm:max-w-2xl md:max-w-3xl"
           >
             {hero.description}
           </p>
+
+          {afterDescription ? (
+            <div
+              ref={ctaRef}
+              className="flex flex-col gap-2 pt-0.5 max-[475px]:gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 sm:pt-1"
+            >
+              {afterDescription}
+            </div>
+          ) : null}
         </div>
 
         {/* Scroll indicator */}

@@ -55,6 +55,13 @@ function getSocialIcon(iconName: string): LucideIcon {
   return SOCIAL_ICON_MAP[key] ?? MessageCircle;
 }
 
+function formatWhatsAppNumber(phone: string): string {
+  let cleaned = phone.replace(/\D/g, "");
+  if (cleaned.startsWith("0")) cleaned = "62" + cleaned.slice(1);
+  else if (!cleaned.startsWith("62")) cleaned = "62" + cleaned;
+  return cleaned;
+}
+
 export function ContactContentSection({
   locations,
   contacts,
@@ -217,7 +224,9 @@ export function ContactContentSection({
             {/* Phone */}
             {phoneContact && (
               <a
-                href={`tel:${phoneContact.contactValue.replace(/\s/g, "")}`}
+                href={`https://wa.me/${formatWhatsAppNumber(phoneContact.contactValue)}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-3 transition-opacity duration-200 hover:opacity-90"
               >
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/20">
