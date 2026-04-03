@@ -70,11 +70,11 @@ export function CalculatorRincianView() {
 
       <header data-rincian-step className="space-y-2">
         <h1 className="text-2xl font-bold text-primary sm:text-3xl">
-          Rincian Penawaran Anda
+          Rincian Penawaran
         </h1>
         <p className="max-w-prose text-sm text-muted-foreground sm:text-base">
           Berikut estimasi biaya berdasarkan spesifikasi yang Anda pilih. Lanjutkan ke
-          WhatsApp untuk verifikasi final bersama tim SAKTITEMP®.
+          WhatsApp untuk bernegosiasi bersama tim SAKTITEMP®.
         </p>
       </header>
 
@@ -113,7 +113,7 @@ export function CalculatorRincianView() {
           onClick={handleWhatsApp}
         >
           <MessageCircle className="size-4" />
-          Kirim Rincian Ke WhatsApp
+          Negosiasi Bersama Tim Kami
         </Button>
       </div>
     </div>
