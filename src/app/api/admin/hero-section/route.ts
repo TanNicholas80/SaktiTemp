@@ -8,6 +8,10 @@ import { heroSection } from "@/db/schema/hero-section";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createHeroSectionSchema } from "@/lib/validations/hero-section";
 import { translateAndSaveHeroSection } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -60,6 +64,24 @@ export async function POST(request: Request) {
       );
     }
 
+    let backgroundImageUrl = parsed.data.backgroundImageUrl.trim();
+    let backgroundImagePublicId =
+      parsed.data.backgroundImagePublicId?.trim() ?? "";
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        backgroundImageUrl,
+        backgroundImagePublicId,
+        "hero"
+      );
+      backgroundImageUrl = promoted.url;
+      backgroundImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(heroSection)
       .values({
@@ -68,9 +90,9 @@ export async function POST(request: Request) {
         mainHeading: parsed.data.mainHeading.trim(),
         subHeading: parsed.data.subHeading.trim(),
         description: parsed.data.description.trim(),
-        backgroundImageUrl: parsed.data.backgroundImageUrl.trim(),
+        backgroundImageUrl,
         backgroundImagePublicId:
-          parsed.data.backgroundImagePublicId?.trim() ?? null,
+          backgroundImagePublicId || null,
         breadcrumbItems: parsed.data.breadcrumbItems ?? null,
         scrollIndicatorText:
           parsed.data.scrollIndicatorText?.trim() ?? "SCROLL",

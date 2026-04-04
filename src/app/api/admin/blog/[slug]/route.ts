@@ -10,6 +10,10 @@ import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateBlogSchema } from "@/lib/validations/blog";
 import { translateAndSaveBlog } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -119,10 +123,30 @@ export async function PATCH(request: Request, { params }: Params) {
       updateData.blogExcerpt = parsed.data.blogExcerpt ?? "";
     if (parsed.data.blogContent !== undefined)
       updateData.blogContent = parsed.data.blogContent;
-    if (parsed.data.blogImageUrl !== undefined)
-      updateData.blogImageUrl = parsed.data.blogImageUrl;
-    if (parsed.data.blogImagePublicId !== undefined)
-      updateData.blogImagePublicId = parsed.data.blogImagePublicId;
+    if (
+      parsed.data.blogImageUrl !== undefined &&
+      parsed.data.blogImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.blogImageUrl.trim(),
+          parsed.data.blogImagePublicId.trim(),
+          "blog"
+        );
+        updateData.blogImageUrl = promoted.url;
+        updateData.blogImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.blogImageUrl !== undefined)
+        updateData.blogImageUrl = parsed.data.blogImageUrl.trim();
+      if (parsed.data.blogImagePublicId !== undefined)
+        updateData.blogImagePublicId = parsed.data.blogImagePublicId.trim();
+    }
     if (parsed.data.categoryBlogId !== undefined)
       updateData.categoryBlogId = parsed.data.categoryBlogId;
     if (parsed.data.blogIsPublished !== undefined) {

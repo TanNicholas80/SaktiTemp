@@ -8,6 +8,10 @@ import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateCarouselSchema } from "@/lib/validations/carousel";
 import { translateAndSaveCarousel } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -104,11 +108,31 @@ export async function PATCH(request: Request, { params }: Params) {
       updateData.carouselSubheading = parsed.data.carouselSubheading.trim();
     if (parsed.data.carouselDescription !== undefined)
       updateData.carouselDescription = parsed.data.carouselDescription.trim();
-    if (parsed.data.carouselImageUrl !== undefined)
-      updateData.carouselImageUrl = parsed.data.carouselImageUrl.trim();
-    if (parsed.data.carouselImagePublicId !== undefined)
-      updateData.carouselImagePublicId =
-        parsed.data.carouselImagePublicId.trim();
+    if (
+      parsed.data.carouselImageUrl !== undefined &&
+      parsed.data.carouselImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.carouselImageUrl.trim(),
+          parsed.data.carouselImagePublicId.trim(),
+          "carousel"
+        );
+        updateData.carouselImageUrl = promoted.url;
+        updateData.carouselImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.carouselImageUrl !== undefined)
+        updateData.carouselImageUrl = parsed.data.carouselImageUrl.trim();
+      if (parsed.data.carouselImagePublicId !== undefined)
+        updateData.carouselImagePublicId =
+          parsed.data.carouselImagePublicId.trim();
+    }
     if (parsed.data.carouselOrder !== undefined)
       updateData.carouselOrder = parsed.data.carouselOrder;
     if (parsed.data.carouselIsPublished !== undefined)

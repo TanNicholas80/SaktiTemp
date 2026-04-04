@@ -4,6 +4,8 @@ import * as React from "react";
 import { Ruler, Plus } from "lucide-react";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -79,6 +81,8 @@ export default function ThicknessPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -92,7 +96,7 @@ export default function ThicknessPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal membuat ketebalan");
+        toastApiValidationError(json, "Gagal membuat ketebalan");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(
@@ -128,6 +132,8 @@ export default function ThicknessPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -144,7 +150,7 @@ export default function ThicknessPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal memperbarui ketebalan");
+        toastApiValidationError(json, "Gagal memperbarui ketebalan");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(
@@ -178,7 +184,7 @@ export default function ThicknessPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus ketebalan");
+        toastApiValidationError(json, "Gagal menghapus ketebalan");
         return;
       }
 

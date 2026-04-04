@@ -7,6 +7,10 @@ import { glassTypes } from "@/db/schema/glass_types";
 import { requireAdminApi } from "@/lib/api-auth";
 import { translateAndSaveGlassType } from "@/lib/translate/entity-translators";
 import { updateGlassTypeSchema } from "@/lib/validations/glass-types";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -75,12 +79,32 @@ export async function PATCH(request: Request, { params }: Params) {
     if (parsed.data.glassTypeName !== undefined) {
       updateData.glassTypeName = parsed.data.glassTypeName.trim();
     }
-    if (parsed.data.glassTypeImageUrl !== undefined) {
-      updateData.glassTypeImageUrl = parsed.data.glassTypeImageUrl.trim();
-    }
-    if (parsed.data.glassTypeImagePublicId !== undefined) {
-      updateData.glassTypeImagePublicId =
-        parsed.data.glassTypeImagePublicId.trim();
+    if (
+      parsed.data.glassTypeImageUrl !== undefined &&
+      parsed.data.glassTypeImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.glassTypeImageUrl.trim(),
+          parsed.data.glassTypeImagePublicId.trim(),
+          "category"
+        );
+        updateData.glassTypeImageUrl = promoted.url;
+        updateData.glassTypeImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.glassTypeImageUrl !== undefined) {
+        updateData.glassTypeImageUrl = parsed.data.glassTypeImageUrl.trim();
+      }
+      if (parsed.data.glassTypeImagePublicId !== undefined) {
+        updateData.glassTypeImagePublicId =
+          parsed.data.glassTypeImagePublicId.trim();
+      }
     }
 
     const [updated] = await db

@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Award, Plus } from "lucide-react";
 import { toast } from "sonner";
 
+import { toastApiValidationError } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -70,7 +72,7 @@ export default function CertificationListPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus sertifikasi");
+        toastApiValidationError(json, "Gagal menghapus sertifikasi");
         return;
       }
 

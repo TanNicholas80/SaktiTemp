@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import { PageHeaderWithBack } from "@/components/layout/page-header-with-back";
 import { LoadingState } from "@/components/layout/loading-state";
@@ -110,7 +112,9 @@ export default function EditModificationPage() {
 
     const r = values.rows[0];
     if (!r) {
-      setFormErrors({ rows: "Tidak ada baris" });
+      const rowErr = { rows: "Tidak ada baris" };
+      setFormErrors(rowErr);
+      toastClientValidationErrors(rowErr);
       return;
     }
 
@@ -130,6 +134,8 @@ export default function EditModificationPage() {
         errors["rows.0.pricePerSide"] = "Harga tidak valid";
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -143,7 +149,7 @@ export default function EditModificationPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal memperbarui modifikasi");
+        toastApiValidationError(json, "Gagal memperbarui modifikasi");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(

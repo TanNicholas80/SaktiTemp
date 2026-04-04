@@ -10,6 +10,10 @@ import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createPortofolioSchema } from "@/lib/validations/portofolio";
 import { translateAndSavePortofolio } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -89,6 +93,23 @@ export async function POST(request: Request) {
       );
     }
 
+    let portofolioImageUrl = parsed.data.portofolioImageUrl.trim();
+    let portofolioImagePublicId = parsed.data.portofolioImagePublicId.trim();
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        portofolioImageUrl,
+        portofolioImagePublicId,
+        "portofolio"
+      );
+      portofolioImageUrl = promoted.url;
+      portofolioImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(portofolio)
       .values({
@@ -101,8 +122,8 @@ export async function POST(request: Request) {
         portofolioYear: parsed.data.portofolioYear,
         portofolioAreaSize: parsed.data.portofolioAreaSize,
         portofolioAreaSizeUnit: parsed.data.portofolioAreaSizeUnit,
-        portofolioImageUrl: parsed.data.portofolioImageUrl,
-        portofolioImagePublicId: parsed.data.portofolioImagePublicId,
+        portofolioImageUrl,
+        portofolioImagePublicId,
         categoryPortofolioId: parsed.data.categoryPortofolioId ?? null,
         portofolioTypeId: parsed.data.portofolioTypeId ?? null,
         portofolioIsPublished: parsed.data.portofolioIsPublished ?? false,

@@ -4,6 +4,11 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
+import {
+  toastApiValidationError,
+  toastClientValidationErrors,
+} from "@/lib/utils/toast-form";
 import type { ZodIssue } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -88,9 +93,11 @@ export default function NewModificationPage() {
 
     for (let i = 0; i < rows.length; i++) {
       if (Number.isNaN(rows[i]!.pricePerSide)) {
-        setFormErrors({
+        const rowErr = {
           [`rows.${i}.pricePerSide`]: "Harga per sisi tidak valid",
-        });
+        };
+        setFormErrors(rowErr);
+        toastClientValidationErrors(rowErr);
         return;
       }
     }
@@ -104,7 +111,9 @@ export default function NewModificationPage() {
 
     const parsed = createModificationBatchSchema.safeParse(data);
     if (!parsed.success) {
-      setFormErrors(issuesToErrorMap(parsed.error.issues));
+      const clientErr = issuesToErrorMap(parsed.error.issues);
+      setFormErrors(clientErr);
+      toastClientValidationErrors(clientErr);
       return;
     }
 
@@ -118,7 +127,7 @@ export default function NewModificationPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal membuat modifikasi");
+        toastApiValidationError(json, "Gagal membuat modifikasi");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(

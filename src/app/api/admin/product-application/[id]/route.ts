@@ -11,6 +11,10 @@ import { deleteProductImageFile } from "@/lib/utils/product-image";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { updateProductApplicationSchema } from "@/lib/validations/product-application";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -117,11 +121,32 @@ export async function PATCH(request: Request, { params }: Params) {
     }
     if (parsed.data.productApplicationDescription !== undefined)
       updateData.productApplicationDescription = parsed.data.productApplicationDescription;
-    if (parsed.data.productApplicationImageUrl !== undefined)
-      updateData.productApplicationImageUrl = parsed.data.productApplicationImageUrl;
-    if (parsed.data.productApplicationImagePublicId !== undefined)
-      updateData.productApplicationImagePublicId =
-        parsed.data.productApplicationImagePublicId;
+    if (
+      parsed.data.productApplicationImageUrl !== undefined &&
+      parsed.data.productApplicationImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.productApplicationImageUrl.trim(),
+          parsed.data.productApplicationImagePublicId.trim(),
+          "product"
+        );
+        updateData.productApplicationImageUrl = promoted.url;
+        updateData.productApplicationImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.productApplicationImageUrl !== undefined)
+        updateData.productApplicationImageUrl =
+          parsed.data.productApplicationImageUrl.trim();
+      if (parsed.data.productApplicationImagePublicId !== undefined)
+        updateData.productApplicationImagePublicId =
+          parsed.data.productApplicationImagePublicId.trim();
+    }
     if (parsed.data.productId !== undefined)
       updateData.productId = parsed.data.productId ?? null;
     if (parsed.data.productApplicationIsPublished !== undefined)

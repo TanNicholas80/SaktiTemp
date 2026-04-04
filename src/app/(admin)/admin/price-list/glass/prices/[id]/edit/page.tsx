@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { toastApiValidationError } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import { PageHeaderWithBack } from "@/components/layout/page-header-with-back";
 import { LoadingState } from "@/components/layout/loading-state";
@@ -168,7 +170,7 @@ export default function EditGlassPricePage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal memperbarui pricelist kaca");
+        toastApiValidationError(json, "Gagal memperbarui pricelist kaca");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(

@@ -12,6 +12,10 @@ import {
   createGlassPriceBatchSchema,
   createGlassPriceSchema,
 } from "@/lib/validations/glass-prices";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -68,8 +72,22 @@ export async function POST(request: Request) {
       }
 
       const variant = parsed.data.variant.trim();
-      const vUrl = parsed.data.variantImageUrl.trim();
-      const vPid = parsed.data.variantImagePublicId.trim();
+      let vUrl = parsed.data.variantImageUrl.trim();
+      let vPid = parsed.data.variantImagePublicId.trim();
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          vUrl,
+          vPid,
+          "product"
+        );
+        vUrl = promoted.url;
+        vPid = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
 
       for (const row of parsed.data.rows) {
         const duplicate = await db.query.glassPrices.findFirst({
@@ -142,14 +160,31 @@ export async function POST(request: Request) {
       );
     }
 
+    let variantImageUrl = parsed.data.variantImageUrl.trim();
+    let variantImagePublicId = parsed.data.variantImagePublicId.trim();
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        variantImageUrl,
+        variantImagePublicId,
+        "product"
+      );
+      variantImageUrl = promoted.url;
+      variantImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(glassPrices)
       .values({
         glassTypeId: parsed.data.glassTypeId,
         thicknessId: parsed.data.thicknessId,
         variant,
-        variantImageUrl: parsed.data.variantImageUrl.trim(),
-        variantImagePublicId: parsed.data.variantImagePublicId.trim(),
+        variantImageUrl,
+        variantImagePublicId,
         composition: parsed.data.composition,
         compositionDetail: parsed.data.compositionDetail,
         pricePerSqm: parsed.data.pricePerSqm,

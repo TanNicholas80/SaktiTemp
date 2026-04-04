@@ -8,6 +8,10 @@ import { processingPrices } from "@/db/schema/processing_prices";
 import { requireAdminApi } from "@/lib/api-auth";
 import { translateAndSaveProcessingCategory } from "@/lib/translate/entity-translators";
 import { updateProcessingCategorySchema } from "@/lib/validations/processing-categories";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -86,12 +90,32 @@ export async function PATCH(request: Request, { params }: Params) {
     if (parsed.data.categoryName !== undefined) {
       updateData.categoryName = parsed.data.categoryName.trim();
     }
-    if (parsed.data.categoryImageUrl !== undefined) {
-      updateData.categoryImageUrl = parsed.data.categoryImageUrl.trim();
-    }
-    if (parsed.data.categoryImagePublicId !== undefined) {
-      updateData.categoryImagePublicId =
-        parsed.data.categoryImagePublicId.trim();
+    if (
+      parsed.data.categoryImageUrl !== undefined &&
+      parsed.data.categoryImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.categoryImageUrl.trim(),
+          parsed.data.categoryImagePublicId.trim(),
+          "category"
+        );
+        updateData.categoryImageUrl = promoted.url;
+        updateData.categoryImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.categoryImageUrl !== undefined) {
+        updateData.categoryImageUrl = parsed.data.categoryImageUrl.trim();
+      }
+      if (parsed.data.categoryImagePublicId !== undefined) {
+        updateData.categoryImagePublicId =
+          parsed.data.categoryImagePublicId.trim();
+      }
     }
 
     const [updated] = await db

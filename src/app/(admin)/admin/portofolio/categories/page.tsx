@@ -4,6 +4,8 @@ import * as React from "react";
 import { FolderOpen, Plus } from "lucide-react";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -93,6 +95,8 @@ export default function CategoriesPortofolioPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -106,7 +110,7 @@ export default function CategoriesPortofolioPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal membuat kategori");
+        toastApiValidationError(json, "Gagal membuat kategori");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(
@@ -149,6 +153,8 @@ export default function CategoriesPortofolioPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -165,7 +171,7 @@ export default function CategoriesPortofolioPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal memperbarui kategori");
+        toastApiValidationError(json, "Gagal memperbarui kategori");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(
@@ -199,7 +205,7 @@ export default function CategoriesPortofolioPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus kategori");
+        toastApiValidationError(json, "Gagal menghapus kategori");
         return;
       }
 

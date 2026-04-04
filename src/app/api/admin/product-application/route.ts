@@ -10,6 +10,10 @@ import { product } from "@/db/schema/product";
 import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { createProductApplicationSchema } from "@/lib/validations/product-application";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -77,14 +81,32 @@ export async function POST(request: Request) {
       );
     }
 
+    let productApplicationImageUrl = parsed.data.productApplicationImageUrl.trim();
+    let productApplicationImagePublicId =
+      parsed.data.productApplicationImagePublicId.trim();
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        productApplicationImageUrl,
+        productApplicationImagePublicId,
+        "product"
+      );
+      productApplicationImageUrl = promoted.url;
+      productApplicationImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(productApplication)
       .values({
         productApplicationName: parsed.data.productApplicationName.trim(),
         productApplicationSlug: slug,
         productApplicationDescription: parsed.data.productApplicationDescription,
-        productApplicationImageUrl: parsed.data.productApplicationImageUrl,
-        productApplicationImagePublicId: parsed.data.productApplicationImagePublicId,
+        productApplicationImageUrl,
+        productApplicationImagePublicId,
         productId: parsed.data.productId ?? null,
         productApplicationIsPublished:
           parsed.data.productApplicationIsPublished ?? false,

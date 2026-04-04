@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
+import { toastApiValidationError } from "@/lib/utils/toast-form";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -110,7 +112,7 @@ export default function PriceListAdditionalServicePage() {
       );
       const json = await res.json();
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus kategori");
+        toastApiValidationError(json, "Gagal menghapus kategori");
         return;
       }
       toast.success("Kategori berhasil dihapus");
@@ -130,7 +132,7 @@ export default function PriceListAdditionalServicePage() {
       );
       const json = await res.json();
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus pricelist");
+        toastApiValidationError(json, "Gagal menghapus pricelist");
         return;
       }
       toast.success("Pricelist berhasil dihapus");

@@ -4,6 +4,8 @@ import * as React from "react";
 import { Plus, Users } from "lucide-react";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -109,6 +111,8 @@ export default function UsersPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -122,7 +126,7 @@ export default function UsersPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal membuat user");
+        toastApiValidationError(json, "Gagal membuat user");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(
@@ -169,6 +173,8 @@ export default function UsersPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -185,7 +191,7 @@ export default function UsersPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal memperbarui user");
+        toastApiValidationError(json, "Gagal memperbarui user");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(
@@ -219,7 +225,7 @@ export default function UsersPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus user");
+        toastApiValidationError(json, "Gagal menghapus user");
         return;
       }
 

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import { PageHeaderWithBack } from "@/components/layout/page-header-with-back";
 import {
@@ -42,6 +44,8 @@ export default function NewGlassTypePage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -55,7 +59,7 @@ export default function NewGlassTypePage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal membuat tipe kaca");
+        toastApiValidationError(json, "Gagal membuat tipe kaca");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(

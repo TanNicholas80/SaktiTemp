@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import { PageHeaderWithBack } from "@/components/layout/page-header-with-back";
 import { CarouselForm, type CarouselFormValues } from "@/components/carousel";
@@ -40,10 +42,12 @@ export default function NewCarouselPage() {
     setFormErrors({});
 
     if (!values.image) {
-      setFormErrors({
+      const imgErr = {
         carouselImageUrl: "Gambar wajib diunggah",
         carouselImagePublicId: "Gambar wajib diunggah",
-      });
+      };
+      setFormErrors(imgErr);
+      toastClientValidationErrors(imgErr);
       return;
     }
 
@@ -65,6 +69,8 @@ export default function NewCarouselPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -78,7 +84,7 @@ export default function NewCarouselPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal membuat slide");
+        toastApiValidationError(json, "Gagal membuat slide");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(

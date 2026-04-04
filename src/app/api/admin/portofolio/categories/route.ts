@@ -9,6 +9,10 @@ import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { createCategoryPortofolioSchema } from "@/lib/validations/category-portofolio";
 import { translateAndSaveCategoryPortofolio } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingUrlOnlyIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -81,13 +85,28 @@ export async function POST(request: Request) {
       );
     }
 
+    let categoryPortofolioImage = parsed.data.categoryPortofolioImage ?? "";
+    if (categoryPortofolioImage) {
+      try {
+        categoryPortofolioImage = await promoteStagingUrlOnlyIfNeeded(
+          categoryPortofolioImage.trim(),
+          "category"
+        );
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    }
+
     const [inserted] = await db
       .insert(categoryPortofolio)
       .values({
         categoryPortofolioName: name,
         categoryPortofolioSlug: slug,
         categoryPortofolioIcon: parsed.data.categoryPortofolioIcon ?? "",
-        categoryPortofolioImage: parsed.data.categoryPortofolioImage ?? "",
+        categoryPortofolioImage,
         categoryPortofolioDescription: parsed.data.categoryPortofolioDescription ?? "",
       })
       .returning();

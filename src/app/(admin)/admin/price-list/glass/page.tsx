@@ -4,6 +4,8 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
+import { toastApiValidationError } from "@/lib/utils/toast-form";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -98,7 +100,7 @@ export default function PriceListGlassPage() {
       });
       const json = await res.json();
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus tipe kaca");
+        toastApiValidationError(json, "Gagal menghapus tipe kaca");
         return;
       }
       toast.success("Tipe kaca berhasil dihapus");
@@ -118,7 +120,7 @@ export default function PriceListGlassPage() {
       );
       const json = await res.json();
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus pricelist kaca");
+        toastApiValidationError(json, "Gagal menghapus pricelist kaca");
         return;
       }
       toast.success("Pricelist kaca berhasil dihapus");

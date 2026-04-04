@@ -30,18 +30,21 @@ export class DatabaseProvider implements CacheProvider {
   async set<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
     const ttl = ttlSeconds ?? Number(process.env.CACHE_TTL ?? 300);
     const expiresAt = new Date(Date.now() + ttl * 1000);
+    const serialized = JSON.stringify(value);
+    const cacheValue =
+      serialized === undefined ? "null" : serialized;
 
     await db
       .insert(contentCache)
       .values({
         cacheKey: key,
-        cacheValue: JSON.stringify(value),
+        cacheValue,
         expiresAt,
       })
       .onConflictDoUpdate({
         target: contentCache.cacheKey,
         set: {
-          cacheValue: JSON.stringify(value),
+          cacheValue,
           expiresAt,
         },
       });

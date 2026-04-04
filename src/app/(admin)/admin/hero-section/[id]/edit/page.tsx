@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import { PageHeaderWithBack } from "@/components/layout/page-header-with-back";
 import {
@@ -79,10 +81,12 @@ export default function EditHeroSectionPage() {
     setFormErrors({});
 
     if (!values.image) {
-      setFormErrors({
+      const imgErr = {
         backgroundImageUrl: "Gambar background wajib diunggah",
         backgroundImagePublicId: "Gambar background wajib diunggah",
-      });
+      };
+      setFormErrors(imgErr);
+      toastClientValidationErrors(imgErr);
       return;
     }
 
@@ -111,6 +115,8 @@ export default function EditHeroSectionPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -124,7 +130,7 @@ export default function EditHeroSectionPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal memperbarui hero section");
+        toastApiValidationError(json, "Gagal memperbarui hero section");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(

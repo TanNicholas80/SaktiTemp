@@ -7,6 +7,10 @@ import { modification } from "@/db/schema/modification";
 import { requireAdminApi } from "@/lib/api-auth";
 import { translateAndSaveModification } from "@/lib/translate/entity-translators";
 import { updateModificationSchema } from "@/lib/validations/modification";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -93,13 +97,33 @@ export async function PATCH(request: Request, { params }: Params) {
     if (parsed.data.thicknessId !== undefined) {
       updateData.thicknessId = parsed.data.thicknessId;
     }
-    if (parsed.data.modificationImageUrl !== undefined) {
-      updateData.modificationImageUrl =
-        parsed.data.modificationImageUrl.trim();
-    }
-    if (parsed.data.modificationImagePublicId !== undefined) {
-      updateData.modificationImagePublicId =
-        parsed.data.modificationImagePublicId.trim();
+    if (
+      parsed.data.modificationImageUrl !== undefined &&
+      parsed.data.modificationImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.modificationImageUrl.trim(),
+          parsed.data.modificationImagePublicId.trim(),
+          "category"
+        );
+        updateData.modificationImageUrl = promoted.url;
+        updateData.modificationImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.modificationImageUrl !== undefined) {
+        updateData.modificationImageUrl =
+          parsed.data.modificationImageUrl.trim();
+      }
+      if (parsed.data.modificationImagePublicId !== undefined) {
+        updateData.modificationImagePublicId =
+          parsed.data.modificationImagePublicId.trim();
+      }
     }
     if (parsed.data.pricePerSide !== undefined) {
       updateData.pricePerSide = parsed.data.pricePerSide;

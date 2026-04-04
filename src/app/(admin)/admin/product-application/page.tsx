@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Layers, Plus } from "lucide-react";
 import { toast } from "sonner";
 
+import { toastApiValidationError } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -70,7 +72,7 @@ export default function ProductApplicationListPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus aplikasi produk");
+        toastApiValidationError(json, "Gagal menghapus aplikasi produk");
         return;
       }
 

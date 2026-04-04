@@ -7,6 +7,10 @@ import { glassPrices } from "@/db/schema/glass_prices";
 import { requireAdminApi } from "@/lib/api-auth";
 import { translateAndSaveGlassPrice } from "@/lib/translate/entity-translators";
 import { updateGlassPriceSchema } from "@/lib/validations/glass-prices";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -96,12 +100,6 @@ export async function PATCH(request: Request, { params }: Params) {
       ...(parsed.data.variant !== undefined && {
         variant: parsed.data.variant.trim(),
       }),
-      ...(parsed.data.variantImageUrl !== undefined && {
-        variantImageUrl: parsed.data.variantImageUrl.trim(),
-      }),
-      ...(parsed.data.variantImagePublicId !== undefined && {
-        variantImagePublicId: parsed.data.variantImagePublicId.trim(),
-      }),
       ...(parsed.data.composition !== undefined && {
         composition: parsed.data.composition,
       }),
@@ -112,6 +110,34 @@ export async function PATCH(request: Request, { params }: Params) {
         pricePerSqm: parsed.data.pricePerSqm,
       }),
     };
+
+    if (
+      parsed.data.variantImageUrl !== undefined &&
+      parsed.data.variantImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.variantImageUrl.trim(),
+          parsed.data.variantImagePublicId.trim(),
+          "product"
+        );
+        updateData.variantImageUrl = promoted.url;
+        updateData.variantImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.variantImageUrl !== undefined) {
+        updateData.variantImageUrl = parsed.data.variantImageUrl.trim();
+      }
+      if (parsed.data.variantImagePublicId !== undefined) {
+        updateData.variantImagePublicId =
+          parsed.data.variantImagePublicId.trim();
+      }
+    }
 
     const [updated] = await db
       .update(glassPrices)

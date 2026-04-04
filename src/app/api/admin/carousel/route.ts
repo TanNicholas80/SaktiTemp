@@ -8,6 +8,10 @@ import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createCarouselSchema } from "@/lib/validations/carousel";
 import { translateAndSaveCarousel } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -75,14 +79,31 @@ export async function POST(request: Request) {
       );
     }
 
+    let carouselImageUrl = parsed.data.carouselImageUrl.trim();
+    let carouselImagePublicId = parsed.data.carouselImagePublicId.trim();
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        carouselImageUrl,
+        carouselImagePublicId,
+        "carousel"
+      );
+      carouselImageUrl = promoted.url;
+      carouselImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(carousel)
       .values({
         carouselHeading: parsed.data.carouselHeading.trim(),
         carouselSubheading: parsed.data.carouselSubheading.trim(),
         carouselDescription: parsed.data.carouselDescription.trim(),
-        carouselImageUrl: parsed.data.carouselImageUrl.trim(),
-        carouselImagePublicId: parsed.data.carouselImagePublicId.trim(),
+        carouselImageUrl,
+        carouselImagePublicId,
         carouselOrder: parsed.data.carouselOrder,
         carouselIsPublished: parsed.data.carouselIsPublished ?? false,
       })

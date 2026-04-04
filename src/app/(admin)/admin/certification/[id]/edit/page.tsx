@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import { PageHeaderWithBack } from "@/components/layout/page-header-with-back";
 import {
@@ -54,7 +56,9 @@ export default function EditCertificationPage() {
     setFormErrors({});
 
     if (!values.image?.url) {
-      setFormErrors({ image: "Gambar logo wajib diunggah" });
+      const imgErr = { image: "Gambar logo wajib diunggah" };
+      setFormErrors(imgErr);
+      toastClientValidationErrors(imgErr);
       return;
     }
 
@@ -73,6 +77,8 @@ export default function EditCertificationPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -86,7 +92,7 @@ export default function EditCertificationPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal memperbarui sertifikasi");
+        toastApiValidationError(json, "Gagal memperbarui sertifikasi");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(

@@ -2,15 +2,34 @@
 
 import * as React from "react";
 import { ImagePlusIcon, Loader2Icon, XIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import {
+  ADMIN_IMAGE_ACCEPT_ATTR,
+  ADMIN_IMAGE_ACCEPT_MIME,
+  ADMIN_IMAGE_MAX_BYTES,
+  STAGING_UPLOAD_DIR,
+  type FinalUploadFolder,
+} from "@/lib/constants/admin-upload";
 import { cn } from "@/lib/utils";
 
-const ACCEPT_TYPES = "image/jpeg,image/png,image/webp";
-const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+const STAGING_URL_SEGMENT = `/uploads/${STAGING_UPLOAD_DIR}/`;
+
+function isStagingImageUrl(url: string): boolean {
+  return url.includes(STAGING_URL_SEGMENT);
+}
 
 function isImageFile(file: File): boolean {
-  return ACCEPT_TYPES.split(",").includes(file.type);
+  return (ADMIN_IMAGE_ACCEPT_MIME as readonly string[]).includes(file.type);
+}
+
+async function deleteStagingFile(publicId: string): Promise<void> {
+  if (!publicId) return;
+  await fetch(
+    `/api/admin/upload?publicId=${encodeURIComponent(publicId)}`,
+    { method: "DELETE" }
+  );
 }
 
 type ImageUploadFieldProps = {
@@ -20,8 +39,11 @@ type ImageUploadFieldProps = {
   className?: string;
   error?: string;
   size?: "default" | "compact";
-  /** Folder untuk simpan file: "blog" (default), "product", "portofolio", "carousel", "hero", "certification", atau "category" */
-  folder?: "blog" | "product" | "portofolio" | "carousel" | "hero" | "certification" | "category";
+  /**
+   * Folder tujuan setelah simpan (promote). Query `folder` tetap dikirim agar konsisten dengan API;
+   * berkas disimpan di staging hingga submit.
+   */
+  folder?: FinalUploadFolder;
 };
 
 export function ImageUploadField({
@@ -36,10 +58,36 @@ export function ImageUploadField({
   const [uploading, setUploading] = React.useState(false);
   const [isDragOver, setIsDragOver] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const valueRef = React.useRef(value);
+  valueRef.current = value;
+
+  React.useEffect(() => {
+    return () => {
+      const v = valueRef.current;
+      if (v && isStagingImageUrl(v.url)) {
+        void deleteStagingFile(v.publicId);
+      }
+    };
+  }, []);
 
   async function uploadFile(file: File) {
-    if (!isImageFile(file)) return;
-    if (file.size > MAX_SIZE) return;
+    if (!isImageFile(file)) {
+      toast.error("Format gambar tidak didukung", {
+        description: "Gunakan JPEG, PNG, atau WebP.",
+      });
+      return;
+    }
+    if (file.size > ADMIN_IMAGE_MAX_BYTES) {
+      toast.error("Ukuran file terlalu besar", {
+        description: `Maksimal ${Math.round(ADMIN_IMAGE_MAX_BYTES / (1024 * 1024))}MB.`,
+      });
+      return;
+    }
+
+    const previous = valueRef.current;
+    if (previous && isStagingImageUrl(previous.url)) {
+      await deleteStagingFile(previous.publicId);
+    }
 
     setUploading(true);
     try {
@@ -49,15 +97,33 @@ export function ImageUploadField({
         method: "POST",
         body: formData,
       });
-      const json = await res.json();
+      let json: { error?: string; url?: string; publicId?: string } = {};
+      try {
+        json = await res.json();
+      } catch {
+        toast.error("Gagal membaca respons server");
+        onChange(null);
+        return;
+      }
 
       if (!res.ok) {
-        throw new Error(json.error ?? "Gagal mengunggah");
+        toast.error(json.error ?? "Gagal mengunggah gambar");
+        onChange(null);
+        return;
+      }
+
+      if (!json.url || !json.publicId) {
+        toast.error("Respons unggah tidak valid");
+        onChange(null);
+        return;
       }
 
       onChange({ url: json.url, publicId: json.publicId });
     } catch (err) {
       console.error(err);
+      toast.error("Gagal mengunggah gambar", {
+        description: err instanceof Error ? err.message : undefined,
+      });
       onChange(null);
     } finally {
       setUploading(false);
@@ -93,7 +159,11 @@ export function ImageUploadField({
     if (file) await uploadFile(file);
   }
 
-  function handleRemove() {
+  async function handleRemove() {
+    const current = valueRef.current;
+    if (current && isStagingImageUrl(current.url)) {
+      await deleteStagingFile(current.publicId);
+    }
     onChange(null);
     if (inputRef.current) inputRef.current.value = "";
   }
@@ -128,7 +198,7 @@ export function ImageUploadField({
                 variant="destructive"
                 size="icon"
                 className="absolute right-6 top-6"
-                onClick={handleRemove}
+                onClick={() => void handleRemove()}
               >
                 <XIcon className="size-4" />
               </Button>
@@ -144,7 +214,7 @@ export function ImageUploadField({
             <input
               ref={inputRef}
               type="file"
-              accept={ACCEPT_TYPES}
+              accept={ADMIN_IMAGE_ACCEPT_ATTR}
               className="hidden"
               disabled={disabled || uploading}
               onChange={handleFileChange}
@@ -164,7 +234,7 @@ export function ImageUploadField({
                 ? "Mengunggah..."
                 : isDragOver
                   ? "Lepaskan untuk mengunggah"
-                  : "Klik atau seret gambar ke sini (JPEG, PNG, WebP, max 2MB)"}
+                  : `Klik atau seret gambar ke sini (JPEG, PNG, WebP, max ${Math.round(ADMIN_IMAGE_MAX_BYTES / (1024 * 1024))}MB)`}
             </span>
           </label>
         )}

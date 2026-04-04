@@ -8,6 +8,10 @@ import { certification } from "@/db/schema/certification";
 import { requireAdminApi } from "@/lib/api-auth";
 import { createCertificationSchema } from "@/lib/validations/certification";
 import { translateAndSaveCertification } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingUrlOnlyIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -65,11 +69,21 @@ export async function POST(request: Request) {
       );
     }
 
+    let image = parsed.data.image.trim();
+    try {
+      image = await promoteStagingUrlOnlyIfNeeded(image, "certification");
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(certification)
       .values({
         name: parsed.data.name.trim(),
-        image: parsed.data.image.trim(),
+        image,
         displayOrder: parsed.data.displayOrder,
         isPublished: parsed.data.isPublished ?? true,
       })

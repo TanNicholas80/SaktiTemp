@@ -7,6 +7,10 @@ import { glassTypes } from "@/db/schema/glass_types";
 import { requireAdminApi } from "@/lib/api-auth";
 import { translateAndSaveGlassType } from "@/lib/translate/entity-translators";
 import { createGlassTypeSchema } from "@/lib/validations/glass-types";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -64,12 +68,29 @@ export async function POST(request: Request) {
       );
     }
 
+    let glassTypeImageUrl = parsed.data.glassTypeImageUrl.trim();
+    let glassTypeImagePublicId = parsed.data.glassTypeImagePublicId.trim();
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        glassTypeImageUrl,
+        glassTypeImagePublicId,
+        "category"
+      );
+      glassTypeImageUrl = promoted.url;
+      glassTypeImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(glassTypes)
       .values({
         glassTypeName: name,
-        glassTypeImageUrl: parsed.data.glassTypeImageUrl.trim(),
-        glassTypeImagePublicId: parsed.data.glassTypeImagePublicId.trim(),
+        glassTypeImageUrl,
+        glassTypeImagePublicId,
       })
       .returning();
 

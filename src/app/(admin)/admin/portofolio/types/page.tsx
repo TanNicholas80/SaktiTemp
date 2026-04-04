@@ -4,6 +4,8 @@ import * as React from "react";
 import { Layers, Plus } from "lucide-react";
 import { toast } from "sonner";
 
+import { toastApiValidationError, toastClientValidationErrors } from "@/lib/utils/toast-form";
+
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -86,6 +88,8 @@ export default function PortofolioTypesPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -99,7 +103,7 @@ export default function PortofolioTypesPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal membuat tipe");
+        toastApiValidationError(json, "Gagal membuat tipe");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(
@@ -138,6 +142,8 @@ export default function PortofolioTypesPage() {
         if (path && !errors[path]) errors[path] = issue.message;
       }
       setFormErrors(errors);
+
+      toastClientValidationErrors(errors);
       return;
     }
 
@@ -154,7 +160,7 @@ export default function PortofolioTypesPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal memperbarui tipe");
+        toastApiValidationError(json, "Gagal memperbarui tipe");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(
@@ -188,7 +194,7 @@ export default function PortofolioTypesPage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal menghapus tipe");
+        toastApiValidationError(json, "Gagal menghapus tipe");
         return;
       }
 

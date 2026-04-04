@@ -16,6 +16,10 @@ import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updatePortofolioSchema } from "@/lib/validations/portofolio";
 import { translateAndSavePortofolio } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -243,10 +247,31 @@ export async function PATCH(request: Request, { params }: Params) {
       updateData.portofolioAreaSize = parsed.data.portofolioAreaSize;
     if (parsed.data.portofolioAreaSizeUnit !== undefined)
       updateData.portofolioAreaSizeUnit = parsed.data.portofolioAreaSizeUnit;
-    if (parsed.data.portofolioImageUrl !== undefined)
-      updateData.portofolioImageUrl = parsed.data.portofolioImageUrl;
-    if (parsed.data.portofolioImagePublicId !== undefined)
-      updateData.portofolioImagePublicId = parsed.data.portofolioImagePublicId;
+    if (
+      parsed.data.portofolioImageUrl !== undefined &&
+      parsed.data.portofolioImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.portofolioImageUrl.trim(),
+          parsed.data.portofolioImagePublicId.trim(),
+          "portofolio"
+        );
+        updateData.portofolioImageUrl = promoted.url;
+        updateData.portofolioImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.portofolioImageUrl !== undefined)
+        updateData.portofolioImageUrl = parsed.data.portofolioImageUrl.trim();
+      if (parsed.data.portofolioImagePublicId !== undefined)
+        updateData.portofolioImagePublicId =
+          parsed.data.portofolioImagePublicId.trim();
+    }
     if (parsed.data.categoryPortofolioId !== undefined)
       updateData.categoryPortofolioId = parsed.data.categoryPortofolioId;
     if (parsed.data.portofolioTypeId !== undefined)

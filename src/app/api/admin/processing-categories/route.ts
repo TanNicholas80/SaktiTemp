@@ -7,6 +7,10 @@ import { processingCategories } from "@/db/schema/processing_categories";
 import { requireAdminApi } from "@/lib/api-auth";
 import { translateAndSaveProcessingCategory } from "@/lib/translate/entity-translators";
 import { createProcessingCategorySchema } from "@/lib/validations/processing-categories";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -62,12 +66,29 @@ export async function POST(request: Request) {
       );
     }
 
+    let categoryImageUrl = parsed.data.categoryImageUrl.trim();
+    let categoryImagePublicId = parsed.data.categoryImagePublicId.trim();
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        categoryImageUrl,
+        categoryImagePublicId,
+        "category"
+      );
+      categoryImageUrl = promoted.url;
+      categoryImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(processingCategories)
       .values({
         categoryName,
-        categoryImageUrl: parsed.data.categoryImageUrl.trim(),
-        categoryImagePublicId: parsed.data.categoryImagePublicId.trim(),
+        categoryImageUrl,
+        categoryImagePublicId,
       })
       .returning();
 

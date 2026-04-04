@@ -4,6 +4,11 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
+import {
+  toastApiValidationError,
+  toastClientValidationErrors,
+} from "@/lib/utils/toast-form";
 import type { ZodIssue } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -119,6 +124,7 @@ export default function NewProcessingPricePage() {
       }
       if (Object.keys(msgs).length > 0) {
         setFormErrors(msgs);
+        toastClientValidationErrors(msgs);
         return;
       }
     }
@@ -132,7 +138,9 @@ export default function NewProcessingPricePage() {
 
     const parsed = createProcessingPriceBatchSchema.safeParse(data);
     if (!parsed.success) {
-      setFormErrors(issuesToErrorMap(parsed.error.issues));
+      const clientErr = issuesToErrorMap(parsed.error.issues);
+      setFormErrors(clientErr);
+      toastClientValidationErrors(clientErr);
       return;
     }
 
@@ -146,7 +154,7 @@ export default function NewProcessingPricePage() {
       const json = await res.json();
 
       if (!res.ok) {
-        toast.error(json.error ?? "Gagal membuat pricelist");
+        toastApiValidationError(json, "Gagal membuat pricelist");
         if (json.details?.fieldErrors) {
           setFormErrors(
             Object.fromEntries(

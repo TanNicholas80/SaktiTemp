@@ -11,6 +11,10 @@ import {
   createModificationBatchSchema,
   createModificationSchema,
 } from "@/lib/validations/modification";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -65,8 +69,22 @@ export async function POST(request: Request) {
       }
 
       const name = parsed.data.name.trim();
-      const imgUrl = parsed.data.modificationImageUrl.trim();
-      const imgPid = parsed.data.modificationImagePublicId.trim();
+      let imgUrl = parsed.data.modificationImageUrl.trim();
+      let imgPid = parsed.data.modificationImagePublicId.trim();
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          imgUrl,
+          imgPid,
+          "category"
+        );
+        imgUrl = promoted.url;
+        imgPid = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
 
       for (const row of parsed.data.rows) {
         const duplicate = await db.query.modification.findFirst({
@@ -135,14 +153,31 @@ export async function POST(request: Request) {
       );
     }
 
+    let modificationImageUrl = parsed.data.modificationImageUrl.trim();
+    let modificationImagePublicId =
+      parsed.data.modificationImagePublicId.trim();
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        modificationImageUrl,
+        modificationImagePublicId,
+        "category"
+      );
+      modificationImageUrl = promoted.url;
+      modificationImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(modification)
       .values({
         name,
         thicknessId: parsed.data.thicknessId,
-        modificationImageUrl: parsed.data.modificationImageUrl.trim(),
-        modificationImagePublicId:
-          parsed.data.modificationImagePublicId.trim(),
+        modificationImageUrl,
+        modificationImagePublicId,
         pricePerSide: parsed.data.pricePerSide,
       })
       .returning();

@@ -17,6 +17,10 @@ import { revalidateContentCache } from "@/lib/cache/revalidate";
 import { translateAndSaveProductWithExcellences } from "@/lib/translate/entity-translators";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateProductSchema } from "@/lib/validations/product";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -262,10 +266,30 @@ export async function PATCH(request: Request, { params }: Params) {
       updateData.productShortDescription = parsed.data.productShortDescription ?? "";
     if (parsed.data.productDescription !== undefined)
       updateData.productDescription = parsed.data.productDescription;
-    if (parsed.data.productImageUrl !== undefined)
-      updateData.productImageUrl = parsed.data.productImageUrl;
-    if (parsed.data.productImagePublicId !== undefined)
-      updateData.productImagePublicId = parsed.data.productImagePublicId;
+    if (
+      parsed.data.productImageUrl !== undefined &&
+      parsed.data.productImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.productImageUrl.trim(),
+          parsed.data.productImagePublicId.trim(),
+          "product"
+        );
+        updateData.productImageUrl = promoted.url;
+        updateData.productImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.productImageUrl !== undefined)
+        updateData.productImageUrl = parsed.data.productImageUrl.trim();
+      if (parsed.data.productImagePublicId !== undefined)
+        updateData.productImagePublicId = parsed.data.productImagePublicId.trim();
+    }
     if (parsed.data.categoryProductId !== undefined)
       updateData.categoryProductId = parsed.data.categoryProductId;
     if (parsed.data.productIsPublished !== undefined) {

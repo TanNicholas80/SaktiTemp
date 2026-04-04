@@ -8,6 +8,10 @@ import { certification } from "@/db/schema/certification";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateCertificationSchema } from "@/lib/validations/certification";
 import { translateAndSaveCertification } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingUrlOnlyIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -100,8 +104,19 @@ export async function PATCH(request: Request, { params }: Params) {
 
     if (parsed.data.name !== undefined)
       updateData.name = parsed.data.name.trim();
-    if (parsed.data.image !== undefined)
-      updateData.image = parsed.data.image.trim();
+    if (parsed.data.image !== undefined) {
+      try {
+        updateData.image = await promoteStagingUrlOnlyIfNeeded(
+          parsed.data.image.trim(),
+          "certification"
+        );
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    }
     if (parsed.data.displayOrder !== undefined)
       updateData.displayOrder = parsed.data.displayOrder;
     if (parsed.data.isPublished !== undefined)

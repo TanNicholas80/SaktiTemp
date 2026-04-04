@@ -8,6 +8,10 @@ import { heroSection } from "@/db/schema/hero-section";
 import { requireAdminApi } from "@/lib/api-auth";
 import { updateHeroSectionSchema } from "@/lib/validations/hero-section";
 import { translateAndSaveHeroSection } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -107,11 +111,31 @@ export async function PATCH(request: Request, { params }: Params) {
       updateData.subHeading = parsed.data.subHeading.trim();
     if (parsed.data.description !== undefined)
       updateData.description = parsed.data.description.trim();
-    if (parsed.data.backgroundImageUrl !== undefined)
-      updateData.backgroundImageUrl = parsed.data.backgroundImageUrl.trim();
-    if (parsed.data.backgroundImagePublicId !== undefined)
-      updateData.backgroundImagePublicId =
-        parsed.data.backgroundImagePublicId?.trim() ?? null;
+    if (
+      parsed.data.backgroundImageUrl !== undefined &&
+      parsed.data.backgroundImagePublicId !== undefined
+    ) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          parsed.data.backgroundImageUrl.trim(),
+          parsed.data.backgroundImagePublicId.trim(),
+          "hero"
+        );
+        updateData.backgroundImageUrl = promoted.url;
+        updateData.backgroundImagePublicId = promoted.publicId;
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    } else {
+      if (parsed.data.backgroundImageUrl !== undefined)
+        updateData.backgroundImageUrl = parsed.data.backgroundImageUrl.trim();
+      if (parsed.data.backgroundImagePublicId !== undefined)
+        updateData.backgroundImagePublicId =
+          parsed.data.backgroundImagePublicId?.trim() ?? null;
+    }
     if (parsed.data.breadcrumbItems !== undefined)
       updateData.breadcrumbItems = parsed.data.breadcrumbItems;
     if (parsed.data.scrollIndicatorText !== undefined)

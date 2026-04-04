@@ -104,13 +104,13 @@ export async function PATCH(request: Request, { params }: Params) {
         eq(processingPrices.unit, nextUnit),
         nextMode === "single"
           ? and(
-              eq(processingPrices.thickness, nextThickness),
+              eq(processingPrices.thickness, nextThickness!),
               isNull(processingPrices.minThickness),
               isNull(processingPrices.maxThickness)
             )
           : and(
-              eq(processingPrices.minThickness, nextMin),
-              eq(processingPrices.maxThickness, nextMax),
+              eq(processingPrices.minThickness, nextMin!),
+              eq(processingPrices.maxThickness, nextMax!),
               isNull(processingPrices.thickness)
             )
       ),

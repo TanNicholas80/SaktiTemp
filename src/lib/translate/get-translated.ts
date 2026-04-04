@@ -29,6 +29,13 @@ import { thicknessTranslations } from "@/db/schema/thickness-translations";
 
 // Locale "id" | "en" | "zh": prefer row in *_translations; fallback to main table if missing.
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isUuidString(value: string): boolean {
+  return UUID_RE.test(value.trim());
+}
+
 // ---- Carousel ----
 export async function applyCarouselTranslations<
   T extends { carouselId: string; carouselHeading: string; carouselSubheading: string; carouselDescription: string },
@@ -340,6 +347,8 @@ export async function applyHeroSectionTranslation<
   },
 >(item: T | null, locale: string): Promise<T | null> {
   if (!item) return item;
+  // Fallback statis di halaman (heroSectionId: "fallback") bukan UUID — jangan query DB.
+  if (!isUuidString(item.heroSectionId)) return item;
   const rows = await db
     .select()
     .from(heroSectionTranslations)

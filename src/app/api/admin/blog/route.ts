@@ -10,6 +10,10 @@ import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { createBlogSchema } from "@/lib/validations/blog";
 import { translateAndSaveBlog } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingImageIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 export async function GET() {
   const auth = await requireAdminApi();
@@ -96,6 +100,23 @@ export async function POST(request: Request) {
       );
     }
 
+    let blogImageUrl = parsed.data.blogImageUrl.trim();
+    let blogImagePublicId = parsed.data.blogImagePublicId.trim();
+    try {
+      const promoted = await promoteStagingImageIfNeeded(
+        blogImageUrl,
+        blogImagePublicId,
+        "blog"
+      );
+      blogImageUrl = promoted.url;
+      blogImagePublicId = promoted.publicId;
+    } catch (e) {
+      if (e instanceof StagingPromoteError) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+      }
+      throw e;
+    }
+
     const [inserted] = await db
       .insert(blog)
       .values({
@@ -103,8 +124,8 @@ export async function POST(request: Request) {
         blogSlug: slug,
         blogExcerpt: parsed.data.blogExcerpt ?? "",
         blogContent: parsed.data.blogContent,
-        blogImageUrl: parsed.data.blogImageUrl,
-        blogImagePublicId: parsed.data.blogImagePublicId,
+        blogImageUrl,
+        blogImagePublicId,
         categoryBlogId: parsed.data.categoryBlogId ?? null,
         blogIsPublished: parsed.data.blogIsPublished ?? false,
         blogIsPublishedAt: parsed.data.blogIsPublished

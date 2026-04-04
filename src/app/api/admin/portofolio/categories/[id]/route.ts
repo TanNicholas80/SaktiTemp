@@ -9,6 +9,10 @@ import { requireAdminApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { updateCategoryPortofolioSchema } from "@/lib/validations/category-portofolio";
 import { translateAndSaveCategoryPortofolio } from "@/lib/translate/entity-translators";
+import {
+  promoteStagingUrlOnlyIfNeeded,
+  StagingPromoteError,
+} from "@/lib/server/staging-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -81,8 +85,22 @@ export async function PATCH(request: Request, { params }: Params) {
     };
     if (parsed.data.categoryPortofolioIcon !== undefined)
       updatePayload.categoryPortofolioIcon = parsed.data.categoryPortofolioIcon ?? "";
-    if (parsed.data.categoryPortofolioImage !== undefined)
-      updatePayload.categoryPortofolioImage = parsed.data.categoryPortofolioImage ?? "";
+    if (parsed.data.categoryPortofolioImage !== undefined) {
+      const raw = parsed.data.categoryPortofolioImage ?? "";
+      if (raw) {
+        try {
+          updatePayload.categoryPortofolioImage =
+            await promoteStagingUrlOnlyIfNeeded(raw.trim(), "category");
+        } catch (e) {
+          if (e instanceof StagingPromoteError) {
+            return NextResponse.json({ error: e.message }, { status: 500 });
+          }
+          throw e;
+        }
+      } else {
+        updatePayload.categoryPortofolioImage = "";
+      }
+    }
     if (parsed.data.categoryPortofolioDescription !== undefined)
       updatePayload.categoryPortofolioDescription = parsed.data.categoryPortofolioDescription ?? "";
 
