@@ -12,6 +12,7 @@ import {
   promoteStagingImageIfNeeded,
   StagingPromoteError,
 } from "@/lib/server/staging-image";
+import { deleteUploadedImageFile } from "@/lib/utils/uploaded-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -118,11 +119,20 @@ export async function PATCH(request: Request, { params }: Params) {
       }
     }
 
+    const newPublicId = parsed.data.categoryImagePublicId;
+    const oldPublicId = existing.categoryImagePublicId;
+    const imageChanged =
+      newPublicId !== undefined && oldPublicId && newPublicId !== oldPublicId;
+
     const [updated] = await db
       .update(processingCategories)
       .set(updateData)
       .where(eq(processingCategories.processingCategoryId, id))
       .returning();
+
+    if (imageChanged && updated) {
+      await deleteUploadedImageFile("category", oldPublicId);
+    }
 
     translateAndSaveProcessingCategory(
       {
@@ -171,6 +181,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         },
         { status: 409 }
       );
+    }
+
+    if (existing.categoryImagePublicId) {
+      await deleteUploadedImageFile("category", existing.categoryImagePublicId);
     }
 
     await db

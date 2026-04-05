@@ -13,6 +13,7 @@ import {
   promoteStagingUrlOnlyIfNeeded,
   StagingPromoteError,
 } from "@/lib/server/staging-image";
+import { deleteUploadedImageFile } from "@/lib/utils/uploaded-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -104,11 +105,20 @@ export async function PATCH(request: Request, { params }: Params) {
     if (parsed.data.categoryPortofolioDescription !== undefined)
       updatePayload.categoryPortofolioDescription = parsed.data.categoryPortofolioDescription ?? "";
 
+    const oldImageUrl = existing.categoryPortofolioImage;
+    const newImageUrl = updatePayload.categoryPortofolioImage as string | undefined;
+    const imageChanged =
+      newImageUrl !== undefined && oldImageUrl && newImageUrl !== oldImageUrl;
+
     const [updated] = await db
       .update(categoryPortofolio)
       .set(updatePayload)
       .where(eq(categoryPortofolio.categoryPortofolioId, id))
       .returning();
+
+    if (imageChanged && updated) {
+      await deleteUploadedImageFile("category", oldImageUrl);
+    }
 
     translateAndSaveCategoryPortofolio(updated, {
       categoryPortofolioName: existing.categoryPortofolioName,
@@ -143,6 +153,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         { error: "Kategori tidak ditemukan" },
         { status: 404 }
       );
+    }
+
+    if (existing.categoryPortofolioImage) {
+      await deleteUploadedImageFile("category", existing.categoryPortofolioImage);
     }
 
     await db

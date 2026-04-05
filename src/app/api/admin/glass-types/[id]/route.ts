@@ -11,6 +11,7 @@ import {
   promoteStagingImageIfNeeded,
   StagingPromoteError,
 } from "@/lib/server/staging-image";
+import { deleteUploadedImageFile } from "@/lib/utils/uploaded-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -107,11 +108,20 @@ export async function PATCH(request: Request, { params }: Params) {
       }
     }
 
+    const newPublicId = parsed.data.glassTypeImagePublicId;
+    const oldPublicId = existing.glassTypeImagePublicId;
+    const imageChanged =
+      newPublicId !== undefined && oldPublicId && newPublicId !== oldPublicId;
+
     const [updated] = await db
       .update(glassTypes)
       .set(updateData)
       .where(eq(glassTypes.glassTypeId, id))
       .returning();
+
+    if (imageChanged && updated) {
+      await deleteUploadedImageFile("category", oldPublicId);
+    }
 
     translateAndSaveGlassType(updated, {
       glassTypeName: existing.glassTypeName,
@@ -143,6 +153,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         { error: "Tipe kaca tidak ditemukan" },
         { status: 404 }
       );
+    }
+
+    if (existing.glassTypeImagePublicId) {
+      await deleteUploadedImageFile("category", existing.glassTypeImagePublicId);
     }
 
     await db.delete(glassTypes).where(eq(glassTypes.glassTypeId, id));

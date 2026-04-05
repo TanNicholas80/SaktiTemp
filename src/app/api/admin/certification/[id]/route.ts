@@ -12,6 +12,7 @@ import {
   promoteStagingUrlOnlyIfNeeded,
   StagingPromoteError,
 } from "@/lib/server/staging-image";
+import { deleteUploadedImageFile } from "@/lib/utils/uploaded-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -122,11 +123,19 @@ export async function PATCH(request: Request, { params }: Params) {
     if (parsed.data.isPublished !== undefined)
       updateData.isPublished = parsed.data.isPublished;
 
+    const oldImageUrl = existing.image;
+    const imageChanged =
+      parsed.data.image !== undefined && oldImageUrl && parsed.data.image !== oldImageUrl;
+
     const [updated] = await db
       .update(certification)
       .set(updateData)
       .where(eq(certification.certificationId, id))
       .returning();
+
+    if (imageChanged && updated) {
+      await deleteUploadedImageFile("certification", oldImageUrl);
+    }
 
     translateAndSaveCertification(updated, {
       name: existing.name,
@@ -160,6 +169,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         { error: "Sertifikasi tidak ditemukan" },
         { status: 404 }
       );
+    }
+
+    if (existing.image) {
+      await deleteUploadedImageFile("certification", existing.image);
     }
 
     await db

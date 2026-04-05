@@ -12,6 +12,7 @@ import {
   promoteStagingImageIfNeeded,
   StagingPromoteError,
 } from "@/lib/server/staging-image";
+import { deleteUploadedImageFile } from "@/lib/utils/uploaded-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -138,11 +139,20 @@ export async function PATCH(request: Request, { params }: Params) {
     if (parsed.data.carouselIsPublished !== undefined)
       updateData.carouselIsPublished = parsed.data.carouselIsPublished;
 
+    const newPublicId = parsed.data.carouselImagePublicId;
+    const oldPublicId = existing.carouselImagePublicId;
+    const imageChanged =
+      newPublicId !== undefined && oldPublicId && newPublicId !== oldPublicId;
+
     const [updated] = await db
       .update(carousel)
       .set(updateData)
       .where(eq(carousel.carouselId, id))
       .returning();
+
+    if (imageChanged && updated) {
+      await deleteUploadedImageFile("carousel", oldPublicId);
+    }
 
     translateAndSaveCarousel(updated, {
       carouselHeading: existing.carouselHeading,
@@ -178,6 +188,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         { error: "Slide carousel tidak ditemukan" },
         { status: 404 }
       );
+    }
+
+    if (existing.carouselImagePublicId) {
+      await deleteUploadedImageFile("carousel", existing.carouselImagePublicId);
     }
 
     await db.delete(carousel).where(eq(carousel.carouselId, id));

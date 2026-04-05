@@ -11,6 +11,7 @@ import {
   promoteStagingImageIfNeeded,
   StagingPromoteError,
 } from "@/lib/server/staging-image";
+import { deleteUploadedImageFile } from "@/lib/utils/uploaded-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -129,11 +130,20 @@ export async function PATCH(request: Request, { params }: Params) {
       updateData.pricePerSide = parsed.data.pricePerSide;
     }
 
+    const newPublicId = parsed.data.modificationImagePublicId;
+    const oldPublicId = existing.modificationImagePublicId;
+    const imageChanged =
+      newPublicId !== undefined && oldPublicId && newPublicId !== oldPublicId;
+
     const [updated] = await db
       .update(modification)
       .set(updateData)
       .where(eq(modification.modificationId, id))
       .returning();
+
+    if (imageChanged && updated) {
+      await deleteUploadedImageFile("category", oldPublicId);
+    }
 
     translateAndSaveModification(
       {
@@ -169,6 +179,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         { error: "Modifikasi tidak ditemukan" },
         { status: 404 }
       );
+    }
+
+    if (existing.modificationImagePublicId) {
+      await deleteUploadedImageFile("category", existing.modificationImagePublicId);
     }
 
     await db.delete(modification).where(eq(modification.modificationId, id));

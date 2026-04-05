@@ -11,6 +11,7 @@ import {
   promoteStagingImageIfNeeded,
   StagingPromoteError,
 } from "@/lib/server/staging-image";
+import { deleteUploadedImageFile } from "@/lib/utils/uploaded-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -139,11 +140,20 @@ export async function PATCH(request: Request, { params }: Params) {
       }
     }
 
+    const newPublicId = parsed.data.variantImagePublicId;
+    const oldPublicId = existing.variantImagePublicId;
+    const imageChanged =
+      newPublicId !== undefined && oldPublicId && newPublicId !== oldPublicId;
+
     const [updated] = await db
       .update(glassPrices)
       .set(updateData)
       .where(eq(glassPrices.glassPricesId, id))
       .returning();
+
+    if (imageChanged && updated) {
+      await deleteUploadedImageFile("product", oldPublicId);
+    }
 
     translateAndSaveGlassPrice(updated, {
       variant: existing.variant,
@@ -175,6 +185,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         { error: "Pricelist kaca tidak ditemukan" },
         { status: 404 }
       );
+    }
+
+    if (existing.variantImagePublicId) {
+      await deleteUploadedImageFile("product", existing.variantImagePublicId);
     }
 
     await db.delete(glassPrices).where(eq(glassPrices.glassPricesId, id));

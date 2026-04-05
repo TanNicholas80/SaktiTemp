@@ -12,6 +12,7 @@ import {
   promoteStagingImageIfNeeded,
   StagingPromoteError,
 } from "@/lib/server/staging-image";
+import { deleteUploadedImageFile } from "@/lib/utils/uploaded-image";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -146,11 +147,20 @@ export async function PATCH(request: Request, { params }: Params) {
     if (parsed.data.isPublished !== undefined)
       updateData.isPublished = parsed.data.isPublished;
 
+    const newPublicId = parsed.data.backgroundImagePublicId;
+    const oldPublicId = existing.backgroundImagePublicId;
+    const imageChanged =
+      newPublicId !== undefined && oldPublicId && newPublicId !== oldPublicId;
+
     const [updated] = await db
       .update(heroSection)
       .set(updateData)
       .where(eq(heroSection.heroSectionId, id))
       .returning();
+
+    if (imageChanged && updated) {
+      await deleteUploadedImageFile("hero", oldPublicId);
+    }
 
     translateAndSaveHeroSection(updated, {
       preHeading: existing.preHeading,
@@ -189,6 +199,10 @@ export async function DELETE(_request: Request, { params }: Params) {
         { error: "Hero section tidak ditemukan" },
         { status: 404 }
       );
+    }
+
+    if (existing.backgroundImagePublicId) {
+      await deleteUploadedImageFile("hero", existing.backgroundImagePublicId);
     }
 
     await db.delete(heroSection).where(eq(heroSection.heroSectionId, id));
