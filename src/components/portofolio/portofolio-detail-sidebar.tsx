@@ -3,15 +3,15 @@
 import * as React from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Link } from "@/i18n/navigation";
 import {
   Building2,
   MapPin,
   Calendar,
   Ruler,
-  MessageCircle,
 } from "lucide-react";
 
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { Button } from "@/components/ui/button";
 import type { PortofolioDetailData } from "./types";
 
@@ -50,7 +50,6 @@ export function PortofolioDetailSidebar({
   variant = "admin",
 }: PortofolioDetailSidebarProps) {
   const areaDisplay = `${portofolio.portofolioAreaSize.toLocaleString("id-ID")} ${portofolio.portofolioAreaSizeUnit}`;
-  const consultationHref = variant === "landing" ? "/about/contact" : "/#kontak";
   const asideRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
@@ -107,10 +106,14 @@ export function PortofolioDetailSidebar({
             className="w-full gap-2 rounded-xl bg-accent py-4 font-semibold text-primary-foreground hover:bg-accent/90"
             asChild
           >
-            <Link href={consultationHref}>
-              <MessageCircle className="size-5" />
+            <a
+              href={WHATSAPP_ME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <WhatsAppIcon className="size-5" />
               Konsultasi Proyek
-            </Link>
+            </a>
           </Button>
         </div>
       </div>

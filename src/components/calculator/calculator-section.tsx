@@ -25,6 +25,7 @@ import type {
   ProcessingPrice,
 } from "./types";
 import { useRouter } from "@/i18n/navigation";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { createCalculatorSectionEntrance } from "./calculator-gsap";
 
 function createEmptyAddon(): AddOnItem {
@@ -261,7 +262,7 @@ export function CalculatorSection({
       production,
     });
     const waText = encodeURIComponent(lines.join("\n"));
-    window.open(`https://wa.me/6282137056377?text=${waText}`, "_blank");
+    window.open(`${WHATSAPP_ME_URL}?text=${waText}`, "_blank");
   }
 
   function handleViewFinalClick() {

@@ -8,9 +8,7 @@ import {
   Clock,
   Mail,
   MapPin,
-  MessageCircle,
   Phone,
-  Send,
   type LucideIcon,
 } from "lucide-react";
 
@@ -28,6 +26,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 
 import type { ContactOutput, LocationOutput } from "@/lib/translate";
 
@@ -213,8 +212,7 @@ export function ContactSection({
                 >
                   <div
                     className={cn(
-                      "flex size-12 shrink-0 items-center justify-center rounded-lg transition-colors duration-300 sm:size-14",
-                      isHead ? "bg-primary" : "bg-accent",
+                      "flex size-12 shrink-0 items-center bg-primary justify-center rounded-lg transition-colors duration-300 sm:size-14",
                     )}
                   >
                     <MapPin
@@ -291,7 +289,7 @@ export function ContactSection({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-white"
                 >
-                  <MessageCircle className="size-5" />
+                  <WhatsAppIcon className="size-5" />
                   {t("chatWhatsApp")}
                 </a>
               </Button>
@@ -363,7 +361,7 @@ export function ContactSection({
                     disabled={isSubmitting}
                     className="w-full bg-primary hover:bg-primary/90"
                   >
-                    <Send className="mr-2 size-4" />
+                    <Mail className="mr-2 size-4" />
                     {isSubmitting ? "..." : t("submit")}
                   </Button>
                 </form>

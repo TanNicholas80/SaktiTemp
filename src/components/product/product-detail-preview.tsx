@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { Check, MapPin, MessageCircle, Calculator } from "lucide-react";
+import { Check, MapPin, Calculator } from "lucide-react";
 
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import type { PortofolioOption } from "./types";
 
 type ProductDetailPreviewProps = {
@@ -182,9 +184,15 @@ export function ProductDetailPreview({
         )}
 
         <div className="flex flex-wrap gap-2">
-          <Button size="sm" className="bg-accent hover:bg-accent/90">
-            <MessageCircle className="mr-1.5 size-4" strokeWidth={1.5} />
-            Konsultasi Proyek
+          <Button size="sm" className="bg-accent hover:bg-accent/90" asChild>
+            <a
+              href={WHATSAPP_ME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <WhatsAppIcon className="mr-1.5 size-4" />
+              Konsultasi Proyek
+            </a>
           </Button>
           <Button size="sm" variant="outline">
             <Calculator className="mr-1.5 size-4" />

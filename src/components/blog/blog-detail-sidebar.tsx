@@ -2,13 +2,15 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { CalendarIcon, ChevronRightIcon, MessageCircle } from "lucide-react";
+import { CalendarIcon, ChevronRightIcon } from "lucide-react";
 import { useLocale } from "next-intl";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTranslations } from "next-intl";
 
 import { Link as I18nLink } from "@/i18n/navigation";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -75,10 +77,14 @@ export function BlogDetailSidebar({ otherArticles }: BlogDetailSidebarProps) {
           className="w-full gap-2 rounded-xl bg-accent py-4 font-semibold text-accent-foreground hover:bg-accent/90"
           asChild
         >
-          <I18nLink href="/about/contact#consultation">
-            <MessageCircle className="size-5" />
+          <a
+            href={WHATSAPP_ME_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <WhatsAppIcon className="size-5" />
             {t("consultationCta")}
-          </I18nLink>
+          </a>
         </Button>
       </div>
 

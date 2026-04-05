@@ -7,7 +7,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTranslations } from "next-intl";
 import {
   CheckCircle,
-  MessageCircle,
   Package,
   Ruler,
   Scissors,
@@ -17,9 +16,11 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { cn } from "@/lib/utils";
 
 import type { ServiceOutput } from "@/lib/translate";
@@ -200,12 +201,16 @@ export function ServiceSection({
               <Button
                 asChild
                 size="lg"
-                className="mt-2 gap-2 bg-accent px-8 font-bold text-white hover:bg-accent/90"
+                className="mt-2 gap-2 bg-accent px-8 font-bold text-primary-foreground hover:bg-accent/90"
               >
-                <Link href="/#kontak">
-                  <MessageCircle className="size-5" />
+                <a
+                  href={WHATSAPP_ME_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <WhatsAppIcon className="size-5" />
                   {t("ctaBtn")}
-                </Link>
+                </a>
               </Button>
             </CardContent>
           </Card>

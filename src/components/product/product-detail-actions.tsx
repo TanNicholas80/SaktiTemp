@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { MessageCircle, Calculator } from "lucide-react";
+import { Calculator } from "lucide-react";
 
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { Button } from "@/components/ui/button";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 
 export function ProductDetailActions() {
   return (
@@ -13,10 +15,14 @@ export function ProductDetailActions() {
         size="lg"
         className="gap-2 rounded-xl bg-accent px-6 py-6 font-bold text-primary-foreground shadow-md transition-colors hover:bg-accent/90"
       >
-        <Link href="/#kontak">
-          <MessageCircle className="size-5" />
+        <a
+          href={WHATSAPP_ME_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <WhatsAppIcon className="size-5" />
           Konsultasi Proyek
-        </Link>
+        </a>
       </Button>
       <Button
         asChild

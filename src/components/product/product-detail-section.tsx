@@ -8,7 +8,6 @@ import { useTranslations } from "next-intl";
 import {
   Check,
   MapPin,
-  MessageCircle,
   Calculator,
   Shield,
   Ruler,
@@ -16,8 +15,10 @@ import {
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -351,10 +352,14 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
                 size="lg"
                 className="gap-2 rounded-xl bg-accent px-6 py-6 font-bold text-primary-foreground shadow-md transition-colors hover:bg-accent/90"
               >
-                <Link href="/#kontak">
-                  <MessageCircle className="size-5" strokeWidth={1.5} />
+                <a
+                  href={WHATSAPP_ME_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <WhatsAppIcon className="size-5" />
                   Konsultasi Proyek
-                </Link>
+                </a>
               </Button>
               <Button
                 asChild

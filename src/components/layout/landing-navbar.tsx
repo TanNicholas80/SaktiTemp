@@ -4,7 +4,7 @@ import "flag-icons/css/flag-icons.min.css";
 
 import * as React from "react";
 import Image from "next/image";
-import { ChevronDown, ChevronRight, Menu, MessageCircle } from "lucide-react";
+import { ChevronDown, ChevronRight, Menu } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
@@ -28,6 +28,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { cn } from "@/lib/utils";
 
 const LOCALE_LABELS: Record<string, string> = {
@@ -180,13 +182,15 @@ export function LandingNavbar() {
                   asChild
                   className="w-full gap-2 rounded-lg bg-accent text-primary-foreground hover:bg-accent/90"
                 >
-                  <Link
-                    href="/about/contact#consultation"
+                  <a
+                    href={WHATSAPP_ME_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    <MessageCircle className="size-4" />
+                    <WhatsAppIcon className="size-4" />
                     {t("consultation")}
-                  </Link>
+                  </a>
                 </Button>
               </div>
             </SheetContent>
@@ -330,10 +334,14 @@ export function LandingNavbar() {
             size="sm"
             className="gap-1.5 rounded-lg bg-accent px-3 py-2 text-primary-foreground hover:bg-accent/90 sm:gap-2 sm:px-4 sm:py-2.5 lg:h-9 lg:px-5 lg:py-2 xl:px-6"
           >
-            <Link href="/about/contact#consultation">
-              <MessageCircle className="size-4 shrink-0" />
+            <a
+              href={WHATSAPP_ME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <WhatsAppIcon className="size-4 shrink-0" />
               <span className="hidden sm:inline">{t("consultation")}</span>
-            </Link>
+            </a>
           </Button>
         </div>
       </div>

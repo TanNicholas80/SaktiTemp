@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { MessageCircle } from "lucide-react";
-
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -21,10 +20,14 @@ export function ConsultationCard() {
           asChild
           className="w-full max-w-[200px] gap-2 rounded-xl bg-accent px-6 py-6 font-bold text-primary-foreground shadow-md transition-colors hover:bg-accent/90"
         >
-          <Link href="/#kontak">
-            <MessageCircle className="size-5" />
+          <a
+            href={WHATSAPP_ME_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <WhatsAppIcon className="size-5" />
             Konsultasi Proyek
-          </Link>
+          </a>
         </Button>
       </CardContent>
     </Card>

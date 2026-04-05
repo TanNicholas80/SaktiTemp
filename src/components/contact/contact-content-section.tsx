@@ -13,7 +13,6 @@ import {
   MapPin,
   MessageCircle,
   Phone,
-  Send,
   type LucideIcon,
 } from "lucide-react";
 
@@ -443,7 +442,7 @@ export function ContactContentSection({
                 "transition-all duration-200 hover:shadow-lg"
               )}
             >
-              <Send className="mr-2 size-4" />
+              <Mail className="mr-2 size-4" />
               {isSubmitting ? "..." : t("submit")}
             </Button>
           </form>

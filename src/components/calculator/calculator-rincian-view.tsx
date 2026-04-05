@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { ChevronLeft, MessageCircle } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import {
   loadCalculatorRincianPayload,
   buildCalculatorWhatsAppLines,
@@ -60,7 +62,7 @@ export function CalculatorRincianView() {
       production,
     });
     window.open(
-      `https://wa.me/6282137056377?text=${encodeURIComponent(lines.join("\n"))}`,
+      `${WHATSAPP_ME_URL}?text=${encodeURIComponent(lines.join("\n"))}`,
       "_blank"
     );
   }
@@ -109,10 +111,10 @@ export function CalculatorRincianView() {
         <Button
           type="button"
           data-rincian-wa-button
-          className="gap-2 bg-[#25D366] font-semibold text-white hover:bg-[#20bd5a]"
+          className="gap-2 bg-accent font-semibold text-primary-foreground hover:bg-accent/90"
           onClick={handleWhatsApp}
         >
-          <MessageCircle className="size-4" />
+          <WhatsAppIcon className="size-4" />
           Negosiasi Bersama Tim Kami
         </Button>
       </div>

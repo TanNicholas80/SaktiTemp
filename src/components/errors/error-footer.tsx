@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { Facebook, Instagram, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { cn } from "@/lib/utils";
 
 type ErrorFooterProps = {
@@ -174,7 +175,9 @@ export function ErrorFooter({ className }: ErrorFooterProps) {
               <li className="flex items-center gap-3">
                 <Phone className="size-5 shrink-0 text-accent" />
                 <a
-                  href="tel:082137056377"
+                  href={WHATSAPP_ME_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary-foreground/90 hover:text-accent hover:underline"
                 >
                   0821 3705 6377
@@ -184,6 +187,8 @@ export function ErrorFooter({ className }: ErrorFooterProps) {
                 <Mail className="size-5 shrink-0 text-accent" />
                 <a
                   href="mailto:3s.glassindo@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary-foreground/90 hover:text-accent hover:underline"
                 >
                   3s.glassindo@gmail.com

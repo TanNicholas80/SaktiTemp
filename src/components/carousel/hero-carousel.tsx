@@ -2,11 +2,13 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, MessageCircle, Calculator } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calculator } from "lucide-react";
 import gsap from "gsap";
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
+import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -240,10 +242,14 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
                     "min-[2560px]:h-16 min-[2560px]:px-12 min-[2560px]:text-2xl"
                   )}
                 >
-                  <Link href="/about/contact#consultation">
-                    <MessageCircle className="size-3.5 sm:size-4 xl:size-5 min-[1920px]:size-6 min-[2560px]:size-8" strokeWidth={1.5} />
+                  <a
+                    href={WHATSAPP_ME_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <WhatsAppIcon className="size-3.5 sm:size-4 xl:size-5 min-[1920px]:size-6 min-[2560px]:size-8" />
                     {t("consultation")}
-                  </Link>
+                  </a>
                 </Button>
                 <Button
                   asChild
