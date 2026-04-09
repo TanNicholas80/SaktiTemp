@@ -198,5 +198,116 @@
     "calculator": "Calculator",
     "article": "Article",
     "consultation": "Project Consultation"
+  },
+  "calculatorSection": {
+    "glassSpec": {
+      "title": "Basic Glass Specifications",
+      "selectGlassType": "Select Glass Type",
+      "variantLabel": "Variant Model",
+      "thicknessLabel": "Thickness (Mm)",
+      "thicknessPlaceholder": "Select thickness...",
+      "compositionLabel": "Composition",
+      "compositionDetailLabel": "Composition Details",
+      "dimensionLabel": "Glass Dimensions (Length X Width)",
+      "dimensionHint": "Minimum {minPanjang} mm × {minLebar} mm; max. {maxPanjang} mm × {maxLebar} mm. Above {stdPanjang} × {stdLebar} mm up to {tier1MaxPanjang} × {tier1MaxLebar} mm: +10% material surcharge. Width above {tier1MaxLebar} mm (up to {tier2MaxLebar} mm): +20%.",
+      "surchargeActive": "(Surcharge {percent} is active in estimate)",
+      "lengthLabel": "Length",
+      "widthLabel": "Width",
+      "mmUnit": "mm"
+    },
+    "addOn": {
+      "title": "Add-On",
+      "addOnItemLabel": "Add-On {index}",
+      "categoryLabel": "Add-On Category",
+      "serviceTypeLabel": "Service Type",
+      "thicknessLabel": "Thickness (Mm)",
+      "thicknessExample": "e.g. 5",
+      "mmUnit": "mm",
+      "thicknessUnavailable": "Thickness is unavailable",
+      "thicknessUnavailableTitle": "Add-On thickness is unavailable",
+      "thicknessUnavailableDescription": "The thickness you entered is not found in processing price data. Please contact SAKTITEMP marketing for thickness and pricing confirmation.",
+      "quantityLabel": "Quantity ({unit})",
+      "sandblastNotice": "SanBlast price is calculated per glass unit (full surface).",
+      "sqmNotice": "Price is calculated based on the glass area entered in Basic Specifications.",
+      "unitMeter": "Meter",
+      "unitPcs": "Pcs",
+      "unitSqm": "m²",
+      "addButton": "Add Add-On"
+    },
+    "modification": {
+      "title": "Modification",
+      "itemLabel": "Modification {index}",
+      "typeLabel": "Modification Type",
+      "thicknessLabel": "Thickness (Mm)",
+      "thicknessPlaceholder": "Select thickness...",
+      "sideCountLabel": "Number of Sides",
+      "sideCountPlaceholder": "1",
+      "sideUnit": "sides",
+      "addButton": "Add Modification"
+    },
+    "production": {
+      "title": "Production & Delivery",
+      "cutting": {
+        "title": "Cut Shape",
+        "regularLabel": "Regular",
+        "regularDesc": "Straight / rectangular cuts",
+        "irregularLabel": "Irregular",
+        "irregularDesc": "Custom-shaped cuts"
+      },
+      "pattern": {
+        "title": "Pattern Method",
+        "standardLabel": "Standard",
+        "standardDesc": "Standard production pattern",
+        "customLabel": "Custom",
+        "customDesc": "Autocad/Mould - Add 10%"
+      },
+      "speed": {
+        "title": "Production Speed",
+        "normalLabel": "Normal",
+        "normalDesc": "Standard production time",
+        "expressLabel": "Express",
+        "expressDesc": "Express (Add 20%)"
+      },
+      "city": {
+        "title": "Departure Point",
+        "semarang": "Semarang",
+        "jakarta": "Jakarta"
+      },
+      "distance": {
+        "title": "Distance to Destination",
+        "hint": "Estimated rate Rp 5,000 / KM",
+        "unit": "KM"
+      },
+      "weight": {
+        "title": "Estimated Total Weight",
+        "hint": "Wooden packing fee Rp 1,000 / KG or Rp 300,000 / Box (250 KG).",
+        "unit": "KG"
+      }
+    },
+    "summary": {
+      "defaultHeading": "Temporary Estimate Details",
+      "emptyState": "Complete glass specifications to view price estimate.",
+      "materialDefaultLabel": "Base Material",
+      "materialLabel": "Base Material",
+      "dimensionLabel": "Dimensions",
+      "addOnLabel": "Add-On {index}",
+      "modificationLabel": "Modification",
+      "customPatternSurchargeLabel": "Custom Pattern Surcharge (+10%)",
+      "expressSurchargeLabel": "Express Surcharge (+20%)",
+      "logisticLabel": "Logistics",
+      "shippingLabel": "Shipping Rp {amount}",
+      "packingLabel": "Packing Rp {amount}",
+      "subTotalLabel": "Sub-Total:",
+      "ppnLabel": "VAT (11%):",
+      "grandTotalLabel": "Estimated Grand Total:",
+      "viewFinalButton": "View Final Order Details"
+    },
+    "rincian": {
+      "emptyState": "No estimate data yet. Please fill in the calculator first.",
+      "backToCalculator": "Back to calculator",
+      "heading": "Estimate Details",
+      "backEdit": "Back to edit specifications",
+      "ctaWhatsapp": "Negotiate with Our Team"
+    }
   }
 }

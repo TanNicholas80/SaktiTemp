@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,26 +26,6 @@ type RadioOption<T extends string> = {
   label: string;
   description: string;
 };
-
-const CUTTING_OPTIONS: RadioOption<ProductionState["cuttingShape"]>[] = [
-  { value: "regular", label: "Regular", description: "Potongan lurus / persegi" },
-  { value: "irregular", label: "Irregular", description: "Potongan bentuk khusus" },
-];
-
-const PATTERN_OPTIONS: RadioOption<ProductionState["patternMethod"]>[] = [
-  { value: "standard", label: "Standar", description: "Pola standar produksi" },
-  { value: "custom", label: "Custom", description: "Autocad/Mal — Tambah 10%" },
-];
-
-const SPEED_OPTIONS: RadioOption<ProductionState["productionSpeed"]>[] = [
-  { value: "normal", label: "Normal", description: "Waktu produksi standar" },
-  { value: "express", label: "Express", description: "Express (Tambah 20%)" },
-];
-
-const CITY_OPTIONS: RadioOption<ProductionState["departureCity"]>[] = [
-  { value: "semarang", label: "Semarang", description: "" },
-  { value: "jakarta", label: "Jakarta", description: "" },
-];
 
 function RadioGroup<T extends string>({
   label,
@@ -97,6 +78,23 @@ function RadioGroup<T extends string>({
 }
 
 export function ProductionSection({ state, onChange, defaultOpen = false }: Props) {
+  const t = useTranslations("calculatorSection.production");
+  const CUTTING_OPTIONS: RadioOption<ProductionState["cuttingShape"]>[] = [
+    { value: "regular", label: t("cutting.regularLabel"), description: t("cutting.regularDesc") },
+    { value: "irregular", label: t("cutting.irregularLabel"), description: t("cutting.irregularDesc") },
+  ];
+  const PATTERN_OPTIONS: RadioOption<ProductionState["patternMethod"]>[] = [
+    { value: "standard", label: t("pattern.standardLabel"), description: t("pattern.standardDesc") },
+    { value: "custom", label: t("pattern.customLabel"), description: t("pattern.customDesc") },
+  ];
+  const SPEED_OPTIONS: RadioOption<ProductionState["productionSpeed"]>[] = [
+    { value: "normal", label: t("speed.normalLabel"), description: t("speed.normalDesc") },
+    { value: "express", label: t("speed.expressLabel"), description: t("speed.expressDesc") },
+  ];
+  const CITY_OPTIONS: RadioOption<ProductionState["departureCity"]>[] = [
+    { value: "semarang", label: t("city.semarang"), description: "" },
+    { value: "jakarta", label: t("city.jakarta"), description: "" },
+  ];
   const distKm = parseFloat(state.distanceKm);
   const weightKg = parseFloat(state.weightKg);
   const shippingCost = !isNaN(distKm) && distKm > 0 ? distKm * 5000 : 0;
@@ -116,32 +114,32 @@ export function ProductionSection({ state, onChange, defaultOpen = false }: Prop
         className="rounded-xl border border-border bg-card shadow-sm border-b-0"
       >
         <AccordionTrigger className="px-5 py-4 text-base font-bold text-primary hover:no-underline">
-          Produksi &amp; Pengiriman
+          {t("title")}
         </AccordionTrigger>
         <AccordionContent className="space-y-5 px-5 pb-6 text-[0.9375rem]">
             <RadioGroup
-              label="Bentuk Potongan"
+              label={t("cutting.title")}
               options={CUTTING_OPTIONS}
               value={state.cuttingShape}
               onChange={(v) => onChange({ ...state, cuttingShape: v })}
             />
 
             <RadioGroup
-              label="Metode Pola"
+              label={t("pattern.title")}
               options={PATTERN_OPTIONS}
               value={state.patternMethod}
               onChange={(v) => onChange({ ...state, patternMethod: v })}
             />
 
             <RadioGroup
-              label="Kecepatan Produksi"
+              label={t("speed.title")}
               options={SPEED_OPTIONS}
               value={state.productionSpeed}
               onChange={(v) => onChange({ ...state, productionSpeed: v })}
             />
 
             <RadioGroup
-              label="Titik Keberangkatan"
+              label={t("city.title")}
               options={CITY_OPTIONS}
               value={state.departureCity}
               onChange={(v) => onChange({ ...state, departureCity: v })}
@@ -150,10 +148,10 @@ export function ProductionSection({ state, onChange, defaultOpen = false }: Prop
             {/* Jarak */}
             <div className="space-y-1.5">
               <Label htmlFor="prod-distance" className="text-sm font-semibold">
-                Jarak Ke Lokasi Tujuan
+                {t("distance.title")}
               </Label>
               <p className="text-xs text-muted-foreground">
-                Estimasi tarif Rp 5.000 / KM
+                {t("distance.hint")}
                 {shippingCost > 0 && (
                   <span className="ml-2 font-semibold text-foreground">
                     = Rp {shippingCost.toLocaleString("id-ID")}
@@ -170,17 +168,17 @@ export function ProductionSection({ state, onChange, defaultOpen = false }: Prop
                   value={state.distanceKm}
                   onChange={(e) => onChange({ ...state, distanceKm: e.target.value })}
                 />
-                <span className="text-sm text-muted-foreground">KM</span>
+                <span className="text-sm text-muted-foreground">{t("distance.unit")}</span>
               </div>
             </div>
 
             {/* Berat */}
             <div className="space-y-1.5">
               <Label htmlFor="prod-weight" className="text-sm font-semibold">
-                Estimasi Berat Total
+                {t("weight.title")}
               </Label>
               <p className="text-xs text-muted-foreground">
-                Biaya packing kayu Rp 1.000 / KG atau Rp 300.000 / Box (250 KG).
+                {t("weight.hint")}
                 {packingCost > 0 && (
                   <span className="ml-2 font-semibold text-foreground">
                     = Rp {packingCost.toLocaleString("id-ID")}
@@ -197,7 +195,7 @@ export function ProductionSection({ state, onChange, defaultOpen = false }: Prop
                   value={state.weightKg}
                   onChange={(e) => onChange({ ...state, weightKg: e.target.value })}
                 />
-                <span className="text-sm text-muted-foreground">KG</span>
+                <span className="text-sm text-muted-foreground">{t("weight.unit")}</span>
               </div>
             </div>
         </AccordionContent>

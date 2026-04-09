@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { FileText } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -74,11 +75,13 @@ export function EstimateSummary({
   thicknessLabel,
   panjang,
   lebar,
-  heading = "Rincian Estimasi Sementara",
+  heading,
   hideBuiltInActions = false,
   onViewFinalClick,
   onOrderClick,
 }: Props) {
+  const t = useTranslations("calculatorSection.summary");
+  const resolvedHeading = heading ?? t("defaultHeading");
   const {
     materialCost,
     dimensionSurcharge,
@@ -98,7 +101,7 @@ export function EstimateSummary({
   const materialLabel =
     glassTypeName && variant
       ? `${glassTypeName} (${variant}${thicknessLabel ? ", " + thicknessLabel : ""})`
-      : "Material Dasar";
+      : t("materialDefaultLabel");
 
   const dimLabel =
     panjang && lebar ? `${panjang} mm x ${lebar} mm` : undefined;
@@ -109,19 +112,19 @@ export function EstimateSummary({
   return (
     <div className="rounded-xl border border-border bg-card shadow-sm">
       <div className="px-5 py-4 border-b border-border">
-        <h3 className="text-base font-bold text-primary">{heading}</h3>
+        <h3 className="text-base font-bold text-primary">{resolvedHeading}</h3>
       </div>
 
       <div className="px-5 py-4 space-y-0.5">
         {!hasAnyCost && (
           <p className="py-6 text-center text-sm text-muted-foreground">
-            Lengkapi spesifikasi kaca untuk melihat estimasi harga.
+            {t("emptyState")}
           </p>
         )}
 
         {materialCost > 0 && (
           <SummaryLine
-            label="Material Dasar"
+            label={t("materialLabel")}
             sublabel={materialLabel}
             amount={materialCost}
           />
@@ -129,7 +132,7 @@ export function EstimateSummary({
 
         {hasDimSurcharge && (
           <SummaryLine
-            label="Dimensi"
+            label={t("dimensionLabel")}
             sublabel={
               dimLabel
                 ? `${dimLabel} ${dimSuffix}`.trim()
@@ -142,7 +145,7 @@ export function EstimateSummary({
         {addOnCosts.map((a, i) => (
           <SummaryLine
             key={i}
-            label={`Add-On ${i + 1}`}
+            label={t("addOnLabel", { index: i + 1 })}
             sublabel={a.label}
             amount={a.cost}
           />
@@ -151,7 +154,7 @@ export function EstimateSummary({
         {modificationCosts.map((m, i) => (
           <SummaryLine
             key={i}
-            label="Modifikasi"
+            label={t("modificationLabel")}
             sublabel={m.label}
             amount={m.cost}
           />
@@ -159,24 +162,24 @@ export function EstimateSummary({
 
         {patternSurchargeAmount > 0 && (
           <SummaryLine
-            label="Surcharge Pola Custom (+10%)"
+            label={t("customPatternSurchargeLabel")}
             amount={patternSurchargeAmount}
           />
         )}
 
         {speedSurchargeAmount > 0 && (
           <SummaryLine
-            label="Surcharge Express (+20%)"
+            label={t("expressSurchargeLabel")}
             amount={speedSurchargeAmount}
           />
         )}
 
         {(shippingCost > 0 || packingCost > 0) && (
           <SummaryLine
-            label="Logistik"
+            label={t("logisticLabel")}
             sublabel={[
-              shippingCost > 0 ? `Ongkir Rp ${fmt(shippingCost)}` : null,
-              packingCost > 0 ? `Packing Rp ${fmt(packingCost)}` : null,
+              shippingCost > 0 ? t("shippingLabel", { amount: fmt(shippingCost) }) : null,
+              packingCost > 0 ? t("packingLabel", { amount: fmt(packingCost) }) : null,
             ]
               .filter(Boolean)
               .join(" & ")}
@@ -188,20 +191,20 @@ export function EstimateSummary({
           <>
             <Separator className="my-3" />
             <div className="flex items-center justify-between py-1.5">
-              <span className="text-sm font-medium text-muted-foreground">Sub-Total:</span>
+              <span className="text-sm font-medium text-muted-foreground">{t("subTotalLabel")}</span>
               <span className="text-sm font-semibold tabular-nums text-foreground">
                 Rp {fmt(Math.round(subtotal))}
               </span>
             </div>
             <div className="flex items-center justify-between py-1.5">
-              <span className="text-sm font-medium text-muted-foreground">PPN (11%):</span>
+              <span className="text-sm font-medium text-muted-foreground">{t("ppnLabel")}</span>
               <span className="text-sm font-semibold tabular-nums text-foreground">
                 Rp {fmt(Math.round(ppn))}
               </span>
             </div>
             <Separator className="my-3" />
             <div className="flex items-center justify-between py-1">
-              <span className="text-base font-bold text-foreground">Estimasi Grand Total:</span>
+              <span className="text-base font-bold text-foreground">{t("grandTotalLabel")}</span>
               <span className="text-base font-bold tabular-nums text-primary">
                 Rp {fmt(Math.round(grandTotal))}
               </span>
@@ -221,7 +224,7 @@ export function EstimateSummary({
               onClick={onViewFinalClick}
             >
               <FileText className="size-4" />
-              Lihat Rincian Akhir Pesanan
+              {t("viewFinalButton")}
             </Button>
           )}
         </div>

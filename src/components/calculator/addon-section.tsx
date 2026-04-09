@@ -3,6 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { Plus, Trash2, TriangleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -39,14 +40,14 @@ function createEmptyAddon(): AddOnItem {
   };
 }
 
-function getUnitLabel(unit: ProcessingPrice["unit"]) {
+function getUnitLabel(unit: ProcessingPrice["unit"], t: ReturnType<typeof useTranslations>) {
   switch (unit) {
     case "m1":
-      return "Meter";
+      return t("unitMeter");
     case "pcs":
-      return "Pcs";
+      return t("unitPcs");
     case "sqm":
-      return "m²";
+      return t("unitSqm");
     default:
       return null;
   }
@@ -78,6 +79,7 @@ type AddonTabProps = {
   onChange: (item: AddOnItem) => void;
   onRemove: () => void;
   canRemove: boolean;
+  t: ReturnType<typeof useTranslations>;
 };
 
 function AddonTab({
@@ -88,6 +90,7 @@ function AddonTab({
   onChange,
   onRemove,
   canRemove,
+  t,
 }: AddonTabProps) {
   // Service names for selected category
   const serviceNames = React.useMemo(() => {
@@ -116,7 +119,7 @@ function AddonTab({
     );
   }, [item.categoryId, item.serviceName, item.thicknessValue, processingPrices]);
 
-  const unitLabel = matchedPrice ? getUnitLabel(matchedPrice.unit) : null;
+  const unitLabel = matchedPrice ? getUnitLabel(matchedPrice.unit, t) : null;
   const isNoneUnit = matchedPrice?.unit === "none";
   const isSqmUnit = matchedPrice?.unit === "sqm";
   const thicknessNum = parseFloat(item.thicknessValue);
@@ -143,7 +146,7 @@ function AddonTab({
     <div className="rounded-lg border border-border bg-background p-4 space-y-4">
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-foreground">
-          Add-On {index + 1}
+          {t("addOnItemLabel", { index: index + 1 })}
           {selectedCategory && (
             <span className="ml-2 text-xs font-normal text-muted-foreground">
               — {selectedCategory.categoryName}
@@ -167,7 +170,7 @@ function AddonTab({
       {/* Kategori Add-On */}
       <div className="space-y-2">
         <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-          Kategori Add-On
+          {t("categoryLabel")}
         </Label>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {processingCategories.map((cat) => (
@@ -208,7 +211,7 @@ function AddonTab({
       {item.categoryId && serviceNames.length > 0 && (
         <div className="space-y-2">
           <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            Tipe Pengerjaan
+            {t("serviceTypeLabel")}
           </Label>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             {serviceNames.map((sn) => (
@@ -235,7 +238,7 @@ function AddonTab({
       {item.serviceName && (
         <div className="space-y-1.5">
           <Label htmlFor={`addon-thickness-${item.id}`} className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            Ketebalan (Mm)
+            {t("thicknessLabel")}
           </Label>
           <div className="flex items-center gap-1.5">
             <Input
@@ -243,13 +246,13 @@ function AddonTab({
               type="number"
               min={1}
               step={0.5}
-              placeholder="cth. 5"
+              placeholder={t("thicknessExample")}
               className={cn("w-28", hasUnavailableThicknessWarning && "border-destructive")}
               aria-invalid={hasUnavailableThicknessWarning}
               value={item.thicknessValue}
               onChange={(e) => onChange({ ...item, thicknessValue: e.target.value, quantity: "" })}
             />
-            <span className="text-sm text-muted-foreground">mm</span>
+            <span className="text-sm text-muted-foreground">{t("mmUnit")}</span>
             {matchedPrice && (
               <span className="ml-1 text-xs text-muted-foreground">
                 Rp {matchedPrice.price.toLocaleString("id-ID")}
@@ -258,7 +261,7 @@ function AddonTab({
             )}
             {item.thicknessValue && !matchedPrice && (
               <span className="ml-1 text-xs text-destructive">
-                Ketebalan tidak tersedia
+                {t("thicknessUnavailable")}
               </span>
             )}
           </div>
@@ -268,10 +271,9 @@ function AddonTab({
       {hasUnavailableThicknessWarning && (
         <Alert variant="destructive" className="border-destructive/40 bg-destructive/5">
           <TriangleAlert />
-          <AlertTitle>Ketebalan Add-On tidak tersedia</AlertTitle>
+          <AlertTitle>{t("thicknessUnavailableTitle")}</AlertTitle>
           <AlertDescription>
-            Ketebalan yang Anda input tidak ditemukan pada data harga processing.
-            Harap hubungi tim marketing SAKTITEMP untuk konfirmasi ketebalan dan harga.
+            {t("thicknessUnavailableDescription")}
           </AlertDescription>
         </Alert>
       )}
@@ -280,7 +282,7 @@ function AddonTab({
       {matchedPrice && !isNoneUnit && !isSqmUnit && (
         <div className="space-y-1.5">
           <Label htmlFor={`addon-qty-${item.id}`} className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            Jumlah ({unitLabel})
+            {t("quantityLabel", { unit: unitLabel ?? "-" })}
           </Label>
           <div className="flex items-center gap-1.5">
             <Input
@@ -301,7 +303,7 @@ function AddonTab({
       {/* SanBlast notice */}
       {isNoneUnit && matchedPrice && (
         <p className="text-xs text-muted-foreground rounded-md bg-muted px-3 py-2">
-          Harga SanBlast dihitung per unit kaca (keseluruhan permukaan).
+          {t("sandblastNotice")}
           <span className="ml-1 font-semibold text-foreground">
             Rp {matchedPrice.price.toLocaleString("id-ID")}
           </span>
@@ -311,7 +313,7 @@ function AddonTab({
       {/* sqm info */}
       {isSqmUnit && matchedPrice && (
         <p className="text-xs text-muted-foreground rounded-md bg-muted px-3 py-2">
-          Harga dihitung berdasarkan luas kaca yang sudah diinput di Spesifikasi Dasar.
+          {t("sqmNotice")}
           <span className="ml-1 font-semibold text-foreground">
             Rp {matchedPrice.price.toLocaleString("id-ID")} / m²
           </span>
@@ -328,6 +330,7 @@ export function AddonSection({
   onChange,
   defaultOpen = false,
 }: Props) {
+  const t = useTranslations("calculatorSection.addOn");
   function handleItemChange(index: number, item: AddOnItem) {
     const next = [...items];
     next[index] = item;
@@ -355,7 +358,7 @@ export function AddonSection({
       >
         <AccordionTrigger className="px-5 py-4 text-base font-bold text-primary hover:no-underline">
           <div className="flex items-center gap-2">
-            <span>Add-On</span>
+            <span>{t("title")}</span>
             {items.length > 0 && (
               <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
                 {items.length}
@@ -371,6 +374,7 @@ export function AddonSection({
                 item={item}
                 processingCategories={processingCategories}
                 processingPrices={processingPrices}
+                t={t}
                 onChange={(updated) => handleItemChange(idx, updated)}
                 onRemove={() => handleRemove(idx)}
                 canRemove={items.length > 1}
@@ -385,7 +389,7 @@ export function AddonSection({
               onClick={handleAdd}
             >
               <Plus className="size-4" />
-              Tambah Add-On
+              {t("addButton")}
             </Button>
         </AccordionContent>
       </AccordionItem>

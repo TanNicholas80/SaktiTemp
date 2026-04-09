@@ -198,5 +198,116 @@
     "calculator": "计算器",
     "article": "文章",
     "consultation": "项目咨询"
+  },
+  "calculatorSection": {
+    "glassSpec": {
+      "title": "玻璃基础规格",
+      "selectGlassType": "选择玻璃类型",
+      "variantLabel": "型号",
+      "thicknessLabel": "厚度 (Mm)",
+      "thicknessPlaceholder": "请选择厚度...",
+      "compositionLabel": "成分",
+      "compositionDetailLabel": "成分详情",
+      "dimensionLabel": "玻璃尺寸（长 × 宽）",
+      "dimensionHint": "最小 {minPanjang} mm × {minLebar} mm；最大 {maxPanjang} mm × {maxLebar} mm。超过 {stdPanjang} × {stdLebar} mm 且不超过 {tier1MaxPanjang} × {tier1MaxLebar} mm：材料加收 10%。宽度超过 {tier1MaxLebar} mm（至 {tier2MaxLebar} mm）：加收 20%。",
+      "surchargeActive": "（当前估算已启用 {percent} 附加费）",
+      "lengthLabel": "长度",
+      "widthLabel": "宽度",
+      "mmUnit": "mm"
+    },
+    "addOn": {
+      "title": "附加项",
+      "addOnItemLabel": "附加项 {index}",
+      "categoryLabel": "附加类别",
+      "serviceTypeLabel": "加工类型",
+      "thicknessLabel": "厚度 (Mm)",
+      "thicknessExample": "例如 5",
+      "mmUnit": "mm",
+      "thicknessUnavailable": "该厚度不可用",
+      "thicknessUnavailableTitle": "附加项厚度不可用",
+      "thicknessUnavailableDescription": "您输入的厚度在加工价格数据中不存在。请联系 SAKTITEMP 市场团队确认厚度与价格。",
+      "quantityLabel": "数量（{unit}）",
+      "sandblastNotice": "SanBlast 价格按每片玻璃（整面）计算。",
+      "sqmNotice": "价格按您在基础规格中输入的玻璃面积计算。",
+      "unitMeter": "米",
+      "unitPcs": "件",
+      "unitSqm": "平方米",
+      "addButton": "添加附加项"
+    },
+    "modification": {
+      "title": "改造",
+      "itemLabel": "改造 {index}",
+      "typeLabel": "改造类型",
+      "thicknessLabel": "厚度 (Mm)",
+      "thicknessPlaceholder": "请选择厚度...",
+      "sideCountLabel": "边数",
+      "sideCountPlaceholder": "1",
+      "sideUnit": "边",
+      "addButton": "添加改造"
+    },
+    "production": {
+      "title": "生产与配送",
+      "cutting": {
+        "title": "切割形状",
+        "regularLabel": "规则",
+        "regularDesc": "直线 / 矩形切割",
+        "irregularLabel": "异形",
+        "irregularDesc": "特殊形状切割"
+      },
+      "pattern": {
+        "title": "图案方式",
+        "standardLabel": "标准",
+        "standardDesc": "标准生产图案",
+        "customLabel": "自定义",
+        "customDesc": "Autocad/模具 - 加收 10%"
+      },
+      "speed": {
+        "title": "生产速度",
+        "normalLabel": "普通",
+        "normalDesc": "标准生产时间",
+        "expressLabel": "加急",
+        "expressDesc": "加急（加收 20%）"
+      },
+      "city": {
+        "title": "发货点",
+        "semarang": "三宝垄",
+        "jakarta": "雅加达"
+      },
+      "distance": {
+        "title": "到达目的地距离",
+        "hint": "预估费率 Rp 5,000 / KM",
+        "unit": "KM"
+      },
+      "weight": {
+        "title": "预计总重量",
+        "hint": "木箱包装费 Rp 1,000 / KG 或 Rp 300,000 / 箱（250 KG）。",
+        "unit": "KG"
+      }
+    },
+    "summary": {
+      "defaultHeading": "临时估算明细",
+      "emptyState": "请完善玻璃规格以查看价格估算。",
+      "materialDefaultLabel": "基础材料",
+      "materialLabel": "基础材料",
+      "dimensionLabel": "尺寸",
+      "addOnLabel": "附加项 {index}",
+      "modificationLabel": "改造",
+      "customPatternSurchargeLabel": "自定义图案附加费 (+10%)",
+      "expressSurchargeLabel": "加急附加费 (+20%)",
+      "logisticLabel": "物流",
+      "shippingLabel": "运费 Rp {amount}",
+      "packingLabel": "包装 Rp {amount}",
+      "subTotalLabel": "小计：",
+      "ppnLabel": "增值税 (11%)：",
+      "grandTotalLabel": "预计总计：",
+      "viewFinalButton": "查看最终订单明细"
+    },
+    "rincian": {
+      "emptyState": "暂无估算数据。请先填写计算器。",
+      "backToCalculator": "返回计算器",
+      "heading": "估算明细",
+      "backEdit": "返回编辑规格",
+      "ctaWhatsapp": "与我们的团队洽谈"
+    }
   }
 }

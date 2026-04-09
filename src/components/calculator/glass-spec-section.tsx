@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -44,6 +45,7 @@ export function GlassSpecSection({
   defaultOpen = true,
   dimensionError = null,
 }: Props) {
+  const t = useTranslations("calculatorSection.glassSpec");
   // Compute available variants for selected glass type
   const availableVariants = React.useMemo(() => {
     if (!spec.glassTypeId) return [];
@@ -99,6 +101,14 @@ export function GlassSpecSection({
   const dimsOk = dimsFilled && validateGlassDimensions(panjangNum, lebarNum).ok;
   const surchargeRate =
     dimsOk ? getDimensionSurchargeRate(panjangNum, lebarNum) : 0;
+  const selectedGlassPrice = glassPrices.find(
+    (gp) =>
+      gp.glassTypeId === spec.glassTypeId &&
+      gp.variant === spec.variant &&
+      gp.thicknessId === spec.thicknessId
+  );
+  const composition = selectedGlassPrice?.composition?.trim();
+  const compositionDetail = selectedGlassPrice?.compositionDetail?.trim();
 
   return (
     <Accordion
@@ -112,12 +122,12 @@ export function GlassSpecSection({
         className="rounded-xl border border-border bg-card shadow-sm border-b-0"
       >
         <AccordionTrigger className="px-5 py-4 text-base font-bold text-primary hover:no-underline">
-          Spesifikasi Dasar Kaca
+          {t("title")}
         </AccordionTrigger>
         <AccordionContent className="space-y-6 px-5 pb-6 text-[0.9375rem]">
             {/* Jenis Kaca */}
             <div className="space-y-2">
-              <Label className="text-sm font-semibold">Pilih Jenis Kaca</Label>
+              <Label className="text-sm font-semibold">{t("selectGlassType")}</Label>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
                 {glassTypes.map((gt) => (
                   <button
@@ -156,7 +166,7 @@ export function GlassSpecSection({
             {/* Varian Model */}
             {spec.glassTypeId && availableVariants.length > 0 && (
               <div className="space-y-2">
-                <Label className="text-sm font-semibold">Varian Model</Label>
+                <Label className="text-sm font-semibold">{t("variantLabel")}</Label>
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-2 xl:grid-cols-3">
                   {availableVariants.map((v) => (
                     <button
@@ -197,14 +207,14 @@ export function GlassSpecSection({
             {spec.variant && availableThicknesses.length > 0 && (
               <div className="space-y-2">
                 <Label htmlFor="glass-thickness" className="text-sm font-semibold">
-                  Ketebalan (Mm)
+                  {t("thicknessLabel")}
                 </Label>
                 <Select
                   value={spec.thicknessId ?? ""}
                   onValueChange={handleThicknessChange}
                 >
                   <SelectTrigger id="glass-thickness" className="w-full sm:w-64">
-                    <SelectValue placeholder="Pilih ketebalan..." />
+                    <SelectValue placeholder={t("thicknessPlaceholder")} />
                   </SelectTrigger>
                   <SelectContent>
                     {availableThicknesses.map((t) => (
@@ -217,29 +227,54 @@ export function GlassSpecSection({
               </div>
             )}
 
+            {spec.thicknessId && (composition || compositionDetail) && (
+              <div className="space-y-2 rounded-lg border border-border bg-muted/30 p-3">
+                {composition && (
+                  <p className="text-sm text-foreground">
+                    <span className="font-semibold">{t("compositionLabel")}:</span>{" "}
+                    {composition}
+                  </p>
+                )}
+                {compositionDetail && (
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-semibold text-foreground">
+                      {t("compositionDetailLabel")}:
+                    </span>{" "}
+                    {compositionDetail}
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Dimensi */}
             <div className="space-y-2">
               <Label className="text-sm font-semibold">
-                Dimensi Kaca (Panjang X Lebar)
+                {t("dimensionLabel")}
               </Label>
               <p className="text-xs text-muted-foreground">
-                Minimal {GLASS_DIM_MM.MIN_PANJANG} mm × {GLASS_DIM_MM.MIN_LEBAR} mm; maks.{" "}
-                {GLASS_DIM_MM.MAX_PANJANG} mm × {GLASS_DIM_MM.MAX_LEBAR} mm. Di atas{" "}
-                {GLASS_DIM_MM.STD_PANJANG} × {GLASS_DIM_MM.STD_LEBAR} mm hingga{" "}
-                {GLASS_DIM_MM.TIER1_MAX_PANJANG} × {GLASS_DIM_MM.TIER1_MAX_LEBAR} mm:{" "}
-                tambahan 10% dari material. Lebar di atas {GLASS_DIM_MM.TIER1_MAX_LEBAR} mm
-                (sampai {GLASS_DIM_MM.TIER2_MAX_LEBAR} mm): tambahan 20%.
+                {t("dimensionHint", {
+                  minPanjang: GLASS_DIM_MM.MIN_PANJANG,
+                  minLebar: GLASS_DIM_MM.MIN_LEBAR,
+                  maxPanjang: GLASS_DIM_MM.MAX_PANJANG,
+                  maxLebar: GLASS_DIM_MM.MAX_LEBAR,
+                  stdPanjang: GLASS_DIM_MM.STD_PANJANG,
+                  stdLebar: GLASS_DIM_MM.STD_LEBAR,
+                  tier1MaxPanjang: GLASS_DIM_MM.TIER1_MAX_PANJANG,
+                  tier1MaxLebar: GLASS_DIM_MM.TIER1_MAX_LEBAR,
+                  tier2MaxLebar: GLASS_DIM_MM.TIER2_MAX_LEBAR,
+                })}
                 {dimsOk && surchargeRate > 0 && (
                   <span className="ml-1 font-semibold text-primary">
-                    (Surcharge{" "}
-                    {surchargeRate === 0.2 ? "20%" : "10%"} aktif pada estimasi)
+                    {t("surchargeActive", {
+                      percent: surchargeRate === 0.2 ? "20%" : "10%",
+                    })}
                   </span>
                 )}
               </p>
               <div className="flex flex-wrap gap-3">
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="dim-panjang" className="text-xs text-muted-foreground">
-                    Panjang
+                    {t("lengthLabel")}
                   </Label>
                   <div className="flex items-center gap-1.5">
                     <Input
@@ -257,12 +292,12 @@ export function GlassSpecSection({
                         onChange({ ...spec, panjang: e.target.value })
                       }
                     />
-                    <span className="text-sm text-muted-foreground">mm</span>
+                    <span className="text-sm text-muted-foreground">{t("mmUnit")}</span>
                   </div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <Label htmlFor="dim-lebar" className="text-xs text-muted-foreground">
-                    Lebar
+                    {t("widthLabel")}
                   </Label>
                   <div className="flex items-center gap-1.5">
                     <Input
@@ -280,7 +315,7 @@ export function GlassSpecSection({
                         onChange({ ...spec, lebar: e.target.value })
                       }
                     />
-                    <span className="text-sm text-muted-foreground">mm</span>
+                    <span className="text-sm text-muted-foreground">{t("mmUnit")}</span>
                   </div>
                 </div>
               </div>
