@@ -115,6 +115,155 @@
     "calculateGlass": "Hitung Kebutuhan Kaca",
     "scroll": "Scroll"
   },
+  "seo": {
+    "home": {
+      "title": "Beranda",
+      "description": "SAKTITEMP® — Produsen kaca tempered berkualitas tinggi berstandar Eropa untuk proyek komersial, residensial, dan arsitektur.",
+      "keywords": "kaca tempered,produsen kaca tempered,kaca tempered berkualitas,kaca safety glass,pabrik kaca tempered,kaca bangunan,kaca arsitektural,saktitemp",
+      "ogTitle": "SAKTITEMP® Tempered Glass — Beranda",
+      "ogDescription": "Produsen kaca tempered berkualitas tinggi berstandar Eropa untuk proyek komersial, residensial, dan arsitektur."
+    },
+    "calculator": {
+      "title": "Kalkulator Kaca",
+      "description": "Hitung estimasi kebutuhan kaca tempered untuk proyek Anda dengan kalkulator online SAKTITEMP®.",
+      "keywords": "kalkulator kaca tempered,hitung kebutuhan kaca,kalkulator luas kaca,estimasi kaca tempered,kalkulator material kaca",
+      "ogTitle": "Kalkulator Kaca | SAKTITEMP®",
+      "ogDescription": "Hitung estimasi kebutuhan kaca tempered untuk proyek Anda dengan kalkulator online SAKTITEMP®."
+    },
+    "calculatorRincian": {
+      "title": "Rincian Penawaran | SAKTITEMP®",
+      "description": "Ringkasan estimasi biaya kaca dari kalkulator SAKTITEMP. Lanjutkan ke WhatsApp untuk verifikasi final.",
+      "keywords": "rincian kalkulator kaca tempered,estimasi biaya kaca tempered,ringkasan penawaran kaca,kalkulator kaca saktitemp",
+      "ogTitle": "Rincian Penawaran | SAKTITEMP®",
+      "ogDescription": "Lihat ringkasan estimasi biaya kaca tempered dari kalkulator SAKTITEMP dan lanjutkan ke WhatsApp untuk verifikasi final."
+    },
+    "article": {
+      "title": "Blog & Artikel",
+      "description": "Artikel edukatif dan referensi profesional tentang kaca tempered dari SAKTITEMP®.",
+      "keywords": "artikel kaca tempered,blog kaca tempered,tips kaca tempered,panduan instalasi kaca,wawasan industri kaca,saktitemp blog",
+      "ogTitle": "Blog & Artikel | SAKTITEMP®",
+      "ogDescription": "Artikel edukatif dan referensi profesional tentang kaca tempered dari SAKTITEMP®."
+    },
+    "product": {
+      "title": "Produk Kaca Tempered",
+      "description": "Temukan berbagai produk kaca tempered berkualitas tinggi dari SAKTITEMP®.",
+      "keywords": "produk kaca tempered,jenis kaca tempered,kaca railing,kaca partisi,kaca fasad,supplier kaca tempered",
+      "ogTitle": "Produk Kaca Tempered | SAKTITEMP®",
+      "ogDescription": "Temukan berbagai produk kaca tempered berkualitas tinggi dari SAKTITEMP®."
+    },
+    "portofolio": {
+      "title": "Portfolio Proyek",
+      "description": "Jelajahi portofolio proyek kaca tempered SAKTITEMP® dari seluruh Indonesia.",
+      "keywords": "portofolio kaca tempered,proyek kaca tempered,portfolio kaca bangunan,kaca fasad gedung,hasil proyek saktitemp",
+      "ogTitle": "Portfolio Proyek | SAKTITEMP®",
+      "ogDescription": "Jelajahi portofolio proyek kaca tempered SAKTITEMP® dari seluruh Indonesia."
+    },
+    "aboutCompany": {
+      "title": "Tentang Perusahaan",
+      "description": "Mengenal SAKTITEMP® lebih dekat — sejarah, visi misi, sertifikasi, dan komitmen kualitas.",
+      "keywords": "tentang saktitemp,profil perusahaan kaca tempered,visi misi saktitemp,sertifikasi kaca tempered",
+      "ogTitle": "Tentang Perusahaan | SAKTITEMP®",
+      "ogDescription": "Sejarah, visi misi, dan komitmen SAKTITEMP® dalam industri kaca tempered Indonesia."
+    },
+    "aboutContact": {
+      "title": "Hubungi Kami",
+      "description": "Hubungi tim SAKTITEMP® untuk konsultasi proyek kaca tempered, pertanyaan produk, atau permintaan penawaran.",
+      "keywords": "kontak saktitemp,hubungi saktitemp,konsultasi kaca tempered,penawaran kaca tempered",
+      "ogTitle": "Hubungi Kami | SAKTITEMP®",
+      "ogDescription": "Konsultasikan kebutuhan kaca tempered Anda bersama tim profesional SAKTITEMP®."
+    },
+    "productDetail": {
+      "notFoundTitle": "Produk tidak ditemukan",
+      "baseKeywords": "produk kaca tempered,jenis kaca tempered,kaca tempered bangunan,kaca tempered interior,kaca tempered eksterior",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "portofolioDetail": {
+      "notFoundTitle": "Proyek tidak ditemukan",
+      "baseKeywords": "portofolio kaca tempered,proyek kaca tempered,contoh proyek kaca,kaca tempered komersial,kaca tempered residensial",
+      "descriptionFallback": "Proyek {name} di {location} untuk {client}.",
+      "defaultLocation": "Indonesia",
+      "defaultClient": "klien",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "articleDetail": {
+      "notFoundTitle": "Artikel tidak ditemukan",
+      "baseKeywords": "artikel kaca tempered,blog kaca tempered,informasi kaca tempered,tips kaca bangunan,wawasan industri kaca",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "error403": {
+      "title": "403 - Akses Ditolak",
+      "description": "Anda tidak memiliki izin untuk mengakses halaman ini. Silakan kembali ke beranda.",
+      "heroTitle": "Akses Terbatas.",
+      "heroDescription": "Mohon maaf, Anda tidak memiliki izin untuk mengakses halaman ini. Silakan hubungi admin jika ini adalah kesalahan.",
+      "primaryLabel": "Kembali Ke Beranda",
+      "secondaryLabel": "Hubungi Kami"
+    },
+    "error500": {
+      "title": "500 - Gangguan Sistem",
+      "description": "Terjadi kendala teknis pada server. Silakan coba lagi beberapa saat.",
+      "heroTitle": "Terjadi Gangguan Pada Sistem.",
+      "heroDescription": "Maaf, server kami sedang mengalami kendala teknis. Kami akan segera memperbaikinya. Silakan coba lagi nanti.",
+      "primaryLabel": "Kembali Ke Beranda",
+      "secondaryLabel": "Hubungi Kami"
+    }
+  },
+  "fallbackHero": {
+    "calculator": {
+      "mainHeading": "Kalkulasikan Kebutuhan Kaca Anda",
+      "subHeading": "Estimasi Biaya Kaca Tempered Untuk Kebutuhan Proyek Anda",
+      "description": "Masukkan detail ukuran dan spesifikasi kaca untuk mendapatkan estimasi biaya awal.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "page": "Calculator"
+    },
+    "calculatorRincian": {
+      "mainHeading": "Rincian Penawaran Anda",
+      "subHeading": "Berikut adalah estimasi biaya berdasarkan spesifikasi yang Anda pilih.",
+      "description": "Silakan lanjutkan ke WhatsApp untuk verifikasi final dan bernegosiasi dengan tim kami.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "calculator": "Calculator",
+      "page": "Rincian"
+    },
+    "article": {
+      "mainHeading": "Blog Dan Wawasan Tentang Solusi Kaca",
+      "subHeading": "Kaca Tempered: Pilihan Tahan Lama Dan Bergaya",
+      "description": "Artikel edukatif dan referensi profesional tentang kaca tempered untuk berbagai kebutuhan proyek.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "page": "Blog & Artikel"
+    },
+    "product": {
+      "mainHeading": "Kaca Tempered Berkualitas",
+      "subHeading": "Lindungi Setiap Sudut Properti Anda",
+      "description": "Solusi kaca tempered premium untuk proyek residensial, komersial, dan arsitektur.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "page": "Produk"
+    },
+    "portofolio": {
+      "mainHeading": "Intip Karya Kami:",
+      "subHeading": "Solusi Kaca Untuk Segala Ruang",
+      "description": "Lebih dari 200 proyek kaca tempered premium telah kami selesaikan di seluruh Indonesia.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "page": "Portfolio"
+    },
+    "aboutCompany": {
+      "preHeading": "ABOUT US",
+      "mainHeading": "Membangun Kepercayaan",
+      "subHeading": "Melalui Presisi *Dan* Kualitas",
+      "description": "Manufaktur kaca tempered berpresisi tinggi dengan standar kualitas dan keandalan untuk setiap proyek.",
+      "scrollIndicatorText": "SCROLL"
+    },
+    "aboutContact": {
+      "preHeading": "CONTACT US",
+      "mainHeading": "Hubungi Kami",
+      "subHeading": "Untuk Pertanyaan Dan Dukungan",
+      "description": "Jika Anda memiliki pertanyaan atau ingin mendiskusikan proyek Anda, jangan ragu untuk menghubungi kami.",
+      "scrollIndicatorText": "SCROLL"
+    }
+  },
   "calculatorGuide": {
     "startEstimate": "Mulai Hitung Estimasi",
     "viewGuide": "Lihat Panduan",
@@ -198,5 +347,123 @@
     "calculator": "Kalkulator",
     "article": "Artikel",
     "consultation": "Konsultasi Proyek"
+  },
+  "calculatorSection": {
+    "dimensionRules": {
+      "invalidNumber": "Masukkan panjang dan lebar yang valid.",
+      "minSize": "Ukuran minimal {minPanjang} mm × {minLebar} mm.",
+      "maxSize": "Ukuran maksimal {maxPanjang} mm × {maxLebar} mm. Hubungi kami untuk ukuran khusus.",
+      "surcharge10": "(+10% Surcharge)",
+      "surcharge20": "(+20% Surcharge)"
+    },
+    "glassSpec": {
+      "title": "Spesifikasi Dasar Kaca",
+      "selectGlassType": "Pilih Jenis Kaca",
+      "variantLabel": "Varian Model",
+      "thicknessLabel": "Ketebalan (Mm)",
+      "thicknessPlaceholder": "Pilih ketebalan...",
+      "compositionLabel": "Komposisi",
+      "compositionDetailLabel": "Detail Komposisi",
+      "dimensionLabel": "Dimensi Kaca (Panjang X Lebar)",
+      "dimensionHint": "Minimal {minPanjang} mm × {minLebar} mm; maks. {maxPanjang} mm × {maxLebar} mm. Di atas {stdPanjang} × {stdLebar} mm hingga {tier1MaxPanjang} × {tier1MaxLebar} mm: tambahan 10% dari material. Lebar di atas {tier1MaxLebar} mm (sampai {tier2MaxLebar} mm): tambahan 20%.",
+      "surchargeActive": "(Surcharge {percent} aktif pada estimasi)",
+      "lengthLabel": "Panjang",
+      "widthLabel": "Lebar",
+      "mmUnit": "mm"
+    },
+    "addOn": {
+      "title": "Add-On",
+      "addOnItemLabel": "Add-On {index}",
+      "categoryLabel": "Kategori Add-On",
+      "serviceTypeLabel": "Tipe Pengerjaan",
+      "thicknessLabel": "Ketebalan (Mm)",
+      "thicknessExample": "cth. 5",
+      "mmUnit": "mm",
+      "thicknessUnavailable": "Ketebalan tidak tersedia",
+      "thicknessUnavailableTitle": "Ketebalan Add-On tidak tersedia",
+      "thicknessUnavailableDescription": "Ketebalan yang Anda input tidak ditemukan pada data harga processing. Harap hubungi tim marketing SAKTITEMP untuk konfirmasi ketebalan dan harga.",
+      "quantityLabel": "Jumlah ({unit})",
+      "sandblastNotice": "Harga SanBlast dihitung per unit kaca (keseluruhan permukaan).",
+      "sqmNotice": "Harga dihitung berdasarkan luas kaca yang sudah diinput di Spesifikasi Dasar.",
+      "unitMeter": "Meter",
+      "unitPcs": "Pcs",
+      "unitSqm": "m²",
+      "addButton": "Tambah Add-On"
+    },
+    "modification": {
+      "title": "Modifikasi",
+      "itemLabel": "Modifikasi {index}",
+      "typeLabel": "Tipe Modifikasi",
+      "thicknessLabel": "Ketebalan (Mm)",
+      "thicknessPlaceholder": "Pilih ketebalan...",
+      "sideCountLabel": "Jumlah Sisi",
+      "sideCountPlaceholder": "1",
+      "sideUnit": "sisi",
+      "addButton": "Tambah Modifikasi"
+    },
+    "production": {
+      "title": "Produksi & Pengiriman",
+      "cutting": {
+        "title": "Bentuk Potongan",
+        "regularLabel": "Regular",
+        "regularDesc": "Potongan lurus / persegi",
+        "irregularLabel": "Irregular",
+        "irregularDesc": "Potongan bentuk khusus"
+      },
+      "pattern": {
+        "title": "Metode Pola",
+        "standardLabel": "Standar",
+        "standardDesc": "Pola standar produksi",
+        "customLabel": "Custom",
+        "customDesc": "Autocad/Mal - Tambah 10%"
+      },
+      "speed": {
+        "title": "Kecepatan Produksi",
+        "normalLabel": "Normal",
+        "normalDesc": "Waktu produksi standar",
+        "expressLabel": "Express",
+        "expressDesc": "Express (Tambah 20%)"
+      },
+      "city": {
+        "title": "Titik Keberangkatan",
+        "semarang": "Semarang",
+        "jakarta": "Jakarta"
+      },
+      "distance": {
+        "title": "Jarak Ke Lokasi Tujuan",
+        "hint": "Estimasi tarif Rp 5.000 / KM",
+        "unit": "KM"
+      },
+      "weight": {
+        "title": "Estimasi Berat Total",
+        "hint": "Biaya packing kayu Rp 1.000 / KG atau Rp 300.000 / Box (250 KG).",
+        "unit": "KG"
+      }
+    },
+    "summary": {
+      "defaultHeading": "Rincian Estimasi Sementara",
+      "emptyState": "Lengkapi spesifikasi kaca untuk melihat estimasi harga.",
+      "materialDefaultLabel": "Material Dasar",
+      "materialLabel": "Material Dasar",
+      "dimensionLabel": "Dimensi",
+      "addOnLabel": "Add-On {index}",
+      "modificationLabel": "Modifikasi",
+      "customPatternSurchargeLabel": "Surcharge Pola Custom (+10%)",
+      "expressSurchargeLabel": "Surcharge Express (+20%)",
+      "logisticLabel": "Logistik",
+      "shippingLabel": "Ongkir Rp {amount}",
+      "packingLabel": "Packing Rp {amount}",
+      "subTotalLabel": "Sub-Total:",
+      "ppnLabel": "PPN (11%):",
+      "grandTotalLabel": "Estimasi Grand Total:",
+      "viewFinalButton": "Lihat Rincian Akhir Pesanan"
+    },
+    "rincian": {
+      "emptyState": "Belum ada data estimasi. Silakan isi kalkulator terlebih dahulu.",
+      "backToCalculator": "Kembali ke kalkulator",
+      "heading": "Rincian Estimasi",
+      "backEdit": "Kembali Edit Spesifikasi",
+      "ctaWhatsapp": "Negosiasi Bersama Tim Kami"
+    }
   }
 }

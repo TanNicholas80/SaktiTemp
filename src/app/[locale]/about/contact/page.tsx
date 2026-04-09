@@ -1,31 +1,10 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { eq } from "drizzle-orm";
 
 import { ContactContentSection } from "@/components/contact";
 
-export const metadata: Metadata = {
-  title: "Hubungi Kami",
-  description:
-    "Hubungi tim SAKTITEMP® untuk konsultasi proyek kaca tempered, pertanyaan produk, atau permintaan penawaran. Kami siap melayani Anda.",
-  keywords: [
-    "kontak saktitemp",
-    "hubungi saktitemp",
-    "konsultasi kaca tempered",
-    "penawaran kaca tempered",
-    "customer service kaca tempered",
-    "nomor telepon saktitemp",
-    "alamat pabrik kaca tempered",
-    "email saktitemp",
-  ],
-  openGraph: {
-    title: "Hubungi Kami | SAKTITEMP®",
-    description:
-      "Konsultasikan kebutuhan kaca tempered Anda bersama tim profesional SAKTITEMP®.",
-    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
-  },
-};
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";
 import { LocationSection } from "@/components/location";
@@ -47,22 +26,40 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const FALLBACK_HERO = {
-  heroSectionId: "fallback",
-  pageKey: "contact",
-  preHeading: "CONTACT US",
-  mainHeading: "Hubungi Kami",
-  subHeading: "Untuk Pertanyaan Dan Dukungan",
-  description:
-    "Kami menyediakan layanan manufaktur kaca tempered berkualitas tinggi. Jika Anda memiliki pertanyaan atau ingin mendiskusikan proyek Anda, jangan ragu untuk menghubungi kami!",
-  backgroundImageUrl: "",
-  scrollIndicatorText: "SCROLL",
-  scrollIndicatorVisible: true,
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.aboutContact" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    keywords: t("keywords").split(","),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+  };
+}
+
+async function getFallbackHero(locale: string) {
+  const t = await getTranslations({ locale, namespace: "fallbackHero.aboutContact" });
+  return {
+    heroSectionId: "fallback",
+    pageKey: "contact",
+    preHeading: t("preHeading"),
+    mainHeading: t("mainHeading"),
+    subHeading: t("subHeading"),
+    description: t("description"),
+    backgroundImageUrl: "",
+    scrollIndicatorText: t("scrollIndicatorText"),
+    scrollIndicatorVisible: true,
+  };
+}
 
 export default async function AboutContactPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const fallbackHero = await getFallbackHero(locale);
 
   const contactData = await cachedQuery(
     contentCacheKey("about", "contact"),
@@ -136,7 +133,7 @@ export default async function AboutContactPage({ params }: Props) {
             scrollIndicatorText: heroRow.scrollIndicatorText,
             scrollIndicatorVisible: heroRow.scrollIndicatorVisible,
           }
-        : FALLBACK_HERO;
+        : fallbackHero;
 
       const rawLocations = locationRows.map((r) => ({
         locationId: r.locationId,

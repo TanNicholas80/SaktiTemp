@@ -1,11 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 
 import { GlassSpecSection } from "./glass-spec-section";
 import { AddonSection } from "./addon-section";
 import { EstimateSummary } from "./estimate-summary";
 import {
+  dimensionValidationMessage,
   validateGlassDimensions,
   getDimensionSurchargeRate,
 } from "./dimension-rules";
@@ -56,6 +58,7 @@ export function CalculatorSection({
   processingCategories,
   processingPrices,
 }: CalculatorSectionProps) {
+  const tDimensionRules = useTranslations("calculatorSection.dimensionRules");
   const router = useRouter();
   const rootRef = React.useRef<HTMLDivElement>(null);
 
@@ -230,7 +233,7 @@ export function CalculatorSection({
                   const p = parseFloat(glassSpec.panjang);
                   const l = parseFloat(glassSpec.lebar);
                   const r = validateGlassDimensions(p, l);
-                  return r.ok ? null : r.message;
+                  return dimensionValidationMessage(r, tDimensionRules);
                 })()
               : null
           }

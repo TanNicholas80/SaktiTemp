@@ -1,32 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
-
-export const metadata: Metadata = {
-  title: "Beranda",
-  description:
-    "SAKTITEMP® — Produsen kaca tempered berkualitas tinggi berstandar Eropa. Solusi terbaik untuk proyek komersial, residensial, dan arsitektur di Indonesia.",
-  keywords: [
-    "kaca tempered",
-    "produsen kaca tempered",
-    "kaca tempered berkualitas",
-    "kaca tempered jakarta",
-    "kaca tempered surabaya",
-    "kaca safety glass",
-    "pabrik kaca tempered",
-    "kaca bangunan",
-    "kaca arsitektural",
-    "kaca komersial",
-    "kaca residensial",
-    "saktitemp",
-  ],
-  openGraph: {
-    title: "SAKTITEMP® Tempered Glass — Beranda",
-    description:
-      "Produsen kaca tempered berkualitas tinggi berstandar Eropa untuk proyek komersial, residensial, dan arsitektur.",
-    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
-  },
-};
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { desc, eq } from "drizzle-orm";
 
@@ -68,6 +42,21 @@ import { OrganizationJsonLd } from "@/components/seo/json-ld";
 type Props = {
   params: Promise<{ locale: string }>;
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.home" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    keywords: t("keywords").split(","),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+  };
+}
 
 export default async function LandingHomePage({ params }: Props) {
   const { locale } = await params;

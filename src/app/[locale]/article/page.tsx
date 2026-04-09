@@ -1,32 +1,8 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { desc, eq, or } from "drizzle-orm";
 
 export const revalidate = 300;
-
-export const metadata: Metadata = {
-  title: "Blog & Artikel",
-  description:
-    "Artikel edukatif dan referensi profesional tentang kaca tempered dari SAKTITEMP® — tips desain, panduan instalasi, dan wawasan industri.",
-  keywords: [
-    "artikel kaca tempered",
-    "blog kaca tempered",
-    "tips kaca tempered",
-    "panduan instalasi kaca",
-    "referensi desain kaca",
-    "informasi kaca bangunan",
-    "wawasan industri kaca",
-    "kaca safety",
-    "perawatan kaca tempered",
-    "saktitemp blog",
-  ],
-  openGraph: {
-    title: "Blog & Artikel | SAKTITEMP®",
-    description:
-      "Artikel edukatif dan referensi profesional tentang kaca tempered dari SAKTITEMP®.",
-    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
-  },
-};
 
 import { ArticlePageContent } from "@/components/article";
 import { FooterSection } from "@/components/footer";
@@ -53,26 +29,44 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const FALLBACK_HERO = {
-  heroSectionId: "fallback",
-  pageKey: "articles",
-  preHeading: null,
-  mainHeading: "Blog Dan Wawasan Tentang Solusi Kaca",
-  subHeading: "Kaca Tempered: Pilihan Tahan Lama Dan Bergaya",
-  description:
-    "Artikel edukatif dan referensi profesional tentang kaca tempered untuk berbagai kebutuhan proyek.",
-  backgroundImageUrl: "",
-  scrollIndicatorText: "SCROLL",
-  scrollIndicatorVisible: false,
-  breadcrumbItems: [
-    { label: "Home", href: "/" },
-    { label: "Blog & Artikel", href: "/article" },
-  ] as { label: string; href: string }[],
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.article" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    keywords: t("keywords").split(","),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+  };
+}
+
+async function getFallbackHero(locale: string) {
+  const t = await getTranslations({ locale, namespace: "fallbackHero.article" });
+  return {
+    heroSectionId: "fallback",
+    pageKey: "articles",
+    preHeading: null,
+    mainHeading: t("mainHeading"),
+    subHeading: t("subHeading"),
+    description: t("description"),
+    backgroundImageUrl: "",
+    scrollIndicatorText: t("scrollIndicatorText"),
+    scrollIndicatorVisible: false,
+    breadcrumbItems: [
+      { label: t("home"), href: "/" },
+      { label: t("page"), href: "/article" },
+    ] as { label: string; href: string }[],
+  };
+}
 
 export default async function ArticlePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const fallbackHero = await getFallbackHero(locale);
 
   const {
     heroRow,
@@ -196,7 +190,7 @@ export default async function ArticlePage({ params }: Props) {
           (heroRow.breadcrumbItems as { label: string; href: string }[] | null) ??
           null,
       }
-    : FALLBACK_HERO;
+    : fallbackHero;
 
   const hero = (await applyHeroSectionTranslation(rawHero, locale)) ?? rawHero;
 

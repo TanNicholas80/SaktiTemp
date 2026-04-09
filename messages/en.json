@@ -115,6 +115,155 @@
     "calculateGlass": "Calculate Glass Requirements",
     "scroll": "Scroll"
   },
+  "seo": {
+    "home": {
+      "title": "Home",
+      "description": "SAKTITEMP® — High-quality tempered glass manufacturer with European standards.",
+      "keywords": "tempered glass,tempered glass manufacturer,safety glass,architectural glass,saktitemp",
+      "ogTitle": "SAKTITEMP® Tempered Glass — Home",
+      "ogDescription": "High-quality tempered glass manufacturer with European standards."
+    },
+    "calculator": {
+      "title": "Glass Calculator",
+      "description": "Calculate tempered glass requirements for your project with SAKTITEMP® online calculator.",
+      "keywords": "tempered glass calculator,glass area calculator,glass cost estimate",
+      "ogTitle": "Glass Calculator | SAKTITEMP®",
+      "ogDescription": "Calculate tempered glass requirements for your project with SAKTITEMP® online calculator."
+    },
+    "calculatorRincian": {
+      "title": "Estimate Details | SAKTITEMP®",
+      "description": "Summary of glass estimate from SAKTITEMP calculator. Continue to WhatsApp for final verification.",
+      "keywords": "glass estimate details,tempered glass quotation summary",
+      "ogTitle": "Estimate Details | SAKTITEMP®",
+      "ogDescription": "View tempered glass estimate summary from SAKTITEMP calculator and continue to WhatsApp."
+    },
+    "article": {
+      "title": "Blog & Articles",
+      "description": "Educational and professional references about tempered glass from SAKTITEMP®.",
+      "keywords": "tempered glass articles,glass blog,installation guide",
+      "ogTitle": "Blog & Articles | SAKTITEMP®",
+      "ogDescription": "Educational and professional references about tempered glass from SAKTITEMP®."
+    },
+    "product": {
+      "title": "Tempered Glass Products",
+      "description": "Discover high-quality tempered glass products from SAKTITEMP®.",
+      "keywords": "tempered glass products,glass railing,glass partition,glass facade",
+      "ogTitle": "Tempered Glass Products | SAKTITEMP®",
+      "ogDescription": "Discover high-quality tempered glass products from SAKTITEMP®."
+    },
+    "portofolio": {
+      "title": "Project Portfolio",
+      "description": "Explore SAKTITEMP® tempered glass project portfolio from across Indonesia.",
+      "keywords": "tempered glass portfolio,glass project portfolio",
+      "ogTitle": "Project Portfolio | SAKTITEMP®",
+      "ogDescription": "Explore SAKTITEMP® tempered glass project portfolio from across Indonesia."
+    },
+    "aboutCompany": {
+      "title": "About Company",
+      "description": "Learn more about SAKTITEMP® — history, vision, certifications, and quality commitment.",
+      "keywords": "about saktitemp,tempered glass company profile",
+      "ogTitle": "About Company | SAKTITEMP®",
+      "ogDescription": "History, vision, and commitments of SAKTITEMP® in tempered glass industry."
+    },
+    "aboutContact": {
+      "title": "Contact Us",
+      "description": "Contact SAKTITEMP® team for tempered glass consultation and quotation requests.",
+      "keywords": "contact saktitemp,tempered glass consultation",
+      "ogTitle": "Contact Us | SAKTITEMP®",
+      "ogDescription": "Consult your tempered glass needs with SAKTITEMP® professional team."
+    },
+    "productDetail": {
+      "notFoundTitle": "Product not found",
+      "baseKeywords": "tempered glass product,types of tempered glass,building tempered glass,interior tempered glass,exterior tempered glass",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "portofolioDetail": {
+      "notFoundTitle": "Project not found",
+      "baseKeywords": "tempered glass portfolio,tempered glass project,glass project reference,commercial tempered glass,residential tempered glass",
+      "descriptionFallback": "Project {name} in {location} for {client}.",
+      "defaultLocation": "Indonesia",
+      "defaultClient": "client",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "articleDetail": {
+      "notFoundTitle": "Article not found",
+      "baseKeywords": "tempered glass article,tempered glass blog,tempered glass information,building glass tips,glass industry insights",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "error403": {
+      "title": "403 - Access Denied",
+      "description": "You do not have permission to access this page.",
+      "heroTitle": "Restricted Access.",
+      "heroDescription": "Sorry, you do not have permission to access this page. Please contact admin if this is a mistake.",
+      "primaryLabel": "Back To Home",
+      "secondaryLabel": "Contact Us"
+    },
+    "error500": {
+      "title": "500 - System Error",
+      "description": "A technical issue occurred on the server. Please try again later.",
+      "heroTitle": "System Is Experiencing Issues.",
+      "heroDescription": "Sorry, our server is currently experiencing technical issues. Please try again later.",
+      "primaryLabel": "Back To Home",
+      "secondaryLabel": "Contact Us"
+    }
+  },
+  "fallbackHero": {
+    "calculator": {
+      "mainHeading": "Calculate Your Glass Needs",
+      "subHeading": "Tempered Glass Cost Estimation For Your Project",
+      "description": "Enter dimensions and glass specifications to get an initial estimate.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "page": "Calculator"
+    },
+    "calculatorRincian": {
+      "mainHeading": "Your Estimate Details",
+      "subHeading": "Here is the cost estimate based on your selected specification.",
+      "description": "Continue to WhatsApp for final verification and negotiation with our team.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "calculator": "Calculator",
+      "page": "Details"
+    },
+    "article": {
+      "mainHeading": "Insights For Glass Solutions",
+      "subHeading": "Tempered Glass: Durable and Stylish Choice",
+      "description": "Educational and professional references about tempered glass for various projects.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "page": "Blog & Articles"
+    },
+    "product": {
+      "mainHeading": "Quality Tempered Glass",
+      "subHeading": "Protect Every Corner Of Your Property",
+      "description": "Premium tempered glass solutions for residential, commercial, and architectural projects.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "page": "Products"
+    },
+    "portofolio": {
+      "mainHeading": "See Our Works:",
+      "subHeading": "Glass Solutions For Every Space",
+      "description": "More than 200 premium tempered glass projects delivered across Indonesia.",
+      "scrollIndicatorText": "SCROLL",
+      "home": "Home",
+      "page": "Portfolio"
+    },
+    "aboutCompany": {
+      "preHeading": "ABOUT US",
+      "mainHeading": "Building Trust",
+      "subHeading": "Through Precision *And* Quality",
+      "description": "High-precision tempered glass manufacturing with reliable quality standards.",
+      "scrollIndicatorText": "SCROLL"
+    },
+    "aboutContact": {
+      "preHeading": "CONTACT US",
+      "mainHeading": "Contact Us",
+      "subHeading": "For Questions And Support",
+      "description": "If you have questions or want to discuss your project, do not hesitate to contact us.",
+      "scrollIndicatorText": "SCROLL"
+    }
+  },
   "calculatorGuide": {
     "startEstimate": "Start Cost Estimate",
     "viewGuide": "View Guide",
@@ -198,5 +347,123 @@
     "calculator": "Calculator",
     "article": "Article",
     "consultation": "Project Consultation"
+  },
+  "calculatorSection": {
+    "dimensionRules": {
+      "invalidNumber": "Please enter valid length and width.",
+      "minSize": "Minimum size is {minPanjang} mm × {minLebar} mm.",
+      "maxSize": "Maximum size is {maxPanjang} mm × {maxLebar} mm. Contact us for custom size.",
+      "surcharge10": "(+10% Surcharge)",
+      "surcharge20": "(+20% Surcharge)"
+    },
+    "glassSpec": {
+      "title": "Basic Glass Specifications",
+      "selectGlassType": "Select Glass Type",
+      "variantLabel": "Variant Model",
+      "thicknessLabel": "Thickness (Mm)",
+      "thicknessPlaceholder": "Select thickness...",
+      "compositionLabel": "Composition",
+      "compositionDetailLabel": "Composition Details",
+      "dimensionLabel": "Glass Dimensions (Length X Width)",
+      "dimensionHint": "Minimum {minPanjang} mm × {minLebar} mm; max. {maxPanjang} mm × {maxLebar} mm. Above {stdPanjang} × {stdLebar} mm up to {tier1MaxPanjang} × {tier1MaxLebar} mm: +10% material surcharge. Width above {tier1MaxLebar} mm (up to {tier2MaxLebar} mm): +20%.",
+      "surchargeActive": "(Surcharge {percent} is active in estimate)",
+      "lengthLabel": "Length",
+      "widthLabel": "Width",
+      "mmUnit": "mm"
+    },
+    "addOn": {
+      "title": "Add-On",
+      "addOnItemLabel": "Add-On {index}",
+      "categoryLabel": "Add-On Category",
+      "serviceTypeLabel": "Service Type",
+      "thicknessLabel": "Thickness (Mm)",
+      "thicknessExample": "e.g. 5",
+      "mmUnit": "mm",
+      "thicknessUnavailable": "Thickness is unavailable",
+      "thicknessUnavailableTitle": "Add-On thickness is unavailable",
+      "thicknessUnavailableDescription": "The thickness you entered is not found in processing price data. Please contact SAKTITEMP marketing for thickness and pricing confirmation.",
+      "quantityLabel": "Quantity ({unit})",
+      "sandblastNotice": "SanBlast price is calculated per glass unit (full surface).",
+      "sqmNotice": "Price is calculated based on the glass area entered in Basic Specifications.",
+      "unitMeter": "Meter",
+      "unitPcs": "Pcs",
+      "unitSqm": "m²",
+      "addButton": "Add Add-On"
+    },
+    "modification": {
+      "title": "Modification",
+      "itemLabel": "Modification {index}",
+      "typeLabel": "Modification Type",
+      "thicknessLabel": "Thickness (Mm)",
+      "thicknessPlaceholder": "Select thickness...",
+      "sideCountLabel": "Number of Sides",
+      "sideCountPlaceholder": "1",
+      "sideUnit": "sides",
+      "addButton": "Add Modification"
+    },
+    "production": {
+      "title": "Production & Delivery",
+      "cutting": {
+        "title": "Cut Shape",
+        "regularLabel": "Regular",
+        "regularDesc": "Straight / rectangular cuts",
+        "irregularLabel": "Irregular",
+        "irregularDesc": "Custom-shaped cuts"
+      },
+      "pattern": {
+        "title": "Pattern Method",
+        "standardLabel": "Standard",
+        "standardDesc": "Standard production pattern",
+        "customLabel": "Custom",
+        "customDesc": "Autocad/Mould - Add 10%"
+      },
+      "speed": {
+        "title": "Production Speed",
+        "normalLabel": "Normal",
+        "normalDesc": "Standard production time",
+        "expressLabel": "Express",
+        "expressDesc": "Express (Add 20%)"
+      },
+      "city": {
+        "title": "Departure Point",
+        "semarang": "Semarang",
+        "jakarta": "Jakarta"
+      },
+      "distance": {
+        "title": "Distance to Destination",
+        "hint": "Estimated rate Rp 5,000 / KM",
+        "unit": "KM"
+      },
+      "weight": {
+        "title": "Estimated Total Weight",
+        "hint": "Wooden packing fee Rp 1,000 / KG or Rp 300,000 / Box (250 KG).",
+        "unit": "KG"
+      }
+    },
+    "summary": {
+      "defaultHeading": "Temporary Estimate Details",
+      "emptyState": "Complete glass specifications to view price estimate.",
+      "materialDefaultLabel": "Base Material",
+      "materialLabel": "Base Material",
+      "dimensionLabel": "Dimensions",
+      "addOnLabel": "Add-On {index}",
+      "modificationLabel": "Modification",
+      "customPatternSurchargeLabel": "Custom Pattern Surcharge (+10%)",
+      "expressSurchargeLabel": "Express Surcharge (+20%)",
+      "logisticLabel": "Logistics",
+      "shippingLabel": "Shipping Rp {amount}",
+      "packingLabel": "Packing Rp {amount}",
+      "subTotalLabel": "Sub-Total:",
+      "ppnLabel": "VAT (11%):",
+      "grandTotalLabel": "Estimated Grand Total:",
+      "viewFinalButton": "View Final Order Details"
+    },
+    "rincian": {
+      "emptyState": "No estimate data yet. Please fill in the calculator first.",
+      "backToCalculator": "Back to calculator",
+      "heading": "Estimate Details",
+      "backEdit": "Back to edit specifications",
+      "ctaWhatsapp": "Negotiate with Our Team"
+    }
   }
 }

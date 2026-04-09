@@ -1,32 +1,10 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { eq } from "drizzle-orm";
 
 import { AboutContentSection, VisionMissionSection } from "@/components/about";
 
-export const metadata: Metadata = {
-  title: "Tentang Perusahaan",
-  description:
-    "Mengenal SAKTITEMP® lebih dekat — sejarah, visi misi, sertifikasi, dan komitmen kami dalam menghadirkan kaca tempered berkualitas tinggi berstandar Eropa.",
-  keywords: [
-    "tentang saktitemp",
-    "profil perusahaan kaca tempered",
-    "pabrik kaca tempered indonesia",
-    "produsen kaca tempered",
-    "visi misi saktitemp",
-    "sertifikasi kaca tempered",
-    "kualitas kaca tempered",
-    "pabrik kaca bangunan",
-    "manufaktur kaca tempered",
-  ],
-  openGraph: {
-    title: "Tentang Perusahaan | SAKTITEMP®",
-    description:
-      "Sejarah, visi misi, dan komitmen SAKTITEMP® dalam industri kaca tempered Indonesia.",
-    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
-  },
-};
 import { BenefitSection } from "@/components/benefit";
 import { CertificationSection } from "@/components/certification";
 import { CompanyStatsSection } from "@/components/company-stat";
@@ -60,22 +38,40 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const FALLBACK_HERO = {
-  heroSectionId: "fallback",
-  pageKey: "about",
-  preHeading: "ABOUT US",
-  mainHeading: "Membangun Kepercayaan",
-  subHeading: "Melalui Presisi *Dan* Kualitas",
-  description:
-    "Manufaktur kaca tempered berpresisi tinggi dengan standar kualitas dan keandalan untuk setiap proyek.",
-  backgroundImageUrl: "",
-  scrollIndicatorText: "SCROLL",
-  scrollIndicatorVisible: true,
-};
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.aboutCompany" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    keywords: t("keywords").split(","),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+  };
+}
+
+async function getFallbackHero(locale: string) {
+  const t = await getTranslations({ locale, namespace: "fallbackHero.aboutCompany" });
+  return {
+    heroSectionId: "fallback",
+    pageKey: "about",
+    preHeading: t("preHeading"),
+    mainHeading: t("mainHeading"),
+    subHeading: t("subHeading"),
+    description: t("description"),
+    backgroundImageUrl: "",
+    scrollIndicatorText: t("scrollIndicatorText"),
+    scrollIndicatorVisible: true,
+  };
+}
 
 export default async function AboutCompanyPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const fallbackHero = await getFallbackHero(locale);
 
   const companyData = await cachedQuery(
     contentCacheKey("about", "company"),
@@ -200,7 +196,7 @@ export default async function AboutCompanyPage({ params }: Props) {
             scrollIndicatorText: heroRow.scrollIndicatorText,
             scrollIndicatorVisible: heroRow.scrollIndicatorVisible,
           }
-        : FALLBACK_HERO;
+        : fallbackHero;
 
       const rawBenefits = benefitRows.map((r) => ({
         benefitId: r.benefitId,

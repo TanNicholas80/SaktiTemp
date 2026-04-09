@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { ChevronLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { Link } from "@/i18n/navigation";
@@ -15,6 +16,7 @@ import { EstimateSummary } from "./estimate-summary";
 import { createCalculatorRincianEntrance } from "./calculator-gsap";
 
 export function CalculatorRincianView() {
+  const t = useTranslations("calculatorSection.rincian");
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [payload, setPayload] = React.useState(
     null as ReturnType<typeof loadCalculatorRincianPayload>
@@ -35,18 +37,19 @@ export function CalculatorRincianView() {
     return (
       <div ref={rootRef} className="mx-auto w-full max-w-lg space-y-4 py-8 text-center sm:py-12">
         <p data-rincian-step className="text-muted-foreground">
-          Belum ada data estimasi. Silakan isi kalkulator terlebih dahulu.
+          {t("emptyState")}
         </p>
         <div data-rincian-step>
           <Button asChild variant="outline" className="border-primary/40 text-primary">
-            <Link href="/calculator">Kembali ke kalkulator</Link>
+            <Link href="/calculator">{t("backToCalculator")}</Link>
           </Button>
         </div>
       </div>
     );
   }
 
-  const { breakdown, glassTypeName, variant, thicknessLabel, panjang, lebar } = payload;
+  const { breakdown, glassTypeName, variant, thicknessLabel, panjang, lebar, production } =
+    payload;
 
   function handleWhatsApp() {
     const lines = buildCalculatorWhatsAppLines({
@@ -58,6 +61,7 @@ export function CalculatorRincianView() {
         lebar: lebar ?? "",
       },
       breakdown,
+      production,
     });
     window.open(
       `${WHATSAPP_ME_URL}?text=${encodeURIComponent(lines.join("\n"))}`,
@@ -76,7 +80,7 @@ export function CalculatorRincianView() {
           thicknessLabel={thicknessLabel}
           panjang={panjang}
           lebar={lebar}
-          heading="Rincian Estimasi"
+          heading={t("heading")}
           hideBuiltInActions
         />
       </div>
@@ -93,7 +97,7 @@ export function CalculatorRincianView() {
         >
           <Link href="/calculator">
             <ChevronLeft className="size-4" />
-            Kembali Edit Spesifikasi
+            {t("backEdit")}
           </Link>
         </Button>
         <Button
@@ -103,7 +107,7 @@ export function CalculatorRincianView() {
           onClick={handleWhatsApp}
         >
           <WhatsAppIcon className="size-4" />
-          Negosiasi Bersama Tim Kami
+          {t("ctaWhatsapp")}
         </Button>
       </div>
     </div>
