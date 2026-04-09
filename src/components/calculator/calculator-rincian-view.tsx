@@ -70,16 +70,6 @@ export function CalculatorRincianView() {
   return (
     <div ref={rootRef} className="mx-auto w-full max-w-2xl space-y-8">
 
-      <header data-rincian-step className="space-y-2">
-        <h1 className="text-2xl font-bold text-primary sm:text-3xl">
-          Rincian Penawaran
-        </h1>
-        <p className="max-w-prose text-sm text-muted-foreground sm:text-base">
-          Berikut estimasi biaya berdasarkan spesifikasi yang Anda pilih. Lanjutkan ke
-          WhatsApp untuk bernegosiasi bersama tim SAKTITEMP®.
-        </p>
-      </header>
-
       <div data-rincian-step data-rincian-card>
         <EstimateSummary
           breakdown={breakdown}

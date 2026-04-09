@@ -14,7 +14,7 @@ export const createUserSchema = z.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       "Password harus mengandung huruf kecil, huruf besar, dan angka"
     ),
-  role: z.enum(["admin", "user"]).default("admin"),
+  role: z.enum(["admin", "user", "blog_editor"]).default("admin"),
 });
 
 export const updateUserSchema = z.object({
@@ -38,7 +38,7 @@ export const updateUserSchema = z.object({
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(val),
       "Password harus mengandung huruf kecil, huruf besar, dan angka"
     ),
-  role: z.enum(["admin", "user"]).optional(),
+  role: z.enum(["admin", "user", "blog_editor"]).optional(),
 });
 
 export type CreateUserInput = z.infer<typeof createUserSchema>;

@@ -1,7 +1,7 @@
-import { requireAdminSession } from "@/lib/session";
+import { requireCmsSession } from "@/lib/session";
 
 export default async function ProfilePage() {
-  const session = await requireAdminSession();
+  const session = await requireCmsSession();
 
   return (
     <div className="space-y-6">

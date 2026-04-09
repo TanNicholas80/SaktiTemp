@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { authClient } from "@/lib/auth-client";
+import { getCmsHomeHref } from "@/lib/admin-nav";
 import { PasswordInput } from "@/components/shared/password-input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -69,7 +70,9 @@ export function AdminSignInForm() {
       }
 
       toast.success("Login berhasil.");
-      router.replace("/admin");
+      const sess = await authClient.getSession();
+      const user = sess.data?.user as { role?: string } | undefined;
+      router.replace(getCmsHomeHref(user?.role));
       router.refresh();
     } catch {
       const message = "Terjadi kesalahan saat login. Silakan coba lagi.";

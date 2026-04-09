@@ -64,16 +64,26 @@ export function createUserColumns({
       ),
       cell: ({ row }) => {
         const role = row.getValue("role") as string;
+        const label =
+          role === "blog_editor"
+            ? "Editor Blog"
+            : role === "admin"
+              ? "Admin"
+              : role === "user"
+                ? "User"
+                : role;
         return (
           <span
             className={cn(
               "inline-flex rounded-full px-2 py-0.5 text-xs font-medium",
               role === "admin"
                 ? "bg-primary/10 text-primary"
-                : "bg-muted text-muted-foreground"
+                : role === "blog_editor"
+                  ? "bg-blue-500/10 text-blue-700 dark:text-blue-400"
+                  : "bg-muted text-muted-foreground"
             )}
           >
-            {role}
+            {label}
           </span>
         );
       },

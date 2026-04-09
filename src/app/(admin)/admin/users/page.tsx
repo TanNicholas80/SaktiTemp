@@ -353,6 +353,7 @@ export default function UsersPage() {
                   className="border-input bg-background h-9 w-full rounded-md border px-3 py-1 text-sm"
                 >
                   <option value="admin">Admin</option>
+                  <option value="blog_editor">Editor Blog</option>
                   <option value="user">User</option>
                 </select>
               </Field>
@@ -425,6 +426,7 @@ export default function UsersPage() {
                     className="border-input bg-background h-9 w-full rounded-md border px-3 py-1 text-sm"
                   >
                     <option value="admin">Admin</option>
+                    <option value="blog_editor">Editor Blog</option>
                     <option value="user">User</option>
                   </select>
                 </Field>

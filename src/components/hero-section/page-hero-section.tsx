@@ -34,6 +34,8 @@ export function PageHeroSection({ hero, afterDescription }: PageHeroSectionProps
   const breadcrumbItems: HeroBreadcrumbItem[] = Array.isArray(rawBreadcrumbs)
     ? (rawBreadcrumbs as HeroBreadcrumbItem[])
     : [];
+  const isCalculatorHero =
+    hero.pageKey === "calculator";
 
   // Parse *teks* menjadi <em>teks</em> untuk subHeading (contoh: "Presisi *Dan* Kualitas")
   const renderSubHeading = (text: string) => {
@@ -115,15 +117,16 @@ export function PageHeroSection({ hero, afterDescription }: PageHeroSectionProps
       ref={sectionRef}
       className={cn(
         "relative w-full overflow-hidden",
-        "aspect-[4/3] min-h-[380px]",
-        "sm:aspect-[16/9] sm:min-h-[420px]",
-        "md:min-h-[480px]",
-        "lg:min-h-[520px]",
-        "xl:min-h-[560px]",
-        "min-[1920px]:min-h-[620px]",
-        "min-[2560px]:min-h-[680px]",
+        "aspect-[16/9] min-h-[260px]",
+        "sm:aspect-[21/9] sm:min-h-[300px]",
+        "lg:aspect-[24/9]",
+        "md:min-h-[340px]",
+        "lg:min-h-[380px]",
+        "xl:min-h-[420px]",
+        "min-[1920px]:min-h-[500px]",
+        "min-[2560px]:min-h-[560px]",
         afterDescription &&
-          "max-[475px]:aspect-[5/6] max-[475px]:min-h-[320px]"
+          "max-[475px]:aspect-[4/3] max-[475px]:min-h-[250px] max-[360px]:aspect-[5/4] max-[360px]:min-h-[320px]"
       )}
     >
       {/* Background image or gradient fallback */}
@@ -155,18 +158,20 @@ export function PageHeroSection({ hero, afterDescription }: PageHeroSectionProps
       />
 
       {/* Content */}
-      <div className="absolute inset-0 flex flex-col justify-between p-4 max-[475px]:pb-5 sm:p-6 sm:pb-8 md:p-10 lg:p-12 xl:p-14 min-[1920px]:p-16 min-[2560px]:p-20">
+      <div className="absolute inset-0 flex flex-col justify-between p-4 max-[475px]:pb-4 max-[360px]:p-3 max-[360px]:pb-3 sm:p-5 sm:pb-6 md:p-8 lg:p-10 xl:p-12 min-[1920px]:p-14 min-[2560px]:p-16">
         <div
           className={cn(
-            "flex flex-col gap-2.5 max-[475px]:gap-2 sm:gap-4 md:gap-5",
-            "max-w-full sm:max-w-[85%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[55%] min-[1920px]:max-w-[50%]"
+            "flex flex-col gap-2 max-[475px]:gap-1.5 max-[360px]:gap-1 sm:gap-3 md:gap-4",
+            "max-w-full sm:max-w-[85%] md:max-w-[70%] lg:max-w-[60%] xl:max-w-[55%] min-[1920px]:max-w-[50%]",
+            isCalculatorHero &&
+              "sm:max-w-[88%] md:max-w-[74%] lg:max-w-[62%] xl:max-w-[56%]"
           )}
         >
           {breadcrumbItems.length > 0 && (
             <nav
               ref={breadcrumbRef}
               aria-label="Breadcrumb"
-              className="flex flex-wrap items-center gap-1 text-xs text-white/90 sm:text-sm"
+              className="flex flex-wrap items-center gap-1 text-[11px] text-white/90 max-[360px]:hidden sm:text-xs md:text-sm"
             >
               {breadcrumbItems.map((item, i) => (
                 <span key={i} className="flex items-center gap-1">
@@ -193,7 +198,7 @@ export function PageHeroSection({ hero, afterDescription }: PageHeroSectionProps
           {hero.preHeading && (
             <p
               ref={preHeadingRef}
-              className="text-xs font-medium uppercase tracking-[0.2em] text-accent sm:text-sm"
+              className="text-[11px] font-medium uppercase tracking-[0.16em] text-accent sm:text-xs md:text-sm"
             >
               {hero.preHeading}
             </p>
@@ -201,21 +206,33 @@ export function PageHeroSection({ hero, afterDescription }: PageHeroSectionProps
 
           <h1
             ref={mainHeadingRef}
-            className="text-2xl font-bold uppercase tracking-tight text-white leading-tight sm:text-3xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl min-[1920px]:text-7xl min-[2560px]:text-8xl"
+            className={cn(
+              "text-xl font-bold uppercase tracking-tight text-white leading-tight sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl min-[1920px]:text-7xl min-[2560px]:text-8xl",
+              isCalculatorHero &&
+                "text-lg max-[360px]:text-base max-[360px]:leading-snug sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl min-[1920px]:text-6xl min-[2560px]:text-7xl"
+            )}
           >
             {hero.mainHeading}
           </h1>
 
           <p
             ref={subHeadingRef}
-            className="text-base font-medium text-accent sm:text-lg md:text-lg lg:text-xl xl:text-2xl min-[1920px]:text-[2rem] transition-colors duration-200 hover:text-accent/90 [&>em]:italic"
+            className={cn(
+              "text-sm font-medium text-accent sm:text-base md:text-lg lg:text-xl xl:text-2xl min-[1920px]:text-[2rem] transition-colors duration-200 hover:text-accent/90 [&>em]:italic",
+              isCalculatorHero &&
+                "text-[13px] max-[360px]:text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl min-[1920px]:text-[1.75rem]"
+            )}
           >
             {renderSubHeading(hero.subHeading)}
           </p>
 
           <p
             ref={descRef}
-            className="text-xs leading-relaxed text-white/95 sm:text-sm md:text-sm lg:text-base xl:text-lg max-w-xl sm:max-w-2xl md:max-w-3xl"
+            className={cn(
+              "text-[11px] leading-relaxed text-white/95 sm:text-xs md:text-sm lg:text-base xl:text-lg max-w-lg sm:max-w-xl md:max-w-2xl",
+              isCalculatorHero &&
+                "text-[10px] max-[360px]:text-[9px] sm:text-[11px] md:text-xs lg:text-sm xl:text-base max-w-md sm:max-w-lg md:max-w-xl line-clamp-2 sm:line-clamp-none"
+            )}
           >
             {hero.description}
           </p>
@@ -223,7 +240,7 @@ export function PageHeroSection({ hero, afterDescription }: PageHeroSectionProps
           {afterDescription ? (
             <div
               ref={ctaRef}
-              className="flex flex-col gap-2 pt-0.5 max-[475px]:gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3 sm:pt-1"
+              className="flex flex-col gap-1.5 pt-0.5 max-[475px]:gap-1.5 max-[360px]:gap-1 max-[360px]:pt-0 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2.5 sm:pt-1"
             >
               {afterDescription}
             </div>
@@ -234,16 +251,16 @@ export function PageHeroSection({ hero, afterDescription }: PageHeroSectionProps
         {hero.scrollIndicatorVisible && (
           <div
             ref={scrollRef}
-            className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 transition-opacity duration-200 hover:opacity-90 sm:bottom-8 md:bottom-10"
+            className="absolute bottom-4 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1.5 transition-opacity duration-200 hover:opacity-90 max-[360px]:hidden sm:bottom-6 md:bottom-8"
             aria-hidden
           >
-            <span className="h-8 w-px bg-white/70" aria-hidden />
-            <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-white/90 sm:text-xs">
+            <span className="h-6 w-px bg-white/70 sm:h-7" aria-hidden />
+            <span className="text-[9px] font-medium uppercase tracking-[0.2em] text-white/90 sm:text-[10px] md:text-xs">
               {scrollText}
             </span>
             <ChevronDown
               data-scroll-arrow
-              className="size-4 text-white/80"
+              className="size-3.5 text-white/80 sm:size-4"
               aria-hidden
             />
           </div>

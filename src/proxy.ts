@@ -1,10 +1,37 @@
+import { getSessionCookie } from "better-auth/cookies";
 import createMiddleware from "next-intl/middleware";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+
 import { routing } from "./i18n/routing";
 
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+
+export default function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (pathname.startsWith("/admin")) {
+    const token = getSessionCookie(request);
+    if (!token) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/signin";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-pathname", pathname);
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
+  }
+
+  return intlMiddleware(request);
+}
 
 export const config = {
   matcher: [
-    "/((?!admin|signin|api|trpc|_next|_vercel|.*\\..*).*)",
+    "/((?!api|trpc|signin|_next|_vercel|.*\\..*).*)",
   ],
 };

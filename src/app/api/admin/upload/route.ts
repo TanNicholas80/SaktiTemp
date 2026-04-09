@@ -3,7 +3,8 @@ import { writeFile, mkdir, unlink } from "fs/promises";
 import path from "path";
 import sharp from "sharp";
 
-import { requireAdminApi } from "@/lib/api-auth";
+import { requireBlogCmsApi } from "@/lib/api-auth";
+import { isBlogEditorRole } from "@/lib/roles";
 import {
   ADMIN_IMAGE_ACCEPT_MIME,
   ADMIN_IMAGE_MAX_BYTES,
@@ -27,11 +28,20 @@ function parseTargetFolderHint(request: Request): FinalUploadFolder {
 
 /** Hanya dipakai untuk validasi query; unggahan selalu ke staging. */
 export async function POST(request: Request) {
-  void parseTargetFolderHint(request);
+  const auth = await requireBlogCmsApi();
+  if (auth.error || !auth.session) {
+    return NextResponse.json(
+      { error: auth.error ?? "Unauthorized" },
+      { status: auth.status ?? 401 }
+    );
+  }
 
-  const auth = await requireAdminApi();
-  if (auth.error) {
-    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  const folderHint = parseTargetFolderHint(request);
+  if (
+    isBlogEditorRole(auth.session.user.role) &&
+    folderHint !== "blog"
+  ) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   try {
@@ -94,7 +104,7 @@ export async function POST(request: Request) {
 const SAFE_FILENAME = /^[a-zA-Z0-9._-]+\.webp$/;
 
 export async function DELETE(request: Request) {
-  const auth = await requireAdminApi();
+  const auth = await requireBlogCmsApi();
   if (auth.error) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }

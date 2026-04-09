@@ -10,10 +10,13 @@ import {
   DashboardSidebar,
   type NavItem,
 } from "@/components/shared/dashboard-sidebar";
+import { getCmsHomeHref, getNavItemsForRole } from "@/lib/admin-nav";
 
 type DashboardLayoutShellProps = {
   children: React.ReactNode;
+  userRole?: string | null;
   navItems?: NavItem[];
+  homeHref?: string;
   userEmail?: string | null;
   userName?: string | null;
   userImage?: string | null;
@@ -22,15 +25,20 @@ type DashboardLayoutShellProps = {
 
 export function DashboardLayoutShell({
   children,
+  userRole,
   navItems,
+  homeHref,
   userEmail,
   userName,
   userImage,
   showSearch = true,
 }: DashboardLayoutShellProps) {
+  const resolvedNavItems = navItems ?? getNavItemsForRole(userRole);
+  const resolvedHomeHref = homeHref ?? getCmsHomeHref(userRole);
+
   return (
     <SidebarProvider defaultOpen={true}>
-      <DashboardSidebar navItems={navItems} />
+      <DashboardSidebar navItems={resolvedNavItems} homeHref={resolvedHomeHref} />
       <SidebarInset>
         <DashboardNavbar
           userEmail={userEmail}

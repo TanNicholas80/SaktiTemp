@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { categoryBlog } from "@/db/schema/category-blog";
 import { revalidateContentCache } from "@/lib/cache/revalidate";
-import { requireAdminApi } from "@/lib/api-auth";
+import { requireBlogCmsApi } from "@/lib/api-auth";
 import { slugify } from "@/lib/utils/slug";
 import { updateCategoryBlogSchema } from "@/lib/validations/category-blog";
 import { translateAndSaveCategoryBlog } from "@/lib/translate/entity-translators";
@@ -13,7 +13,7 @@ import { translateAndSaveCategoryBlog } from "@/lib/translate/entity-translators
 type Params = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: Request, { params }: Params) {
-  const auth = await requireAdminApi();
+  const auth = await requireBlogCmsApi();
   if (auth.error) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
@@ -96,7 +96,7 @@ export async function PATCH(request: Request, { params }: Params) {
 }
 
 export async function DELETE(_request: Request, { params }: Params) {
-  const auth = await requireAdminApi();
+  const auth = await requireBlogCmsApi();
   if (auth.error) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
