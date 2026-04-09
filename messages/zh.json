@@ -115,6 +115,155 @@
     "calculateGlass": "计算玻璃需求",
     "scroll": "滚动"
   },
+  "seo": {
+    "home": {
+      "title": "首页",
+      "description": "SAKTITEMP® — 符合欧洲标准的高品质钢化玻璃制造商。",
+      "keywords": "钢化玻璃,钢化玻璃制造商,安全玻璃,建筑玻璃,saktitemp",
+      "ogTitle": "SAKTITEMP® 钢化玻璃 — 首页",
+      "ogDescription": "符合欧洲标准的高品质钢化玻璃制造商。"
+    },
+    "calculator": {
+      "title": "玻璃计算器",
+      "description": "使用 SAKTITEMP® 在线计算器估算项目钢化玻璃需求。",
+      "keywords": "钢化玻璃计算器,玻璃面积计算,玻璃成本估算",
+      "ogTitle": "玻璃计算器 | SAKTITEMP®",
+      "ogDescription": "使用 SAKTITEMP® 在线计算器估算项目钢化玻璃需求。"
+    },
+    "calculatorRincian": {
+      "title": "报价明细 | SAKTITEMP®",
+      "description": "查看 SAKTITEMP 计算器的估算摘要，并继续到 WhatsApp 完成确认。",
+      "keywords": "玻璃报价明细,钢化玻璃估算",
+      "ogTitle": "报价明细 | SAKTITEMP®",
+      "ogDescription": "查看 SAKTITEMP 计算器的估算摘要，并继续到 WhatsApp 完成确认。"
+    },
+    "article": {
+      "title": "博客与文章",
+      "description": "来自 SAKTITEMP® 的钢化玻璃专业知识与教育内容。",
+      "keywords": "钢化玻璃文章,玻璃博客,安装指南",
+      "ogTitle": "博客与文章 | SAKTITEMP®",
+      "ogDescription": "来自 SAKTITEMP® 的钢化玻璃专业知识与教育内容。"
+    },
+    "product": {
+      "title": "钢化玻璃产品",
+      "description": "探索 SAKTITEMP® 的高品质钢化玻璃产品。",
+      "keywords": "钢化玻璃产品,玻璃栏杆,玻璃隔断,玻璃幕墙",
+      "ogTitle": "钢化玻璃产品 | SAKTITEMP®",
+      "ogDescription": "探索 SAKTITEMP® 的高品质钢化玻璃产品。"
+    },
+    "portofolio": {
+      "title": "项目作品集",
+      "description": "浏览 SAKTITEMP® 在印尼各地的钢化玻璃项目作品集。",
+      "keywords": "钢化玻璃作品集,玻璃项目作品",
+      "ogTitle": "项目作品集 | SAKTITEMP®",
+      "ogDescription": "浏览 SAKTITEMP® 在印尼各地的钢化玻璃项目作品集。"
+    },
+    "aboutCompany": {
+      "title": "关于公司",
+      "description": "了解 SAKTITEMP® 的历史、愿景、认证与品质承诺。",
+      "keywords": "关于 saktitemp,钢化玻璃公司简介",
+      "ogTitle": "关于公司 | SAKTITEMP®",
+      "ogDescription": "了解 SAKTITEMP® 在钢化玻璃行业的发展与承诺。"
+    },
+    "aboutContact": {
+      "title": "联系我们",
+      "description": "联系 SAKTITEMP® 团队获取钢化玻璃咨询与报价。",
+      "keywords": "联系 saktitemp,钢化玻璃咨询",
+      "ogTitle": "联系我们 | SAKTITEMP®",
+      "ogDescription": "与 SAKTITEMP® 专业团队咨询您的钢化玻璃需求。"
+    },
+    "productDetail": {
+      "notFoundTitle": "未找到产品",
+      "baseKeywords": "钢化玻璃产品,钢化玻璃类型,建筑钢化玻璃,室内钢化玻璃,室外钢化玻璃",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "portofolioDetail": {
+      "notFoundTitle": "未找到项目",
+      "baseKeywords": "钢化玻璃作品集,钢化玻璃项目,玻璃项目案例,商业钢化玻璃,住宅钢化玻璃",
+      "descriptionFallback": "{name} 项目，地点：{location}，客户：{client}。",
+      "defaultLocation": "印度尼西亚",
+      "defaultClient": "客户",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "articleDetail": {
+      "notFoundTitle": "未找到文章",
+      "baseKeywords": "钢化玻璃文章,钢化玻璃博客,钢化玻璃资讯,建筑玻璃技巧,玻璃行业洞察",
+      "ogTitleTemplate": "{name} | SAKTITEMP®"
+    },
+    "error403": {
+      "title": "403 - 拒绝访问",
+      "description": "您没有权限访问此页面。",
+      "heroTitle": "访问受限。",
+      "heroDescription": "抱歉，您没有权限访问此页面。如有误请联系管理员。",
+      "primaryLabel": "返回首页",
+      "secondaryLabel": "联系我们"
+    },
+    "error500": {
+      "title": "500 - 系统异常",
+      "description": "服务器发生技术问题，请稍后重试。",
+      "heroTitle": "系统发生异常。",
+      "heroDescription": "抱歉，服务器目前出现技术故障。请稍后再试。",
+      "primaryLabel": "返回首页",
+      "secondaryLabel": "联系我们"
+    }
+  },
+  "fallbackHero": {
+    "calculator": {
+      "mainHeading": "计算您的玻璃需求",
+      "subHeading": "为您的项目估算钢化玻璃成本",
+      "description": "输入尺寸和规格即可获得初步估算。",
+      "scrollIndicatorText": "SCROLL",
+      "home": "首页",
+      "page": "计算器"
+    },
+    "calculatorRincian": {
+      "mainHeading": "您的报价明细",
+      "subHeading": "以下是基于您所选规格的成本估算。",
+      "description": "请继续前往 WhatsApp 进行最终确认与沟通。",
+      "scrollIndicatorText": "SCROLL",
+      "home": "首页",
+      "calculator": "计算器",
+      "page": "明细"
+    },
+    "article": {
+      "mainHeading": "玻璃解决方案洞察",
+      "subHeading": "钢化玻璃：耐用且美观的选择",
+      "description": "面向各类项目的钢化玻璃教育内容与专业参考。",
+      "scrollIndicatorText": "SCROLL",
+      "home": "首页",
+      "page": "博客与文章"
+    },
+    "product": {
+      "mainHeading": "高品质钢化玻璃",
+      "subHeading": "守护您空间的每个角落",
+      "description": "适用于住宅、商业与建筑项目的高端钢化玻璃解决方案。",
+      "scrollIndicatorText": "SCROLL",
+      "home": "首页",
+      "page": "产品"
+    },
+    "portofolio": {
+      "mainHeading": "看看我们的作品：",
+      "subHeading": "适用于各种空间的玻璃解决方案",
+      "description": "我们已在印尼完成 200+ 高端钢化玻璃项目。",
+      "scrollIndicatorText": "SCROLL",
+      "home": "首页",
+      "page": "作品集"
+    },
+    "aboutCompany": {
+      "preHeading": "ABOUT US",
+      "mainHeading": "建立信任",
+      "subHeading": "通过精准 *与* 品质",
+      "description": "高精度钢化玻璃制造，兼顾品质与可靠性。",
+      "scrollIndicatorText": "SCROLL"
+    },
+    "aboutContact": {
+      "preHeading": "CONTACT US",
+      "mainHeading": "联系我们",
+      "subHeading": "咨询与支持",
+      "description": "如您有任何问题或想讨论项目，欢迎随时联系我们。",
+      "scrollIndicatorText": "SCROLL"
+    }
+  },
   "calculatorGuide": {
     "startEstimate": "开始估算",
     "viewGuide": "查看指南",
@@ -200,6 +349,13 @@
     "consultation": "项目咨询"
   },
   "calculatorSection": {
+    "dimensionRules": {
+      "invalidNumber": "请输入有效的长度和宽度。",
+      "minSize": "最小尺寸为 {minPanjang} mm × {minLebar} mm。",
+      "maxSize": "最大尺寸为 {maxPanjang} mm × {maxLebar} mm。特殊尺寸请联系我们。",
+      "surcharge10": "(+10% 附加费)",
+      "surcharge20": "(+20% 附加费)"
+    },
     "glassSpec": {
       "title": "玻璃基础规格",
       "selectGlassType": "选择玻璃类型",

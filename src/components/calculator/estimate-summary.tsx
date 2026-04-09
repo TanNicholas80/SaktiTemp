@@ -81,6 +81,7 @@ export function EstimateSummary({
   onOrderClick,
 }: Props) {
   const t = useTranslations("calculatorSection.summary");
+  const tDimensionRules = useTranslations("calculatorSection.dimensionRules");
   const resolvedHeading = heading ?? t("defaultHeading");
   const {
     materialCost,
@@ -107,7 +108,7 @@ export function EstimateSummary({
     panjang && lebar ? `${panjang} mm x ${lebar} mm` : undefined;
   const hasDimSurcharge = dimensionSurcharge > 0;
   const dimRate = breakdown.dimensionSurchargeRate ?? 0;
-  const dimSuffix = dimensionSurchargeLabel(dimRate);
+  const dimSuffix = dimensionSurchargeLabel(dimRate, tDimensionRules);
 
   return (
     <div className="rounded-xl border border-border bg-card shadow-sm">
@@ -178,8 +179,12 @@ export function EstimateSummary({
           <SummaryLine
             label={t("logisticLabel")}
             sublabel={[
-              shippingCost > 0 ? t("shippingLabel", { amount: fmt(shippingCost) }) : null,
-              packingCost > 0 ? t("packingLabel", { amount: fmt(packingCost) }) : null,
+              shippingCost > 0
+                ? t("shippingLabel", { amount: fmt(shippingCost) })
+                : null,
+              packingCost > 0
+                ? t("packingLabel", { amount: fmt(packingCost) })
+                : null,
             ]
               .filter(Boolean)
               .join(" & ")}

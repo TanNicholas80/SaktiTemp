@@ -60,20 +60,16 @@ export function buildCalculatorWhatsAppLines(opts: {
     lines.push(`Add-On: ${breakdown.addOnCosts.map((a) => a.label).join(", ")}`);
   }
   if (breakdown.modificationCosts.length > 0) {
-    lines.push(
-      `Modifikasi: ${breakdown.modificationCosts.map((m) => m.label).join(", ")}`
-    );
+    lines.push(`Modifikasi: ${breakdown.modificationCosts.map((m) => m.label).join(", ")}`);
   }
   lines.push(
-    `Produksi: ${production.cuttingShape === "regular" ? "Regular" : "Irregular"} | ${production.patternMethod === "custom" ? "Custom (+10%)" : "Standar"} | ${production.productionSpeed === "express" ? "Express (+20%)" : "Normal"}`
+    `Produksi: Potongan ${production.cuttingShape}, Pola ${production.patternMethod}, Kecepatan ${production.productionSpeed}`
   );
   if (production.distanceKm) {
-    lines.push(
-      `Jarak: ${production.distanceKm} KM dari ${production.departureCity === "semarang" ? "Semarang" : "Jakarta"}`
-    );
+    lines.push(`Jarak Pengiriman: ${production.distanceKm} KM`);
   }
   if (production.weightKg) {
-    lines.push(`Berat: ${production.weightKg} KG`);
+    lines.push(`Estimasi Berat: ${production.weightKg} KG`);
   }
   lines.push("");
   lines.push(

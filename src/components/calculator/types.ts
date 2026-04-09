@@ -36,16 +36,6 @@ export type ProcessingPrice = {
   price: number;
 };
 
-export type ModificationData = {
-  modificationId: string;
-  name: string;
-  thicknessId: string;
-  modificationImageUrl: string;
-  pricePerSide: number;
-  thicknessValue: number;
-  thicknessUnit: string;
-};
-
 // --- Calculator state types ---
 
 export type GlassSpec = {
@@ -62,6 +52,16 @@ export type AddOnItem = {
   serviceName: string | null;
   thicknessValue: string;
   quantity: string;
+};
+
+export type ModificationData = {
+  modificationId: string;
+  name: string;
+  thicknessId: string;
+  modificationImageUrl: string;
+  pricePerSide: number;
+  thicknessValue: number;
+  thicknessUnit: string;
 };
 
 export type ModificationItem = {

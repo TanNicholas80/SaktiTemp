@@ -6,30 +6,6 @@ import { desc, eq, or } from "drizzle-orm";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Portfolio Proyek",
-  description:
-    "Lebih dari 200 proyek kaca tempered premium telah diselesaikan SAKTITEMP® di seluruh Indonesia — dari gedung komersial hingga villa mewah.",
-  keywords: [
-    "portofolio kaca tempered",
-    "proyek kaca tempered",
-    "contoh pemasangan kaca tempered",
-    "portfolio kaca bangunan",
-    "project kaca gedung",
-    "project kaca rumah",
-    "kaca fasad gedung",
-    "kaca railing tangga",
-    "kaca balkon",
-    "hasil proyek saktitemp",
-  ],
-  openGraph: {
-    title: "Portfolio Proyek | SAKTITEMP®",
-    description:
-      "Jelajahi portofolio proyek kaca tempered SAKTITEMP® dari seluruh Indonesia.",
-    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
-  },
-};
-
 import { CompanyStatsSection } from "@/components/company-stat";
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";
@@ -56,27 +32,47 @@ import type { PortfolioPageCardData } from "@/components/portofolio/portfolio-pa
 type Props = {
   params: Promise<{ locale: string }>;
 };
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.portofolio" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    keywords: t("keywords").split(","),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+  };
+}
 
-const FALLBACK_HERO = {
-  heroSectionId: "fallback",
-  pageKey: "portfolio",
-  preHeading: null,
-  mainHeading: "Intip Karya Kami:",
-  subHeading: "Solusi Kaca Untuk Segala Ruang",
-  description:
-    "Lebih dari 200 proyek kaca tempered premium telah kami selesaikan di seluruh Indonesia. Dari gedung pencakar langit hingga villa mewah setiap proyek adalah cerminan komitmen kami terhadap kualitas dan keamanan.",
-  backgroundImageUrl: "",
-  scrollIndicatorText: "SCROLL",
-  scrollIndicatorVisible: true,
-  breadcrumbItems: [
-    { label: "Home", href: "/" },
-    { label: "Portfolio", href: "/portofolio" },
-  ] as { label: string; href: string }[],
-};
+async function getFallbackHero(locale: string) {
+  const t = await getTranslations({
+    locale,
+    namespace: "fallbackHero.portofolio",
+  });
+  return {
+    heroSectionId: "fallback",
+    pageKey: "portfolio",
+    preHeading: null,
+    mainHeading: t("mainHeading"),
+    subHeading: t("subHeading"),
+    description: t("description"),
+    backgroundImageUrl: "",
+    scrollIndicatorText: t("scrollIndicatorText"),
+    scrollIndicatorVisible: true,
+    breadcrumbItems: [
+      { label: t("home"), href: "/" },
+      { label: t("page"), href: "/portofolio" },
+    ] as { label: string; href: string }[],
+  };
+}
 
 export default async function PortfolioPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const fallbackHero = await getFallbackHero(locale);
 
   const t = await getTranslations("portofolioSection");
 
@@ -220,7 +216,7 @@ export default async function PortfolioPage({ params }: Props) {
           | { label: string; href: string }[]
           | undefined,
       }
-    : FALLBACK_HERO;
+    : fallbackHero;
 
   const rawStats = statsRows.map((r) => ({
     companyStatId: r.companyStatId,

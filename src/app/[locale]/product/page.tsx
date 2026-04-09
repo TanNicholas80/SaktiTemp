@@ -1,35 +1,10 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { desc, eq, inArray, isNotNull, or } from "drizzle-orm";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Produk Kaca Tempered",
-  description:
-    "Temukan berbagai produk kaca tempered berkualitas tinggi dari SAKTITEMP® — mulai dari kaca railing, partisi, fasad, hingga kaca furniture untuk proyek Anda.",
-  keywords: [
-    "produk kaca tempered",
-    "jenis kaca tempered",
-    "kaca railing",
-    "kaca partisi",
-    "kaca fasad",
-    "kaca kanopi",
-    "kaca shower box",
-    "kaca furniture",
-    "kaca temper harga",
-    "kaca temper per m2",
-    "supplier kaca tempered",
-    "pabrik kaca tempered",
-  ],
-  openGraph: {
-    title: "Produk Kaca Tempered | SAKTITEMP®",
-    description:
-      "Temukan berbagai produk kaca tempered berkualitas tinggi dari SAKTITEMP®.",
-    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
-  },
-};
 
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";
@@ -68,27 +43,44 @@ import type {
 type Props = {
   params: Promise<{ locale: string }>;
 };
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.product" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    keywords: t("keywords").split(","),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+  };
+}
 
-const FALLBACK_HERO = {
-  heroSectionId: "fallback",
-  pageKey: "products",
-  preHeading: null,
-  mainHeading: "Kaca Tempered Berkualitas",
-  subHeading: "Lindungi Setiap Sudut Properti Anda",
-  description:
-    "Solusi kaca tempered premium untuk proyek residensial, komersial, dan arsitektur. Kualitas terjamin, presisi tinggi.",
-  backgroundImageUrl: "",
-  scrollIndicatorText: "SCROLL",
-  scrollIndicatorVisible: true,
-  breadcrumbItems: [
-    { label: "Home", href: "/" },
-    { label: "Produk", href: "/product" },
-  ] as { label: string; href: string }[],
-};
+async function getFallbackHero(locale: string) {
+  const t = await getTranslations({ locale, namespace: "fallbackHero.product" });
+  return {
+    heroSectionId: "fallback",
+    pageKey: "products",
+    preHeading: null,
+    mainHeading: t("mainHeading"),
+    subHeading: t("subHeading"),
+    description: t("description"),
+    backgroundImageUrl: "",
+    scrollIndicatorText: t("scrollIndicatorText"),
+    scrollIndicatorVisible: true,
+    breadcrumbItems: [
+      { label: t("home"), href: "/" },
+      { label: t("page"), href: "/product" },
+    ] as { label: string; href: string }[],
+  };
+}
 
 export default async function ProductPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const fallbackHero = await getFallbackHero(locale);
 
   const {
     heroRow,
@@ -316,7 +308,7 @@ export default async function ProductPage({ params }: Props) {
         scrollIndicatorVisible: heroRow.scrollIndicatorVisible,
         breadcrumbItems: (heroRow.breadcrumbItems as { label: string; href: string }[] | null) ?? null,
       }
-    : FALLBACK_HERO;
+    : fallbackHero;
 
   const hero = (await applyHeroSectionTranslation(rawHero, locale)) ?? rawHero;
 

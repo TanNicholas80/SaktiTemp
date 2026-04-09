@@ -1,32 +1,26 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { asc, eq, sql } from "drizzle-orm";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Kalkulator Kaca",
-  description:
-    "Hitung estimasi kebutuhan kaca tempered untuk proyek Anda dengan kalkulator online SAKTITEMP®.",
-  keywords: [
-    "kalkulator kaca tempered",
-    "hitung kebutuhan kaca",
-    "kalkulator luas kaca",
-    "estimasi kaca tempered",
-    "kalkulator material kaca",
-    "kalkulator kaca bangunan",
-  ],
-  openGraph: {
-    title: "Kalkulator Kaca | SAKTITEMP®",
-    description:
-      "Hitung estimasi kebutuhan kaca tempered untuk proyek Anda dengan kalkulator online SAKTITEMP®.",
-    images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
-  },
-};
-
 type Props = {
   params: Promise<{ locale: string }>;
 };
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.calculator" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    keywords: t("keywords").split(","),
+    openGraph: {
+      title: t("ogTitle"),
+      description: t("ogDescription"),
+      images: [{ url: "/og-default.jpg", width: 1200, height: 630 }],
+    },
+  };
+}
 
 import { CalculatorHeroActions, CalculatorSection } from "@/components/calculator";
 import { FooterSection } from "@/components/footer";
@@ -44,26 +38,32 @@ import { processingPrices } from "@/db/schema/processing_prices";
 import { modification } from "@/db/schema/modification";
 import { thickness } from "@/db/schema/thickness";
 
-const FALLBACK_HERO = {
-  heroSectionId: "fallback",
-  pageKey: "calculator",
-  preHeading: null,
-  mainHeading: "Kalkulasikan Kebutuhan Kaca Anda",
-  subHeading: "Estimasi Biaya Kaca Tempered Untuk Kebutuhan Proyek Anda",
-  description:
-    "Masukkan detail ukuran dan spesifikasi kaca untuk mendapatkan estimasi biaya awal. Praktis untuk perencanaan budget proyek sebelum konsultasi lanjutan dengan tim kami.",
-  backgroundImageUrl: "",
-  scrollIndicatorText: "SCROLL",
-  scrollIndicatorVisible: true,
-  breadcrumbItems: [
-    { label: "Home", href: "/" },
-    { label: "Calculator", href: "/calculator" },
-  ] as { label: string; href: string }[],
-};
+async function getFallbackHero(locale: string) {
+  const t = await getTranslations({
+    locale,
+    namespace: "fallbackHero.calculator",
+  });
+  return {
+    heroSectionId: "fallback",
+    pageKey: "calculator",
+    preHeading: null,
+    mainHeading: t("mainHeading"),
+    subHeading: t("subHeading"),
+    description: t("description"),
+    backgroundImageUrl: "",
+    scrollIndicatorText: t("scrollIndicatorText"),
+    scrollIndicatorVisible: true,
+    breadcrumbItems: [
+      { label: t("home"), href: "/" },
+      { label: t("page"), href: "/calculator" },
+    ] as { label: string; href: string }[],
+  };
+}
 
 export default async function CalculatorPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const fallbackHero = await getFallbackHero(locale);
   const footerDataPromise = getFooterData(locale);
 
   const [heroRow, glassTypeList, glassPriceList, processingCategoryList, processingPriceList, modificationList] =
@@ -163,7 +163,7 @@ export default async function CalculatorPage({ params }: Props) {
           (heroRow.breadcrumbItems as { label: string; href: string }[] | null) ??
           null,
       }
-    : FALLBACK_HERO;
+    : fallbackHero;
 
   const hero = await applyHeroSectionTranslation(rawHero, locale);
   const footerData = await footerDataPromise;

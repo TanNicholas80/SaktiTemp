@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { and, desc, eq, ne } from "drizzle-orm";
 
 import {
@@ -40,7 +40,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.articleDetail" });
   const row = await db
     .select({
       blogTitle: blog.blogTitle,
@@ -56,16 +57,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     .then((rows) => rows[0]);
 
   if (!row) {
-    return { title: "Artikel tidak ditemukan", robots: { index: false, follow: false } };
+    return { title: t("notFoundTitle"), robots: { index: false, follow: false } };
   }
 
-  const baseKeywords = [
-    "artikel kaca tempered",
-    "blog kaca tempered",
-    "informasi kaca tempered",
-    "tips kaca bangunan",
-    "wawasan industri kaca",
-  ];
+  const baseKeywords = t("baseKeywords").split(",");
 
   const dynamicKeywords: string[] = [
     row.blogTitle,
@@ -77,7 +72,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     description: row.blogExcerpt ?? undefined,
     openGraph: {
       type: "article",
-      title: `${row.blogTitle} | SAKTITEMP®`,
+      title: t("ogTitleTemplate", { name: row.blogTitle }),
       description: row.blogExcerpt ?? undefined,
       publishedTime: row.blogIsPublishedAt.toISOString(),
       images: row.blogImageUrl

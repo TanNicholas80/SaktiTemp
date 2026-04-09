@@ -18,26 +18,20 @@ export const GLASS_DIM_MM = {
 
 export type DimensionValidation =
   | { ok: true }
-  | { ok: false; message: string };
+  | { ok: false; code: "invalid_number" | "min_size" | "max_size" };
 
 export function validateGlassDimensions(
   panjang: number,
   lebar: number
 ): DimensionValidation {
   if (!Number.isFinite(panjang) || !Number.isFinite(lebar)) {
-    return { ok: false, message: "Masukkan panjang dan lebar yang valid." };
+    return { ok: false, code: "invalid_number" };
   }
   if (panjang < GLASS_DIM_MM.MIN_PANJANG || lebar < GLASS_DIM_MM.MIN_LEBAR) {
-    return {
-      ok: false,
-      message: `Ukuran minimal ${GLASS_DIM_MM.MIN_PANJANG} mm × ${GLASS_DIM_MM.MIN_LEBAR} mm.`,
-    };
+    return { ok: false, code: "min_size" };
   }
   if (panjang > GLASS_DIM_MM.MAX_PANJANG || lebar > GLASS_DIM_MM.MAX_LEBAR) {
-    return {
-      ok: false,
-      message: `Ukuran maksimal ${GLASS_DIM_MM.MAX_PANJANG} mm × ${GLASS_DIM_MM.MAX_LEBAR} mm. Hubungi kami untuk ukuran khusus.`,
-    };
+    return { ok: false, code: "max_size" };
   }
   return { ok: true };
 }
@@ -67,8 +61,34 @@ export function getDimensionSurchargeRate(
   return 0;
 }
 
-export function dimensionSurchargeLabel(rate: 0 | 0.1 | 0.2): string {
-  if (rate === 0.2) return "(+20% Surcharge)";
-  if (rate === 0.1) return "(+10% Surcharge)";
+type TranslateFn = (
+  key: string,
+  values?: Record<string, string | number | Date>
+) => string;
+
+export function dimensionValidationMessage(
+  result: DimensionValidation,
+  t: TranslateFn
+): string | null {
+  if (result.ok) return null;
+  if (result.code === "invalid_number") return t("invalidNumber");
+  if (result.code === "min_size") {
+    return t("minSize", {
+      minPanjang: GLASS_DIM_MM.MIN_PANJANG,
+      minLebar: GLASS_DIM_MM.MIN_LEBAR,
+    });
+  }
+  return t("maxSize", {
+    maxPanjang: GLASS_DIM_MM.MAX_PANJANG,
+    maxLebar: GLASS_DIM_MM.MAX_LEBAR,
+  });
+}
+
+export function dimensionSurchargeLabel(
+  rate: 0 | 0.1 | 0.2,
+  t: TranslateFn
+): string {
+  if (rate === 0.2) return t("surcharge20");
+  if (rate === 0.1) return t("surcharge10");
   return "";
 }

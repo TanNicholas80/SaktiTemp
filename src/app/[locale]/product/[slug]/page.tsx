@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { eq, inArray } from "drizzle-orm";
 
@@ -43,7 +43,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.productDetail" });
   const row = await db
     .select({
       productName: product.productName,
@@ -61,16 +62,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     .then((rows) => rows[0]);
 
   if (!row) {
-    return { title: "Produk tidak ditemukan", robots: { index: false, follow: false } };
+    return { title: t("notFoundTitle"), robots: { index: false, follow: false } };
   }
 
-  const baseKeywords = [
-    "produk kaca tempered",
-    "jenis kaca tempered",
-    "kaca tempered bangunan",
-    "kaca tempered interior",
-    "kaca tempered eksterior",
-  ];
+  const baseKeywords = t("baseKeywords").split(",");
 
   const dynamicKeywords: string[] = [
     row.productName,
@@ -81,7 +76,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: row.productName,
     description: row.productShortDescription ?? undefined,
     openGraph: {
-      title: `${row.productName} | SAKTITEMP®`,
+      title: t("ogTitleTemplate", { name: row.productName }),
       description: row.productShortDescription ?? undefined,
       images: row.productImageUrl
         ? [{ url: row.productImageUrl, width: 1200, height: 630 }]

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 
 import { GlassSpecSection } from "./glass-spec-section";
 import { AddonSection } from "./addon-section";
@@ -8,6 +9,7 @@ import { ModificationSection } from "./modification-section";
 import { ProductionSection } from "./production-section";
 import { EstimateSummary } from "./estimate-summary";
 import {
+  dimensionValidationMessage,
   validateGlassDimensions,
   getDimensionSurchargeRate,
 } from "./dimension-rules";
@@ -70,6 +72,7 @@ export function CalculatorSection({
   processingPrices,
   modifications,
 }: CalculatorSectionProps) {
+  const tDimensionRules = useTranslations("calculatorSection.dimensionRules");
   const router = useRouter();
   const rootRef = React.useRef<HTMLDivElement>(null);
 
@@ -91,7 +94,9 @@ export function CalculatorSection({
   });
 
   const [addons, setAddons] = React.useState<AddOnItem[]>([createEmptyAddon()]);
-  const [mods, setMods] = React.useState<ModificationItem[]>([createEmptyModification()]);
+  const [mods, setMods] = React.useState<ModificationItem[]>([
+    createEmptyModification(),
+  ]);
   const [production, setProduction] = React.useState<ProductionState>({
     cuttingShape: "regular",
     patternMethod: "standard",
@@ -193,28 +198,24 @@ export function CalculatorSection({
       });
     }
 
-    // Base before production surcharges (material + surcharge dimensi + addons + modifications)
+    // Base before production surcharges
     const materialSubtotal = materialCost + dimensionSurcharge;
     const base =
       materialSubtotal +
       addOnCosts.reduce((s, a) => s + a.cost, 0) +
       modificationCosts.reduce((s, m) => s + m.cost, 0);
 
-    // Pattern surcharge (applied to base)
     const patternSurchargeAmount =
       production.patternMethod === "custom" ? base * 0.1 : 0;
     const afterPattern = base + patternSurchargeAmount;
 
-    // Speed surcharge (applied after pattern)
     const speedSurchargeAmount =
       production.productionSpeed === "express" ? afterPattern * 0.2 : 0;
     const processedTotal = afterPattern + speedSurchargeAmount;
 
-    // Logistics
     const distKm = parseFloat(production.distanceKm);
     const weightKg = parseFloat(production.weightKg);
-    const shippingCost =
-      !isNaN(distKm) && distKm > 0 ? distKm * 5_000 : 0;
+    const shippingCost = !isNaN(distKm) && distKm > 0 ? distKm * 5_000 : 0;
     const packingCost =
       !isNaN(weightKg) && weightKg > 0
         ? Math.floor(weightKg / 250) * 300_000 + (weightKg % 250) * 1_000
@@ -301,7 +302,7 @@ export function CalculatorSection({
                   const p = parseFloat(glassSpec.panjang);
                   const l = parseFloat(glassSpec.lebar);
                   const r = validateGlassDimensions(p, l);
-                  return r.ok ? null : r.message;
+                  return dimensionValidationMessage(r, tDimensionRules);
                 })()
               : null
           }
@@ -317,10 +318,7 @@ export function CalculatorSection({
           items={mods}
           onChange={setMods}
         />
-        <ProductionSection
-          state={production}
-          onChange={setProduction}
-        />
+        <ProductionSection state={production} onChange={setProduction} />
       </div>
 
       {/* Right: Sticky Summary */}

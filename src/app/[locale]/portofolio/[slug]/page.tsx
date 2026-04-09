@@ -47,7 +47,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.portofolioDetail" });
   const row = await db
     .select({
       portofolioName: portofolio.portofolioName,
@@ -67,19 +68,17 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     .then((rows) => rows[0]);
 
   if (!row) {
-    return { title: "Proyek tidak ditemukan", robots: { index: false, follow: false } };
+    return { title: t("notFoundTitle"), robots: { index: false, follow: false } };
   }
 
   const description = row.portofolioShortDescription
-    ?? `Proyek ${row.portofolioName} di ${row.portofolioLocation ?? "Indonesia"} untuk ${row.portofolioClient ?? "klien"}.`;
+    ?? t("descriptionFallback", {
+      name: row.portofolioName,
+      location: row.portofolioLocation ?? t("defaultLocation"),
+      client: row.portofolioClient ?? t("defaultClient"),
+    });
 
-  const baseKeywords = [
-    "portofolio kaca tempered",
-    "proyek kaca tempered",
-    "contoh proyek kaca",
-    "kaca tempered komersial",
-    "kaca tempered residensial",
-  ];
+  const baseKeywords = t("baseKeywords").split(",");
 
   const dynamicKeywords: string[] = [
     row.portofolioName,
@@ -92,7 +91,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: row.portofolioName,
     description,
     openGraph: {
-      title: `${row.portofolioName} | SAKTITEMP®`,
+      title: t("ogTitleTemplate", { name: row.portofolioName }),
       description,
       images: row.portofolioImageUrl
         ? [{ url: row.portofolioImageUrl, width: 1200, height: 630 }]
