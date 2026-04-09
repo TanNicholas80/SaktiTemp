@@ -28,7 +28,6 @@ import { serviceTranslations } from "@/db/schema/service-translations";
 import { certificationTranslations } from "@/db/schema/certification-translations";
 import { glassTypesTranslations } from "@/db/schema/glass-types-translations";
 import { glassPricesTranslations } from "@/db/schema/glass-prices-translations";
-import { modificationTranslations } from "@/db/schema/modification-translations";
 import { processingCategoriesTranslations } from "@/db/schema/processing-categories-translations";
 import { processingPricesTranslations } from "@/db/schema/processing-prices-translations";
 import { socialMediaTranslations } from "@/db/schema/social-media-translations";
@@ -1088,45 +1087,6 @@ export async function translateAndSaveGlassPrice(
       .onConflictDoUpdate({
         target: [glassPricesTranslations.glassPricesId, glassPricesTranslations.locale],
         set: { variant: str(t.variant) },
-      });
-  }
-}
-
-// ---- Modification ----
-export async function translateAndSaveModification(
-  data: {
-    modificationId: string;
-    name: string;
-  },
-  previous?: Partial<Pick<typeof data, "name">> | null
-) {
-  if (
-    translatableTextsUnchanged(
-      previous as Record<string, unknown> | null,
-      data as Record<string, unknown>,
-      ["name"]
-    )
-  ) {
-    return;
-  }
-
-  const result = await translateFields(
-    { name: data.name },
-    "glass modification/option name"
-  );
-
-  for (const locale of ALL_STORED_LOCALES) {
-    const t = result[locale];
-    await db
-      .insert(modificationTranslations)
-      .values({
-        modificationId: data.modificationId,
-        locale,
-        name: str(t.name),
-      })
-      .onConflictDoUpdate({
-        target: [modificationTranslations.modificationId, modificationTranslations.locale],
-        set: { name: str(t.name) },
       });
   }
 }

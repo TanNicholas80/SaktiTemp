@@ -4,8 +4,6 @@ import * as React from "react";
 
 import { GlassSpecSection } from "./glass-spec-section";
 import { AddonSection } from "./addon-section";
-import { ModificationSection } from "./modification-section";
-import { ProductionSection } from "./production-section";
 import { EstimateSummary } from "./estimate-summary";
 import {
   validateGlassDimensions,
@@ -19,8 +17,6 @@ import type {
   CalculatorSectionProps,
   GlassSpec,
   AddOnItem,
-  ModificationItem,
-  ProductionState,
   CalcBreakdown,
   ProcessingPrice,
 } from "./types";
@@ -35,15 +31,6 @@ function createEmptyAddon(): AddOnItem {
     serviceName: null,
     thicknessValue: "",
     quantity: "",
-  };
-}
-
-function createEmptyModification(): ModificationItem {
-  return {
-    id: crypto.randomUUID(),
-    modificationName: null,
-    thicknessId: null,
-    sides: "1",
   };
 }
 
@@ -68,7 +55,6 @@ export function CalculatorSection({
   glassPrices,
   processingCategories,
   processingPrices,
-  modifications,
 }: CalculatorSectionProps) {
   const router = useRouter();
   const rootRef = React.useRef<HTMLDivElement>(null);
@@ -91,15 +77,6 @@ export function CalculatorSection({
   });
 
   const [addons, setAddons] = React.useState<AddOnItem[]>([createEmptyAddon()]);
-  const [mods, setMods] = React.useState<ModificationItem[]>([createEmptyModification()]);
-  const [production, setProduction] = React.useState<ProductionState>({
-    cuttingShape: "regular",
-    patternMethod: "standard",
-    productionSpeed: "normal",
-    departureCity: "semarang",
-    distanceKm: "",
-    weightKg: "",
-  });
 
   // --- Derived values for summary labels ---
   const selectedGlassType = glassTypes.find(
@@ -176,51 +153,13 @@ export function CalculatorSection({
       });
     }
 
-    // Modification costs
-    const modificationCosts: CalcBreakdown["modificationCosts"] = [];
-    for (const mod of mods) {
-      if (!mod.modificationName || !mod.thicknessId) continue;
-      const sides = parseInt(mod.sides);
-      if (isNaN(sides) || sides <= 0) continue;
-      const modData = modifications.find(
-        (m) => m.name === mod.modificationName && m.thicknessId === mod.thicknessId
-      );
-      if (!modData) continue;
-      const cost = modData.pricePerSide * sides;
-      modificationCosts.push({
-        label: `${mod.modificationName} (${sides} Sisi)`,
-        cost,
-      });
-    }
-
-    // Base before production surcharges (material + surcharge dimensi + addons + modifications)
+    // Base (material + surcharge dimensi + addons)
     const materialSubtotal = materialCost + dimensionSurcharge;
     const base =
       materialSubtotal +
-      addOnCosts.reduce((s, a) => s + a.cost, 0) +
-      modificationCosts.reduce((s, m) => s + m.cost, 0);
+      addOnCosts.reduce((s, a) => s + a.cost, 0);
 
-    // Pattern surcharge (applied to base)
-    const patternSurchargeAmount =
-      production.patternMethod === "custom" ? base * 0.1 : 0;
-    const afterPattern = base + patternSurchargeAmount;
-
-    // Speed surcharge (applied after pattern)
-    const speedSurchargeAmount =
-      production.productionSpeed === "express" ? afterPattern * 0.2 : 0;
-    const processedTotal = afterPattern + speedSurchargeAmount;
-
-    // Logistics
-    const distKm = parseFloat(production.distanceKm);
-    const weightKg = parseFloat(production.weightKg);
-    const shippingCost =
-      !isNaN(distKm) && distKm > 0 ? distKm * 5_000 : 0;
-    const packingCost =
-      !isNaN(weightKg) && weightKg > 0
-        ? Math.floor(weightKg / 250) * 300_000 + (weightKg % 250) * 1_000
-        : 0;
-
-    const subtotal = processedTotal + shippingCost + packingCost;
+    const subtotal = base;
     const ppn = subtotal * 0.11;
     const grandTotal = subtotal + ppn;
 
@@ -229,11 +168,6 @@ export function CalculatorSection({
       dimensionSurcharge,
       dimensionSurchargeRate: dimSurchargeRate,
       addOnCosts,
-      modificationCosts,
-      patternSurchargeAmount,
-      speedSurchargeAmount,
-      shippingCost,
-      packingCost,
       subtotal,
       ppn,
       grandTotal,
@@ -242,11 +176,8 @@ export function CalculatorSection({
     glassSpec,
     selectedGlassPrice,
     addons,
-    mods,
-    production,
     processingPrices,
     processingCategories,
-    modifications,
   ]);
 
   function handleOrderClick() {
@@ -259,7 +190,6 @@ export function CalculatorSection({
         lebar: glassSpec.lebar,
       },
       breakdown,
-      production,
     });
     const waText = encodeURIComponent(lines.join("\n"));
     window.open(`${WHATSAPP_ME_URL}?text=${waText}`, "_blank");
@@ -274,7 +204,6 @@ export function CalculatorSection({
       thicknessLabel,
       panjang: glassSpec.panjang,
       lebar: glassSpec.lebar,
-      production,
     });
     router.push("/calculator/rincian");
   }
@@ -311,15 +240,6 @@ export function CalculatorSection({
           processingPrices={processingPrices}
           items={addons}
           onChange={setAddons}
-        />
-        <ModificationSection
-          modifications={modifications}
-          items={mods}
-          onChange={setMods}
-        />
-        <ProductionSection
-          state={production}
-          onChange={setProduction}
         />
       </div>
 

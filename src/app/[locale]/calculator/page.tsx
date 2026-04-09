@@ -41,7 +41,6 @@ import { glassTypes } from "@/db/schema/glass_types";
 import { glassPrices } from "@/db/schema/glass_prices";
 import { processingCategories } from "@/db/schema/processing_categories";
 import { processingPrices } from "@/db/schema/processing_prices";
-import { modification } from "@/db/schema/modification";
 import { thickness } from "@/db/schema/thickness";
 
 const FALLBACK_HERO = {
@@ -66,7 +65,7 @@ export default async function CalculatorPage({ params }: Props) {
   setRequestLocale(locale);
   const footerDataPromise = getFooterData(locale);
 
-  const [heroRow, glassTypeList, glassPriceList, processingCategoryList, processingPriceList, modificationList] =
+  const [heroRow, glassTypeList, glassPriceList, processingCategoryList, processingPriceList] =
     await Promise.all([
       cachedQuery(contentCacheKey("calculator", "hero"), () =>
         db.query.heroSection.findFirst({
@@ -133,19 +132,6 @@ export default async function CalculatorPage({ params }: Props) {
           asc(processingPrices.serviceName),
           asc(sql`coalesce(${processingPrices.minThickness}, ${processingPrices.thickness})`)
         ),
-      db
-        .select({
-          modificationId: modification.modificationId,
-          name: modification.name,
-          thicknessId: modification.thicknessId,
-          modificationImageUrl: modification.modificationImageUrl,
-          pricePerSide: modification.pricePerSide,
-          thicknessValue: thickness.thicknessValue,
-          thicknessUnit: thickness.thicknessUnit,
-        })
-        .from(modification)
-        .innerJoin(thickness, eq(modification.thicknessId, thickness.thicknessId))
-        .orderBy(asc(modification.name), asc(thickness.thicknessValue)),
     ]);
 
   const rawHero = heroRow
@@ -194,10 +180,6 @@ export default async function CalculatorPage({ params }: Props) {
               maxThickness: r.maxThickness !== null ? Number(r.maxThickness) : null,
               price: Number(r.price),
               unit: r.unit as "m1" | "pcs" | "sqm" | "none",
-            }))}
-            modifications={modificationList.map((r) => ({
-              ...r,
-              pricePerSide: Number(r.pricePerSide),
             }))}
           />
         </div>

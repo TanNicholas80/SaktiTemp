@@ -46,8 +46,7 @@ export function CalculatorRincianView() {
     );
   }
 
-  const { breakdown, glassTypeName, variant, thicknessLabel, panjang, lebar, production } =
-    payload;
+  const { breakdown, glassTypeName, variant, thicknessLabel, panjang, lebar } = payload;
 
   function handleWhatsApp() {
     const lines = buildCalculatorWhatsAppLines({
@@ -59,7 +58,6 @@ export function CalculatorRincianView() {
         lebar: lebar ?? "",
       },
       breakdown,
-      production,
     });
     window.open(
       `${WHATSAPP_ME_URL}?text=${encodeURIComponent(lines.join("\n"))}`,

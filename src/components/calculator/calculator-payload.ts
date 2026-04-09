@@ -1,4 +1,4 @@
-import type { CalcBreakdown, ProductionState } from "./types";
+import type { CalcBreakdown } from "./types";
 
 export const CALCULATOR_RINCIAN_STORAGE_KEY = "saktitemp-calculator-rincian-v1";
 
@@ -9,7 +9,6 @@ export type CalculatorRincianPayload = {
   thicknessLabel?: string;
   panjang?: string;
   lebar?: string;
-  production: ProductionState;
   savedAt: string;
 };
 
@@ -41,9 +40,8 @@ export function buildCalculatorWhatsAppLines(opts: {
   selectedGlassTypeName?: string;
   glassSpec: { variant: string | null; thicknessLabel?: string; panjang: string; lebar: string };
   breakdown: CalcBreakdown;
-  production: ProductionState;
 }): string[] {
-  const { selectedGlassTypeName, glassSpec, breakdown, production } = opts;
+  const { selectedGlassTypeName, glassSpec, breakdown } = opts;
   const lines: string[] = ["Rincian Estimasi Kalkulator SAKTITEMP", ""];
 
   if (selectedGlassTypeName) {
@@ -58,22 +56,6 @@ export function buildCalculatorWhatsAppLines(opts: {
   }
   if (breakdown.addOnCosts.length > 0) {
     lines.push(`Add-On: ${breakdown.addOnCosts.map((a) => a.label).join(", ")}`);
-  }
-  if (breakdown.modificationCosts.length > 0) {
-    lines.push(
-      `Modifikasi: ${breakdown.modificationCosts.map((m) => m.label).join(", ")}`
-    );
-  }
-  lines.push(
-    `Produksi: ${production.cuttingShape === "regular" ? "Regular" : "Irregular"} | ${production.patternMethod === "custom" ? "Custom (+10%)" : "Standar"} | ${production.productionSpeed === "express" ? "Express (+20%)" : "Normal"}`
-  );
-  if (production.distanceKm) {
-    lines.push(
-      `Jarak: ${production.distanceKm} KM dari ${production.departureCity === "semarang" ? "Semarang" : "Jakarta"}`
-    );
-  }
-  if (production.weightKg) {
-    lines.push(`Berat: ${production.weightKg} KG`);
   }
   lines.push("");
   lines.push(

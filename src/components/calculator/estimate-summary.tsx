@@ -83,11 +83,6 @@ export function EstimateSummary({
     materialCost,
     dimensionSurcharge,
     addOnCosts,
-    modificationCosts,
-    patternSurchargeAmount,
-    speedSurchargeAmount,
-    shippingCost,
-    packingCost,
     subtotal,
     ppn,
     grandTotal,
@@ -147,42 +142,6 @@ export function EstimateSummary({
             amount={a.cost}
           />
         ))}
-
-        {modificationCosts.map((m, i) => (
-          <SummaryLine
-            key={i}
-            label="Modifikasi"
-            sublabel={m.label}
-            amount={m.cost}
-          />
-        ))}
-
-        {patternSurchargeAmount > 0 && (
-          <SummaryLine
-            label="Surcharge Pola Custom (+10%)"
-            amount={patternSurchargeAmount}
-          />
-        )}
-
-        {speedSurchargeAmount > 0 && (
-          <SummaryLine
-            label="Surcharge Express (+20%)"
-            amount={speedSurchargeAmount}
-          />
-        )}
-
-        {(shippingCost > 0 || packingCost > 0) && (
-          <SummaryLine
-            label="Logistik"
-            sublabel={[
-              shippingCost > 0 ? `Ongkir Rp ${fmt(shippingCost)}` : null,
-              packingCost > 0 ? `Packing Rp ${fmt(packingCost)}` : null,
-            ]
-              .filter(Boolean)
-              .join(" & ")}
-            amount={shippingCost + packingCost}
-          />
-        )}
 
         {hasAnyCost && (
           <>

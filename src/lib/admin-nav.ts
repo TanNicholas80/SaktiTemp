@@ -43,10 +43,6 @@ export const defaultNavItems: NavItem[] = [
     items: [
       { name: "Daftar PriceList Kaca", href: "/admin/price-list/glass" },
       {
-        name: "Daftar PriceList Modifikasi",
-        href: "/admin/price-list/modification",
-      },
-      {
         name: "Daftar PriceList Additional",
         href: "/admin/price-list/additional-service",
       },

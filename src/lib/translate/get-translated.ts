@@ -21,7 +21,6 @@ import { serviceTranslations } from "@/db/schema/service-translations";
 import { certificationTranslations } from "@/db/schema/certification-translations";
 import { glassTypesTranslations } from "@/db/schema/glass-types-translations";
 import { glassPricesTranslations } from "@/db/schema/glass-prices-translations";
-import { modificationTranslations } from "@/db/schema/modification-translations";
 import { processingCategoriesTranslations } from "@/db/schema/processing-categories-translations";
 import { processingPricesTranslations } from "@/db/schema/processing-prices-translations";
 import { socialMediaTranslations } from "@/db/schema/social-media-translations";
@@ -516,24 +515,6 @@ export async function applyGlassPricesTranslations<
     const tr = m.get(item.glassPricesId);
     if (!tr) return item;
     return { ...item, variant: tr.variant };
-  });
-}
-
-// ---- Modification ----
-export async function applyModificationTranslations<
-  T extends { modificationId: string; name: string },
->(items: T[], locale: string): Promise<T[]> {
-  if (items.length === 0) return items;
-  const ids = items.map((i) => i.modificationId);
-  const rows = await db
-    .select()
-    .from(modificationTranslations)
-    .where(and(inArray(modificationTranslations.modificationId, ids), eq(modificationTranslations.locale, locale)));
-  const m = new Map(rows.map((r) => [r.modificationId, r]));
-  return items.map((item) => {
-    const tr = m.get(item.modificationId);
-    if (!tr) return item;
-    return { ...item, name: tr.name };
   });
 }
 

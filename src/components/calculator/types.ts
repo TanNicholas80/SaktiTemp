@@ -36,16 +36,6 @@ export type ProcessingPrice = {
   price: number;
 };
 
-export type ModificationData = {
-  modificationId: string;
-  name: string;
-  thicknessId: string;
-  modificationImageUrl: string;
-  pricePerSide: number;
-  thicknessValue: number;
-  thicknessUnit: string;
-};
-
 // --- Calculator state types ---
 
 export type GlassSpec = {
@@ -64,22 +54,6 @@ export type AddOnItem = {
   quantity: string;
 };
 
-export type ModificationItem = {
-  id: string;
-  modificationName: string | null;
-  thicknessId: string | null;
-  sides: string;
-};
-
-export type ProductionState = {
-  cuttingShape: "regular" | "irregular";
-  patternMethod: "standard" | "custom";
-  productionSpeed: "normal" | "express";
-  departureCity: "semarang" | "jakarta";
-  distanceKm: string;
-  weightKg: string;
-};
-
 // --- Calculation result types ---
 
 export type CalcBreakdown = {
@@ -90,11 +64,6 @@ export type CalcBreakdown = {
   /** 0, 0.1, atau 0.2 — untuk label ringkasan */
   dimensionSurchargeRate?: 0 | 0.1 | 0.2;
   addOnCosts: Array<{ label: string; cost: number }>;
-  modificationCosts: Array<{ label: string; cost: number }>;
-  patternSurchargeAmount: number;
-  speedSurchargeAmount: number;
-  shippingCost: number;
-  packingCost: number;
   subtotal: number;
   ppn: number;
   grandTotal: number;
@@ -107,5 +76,4 @@ export type CalculatorSectionProps = {
   glassPrices: GlassPrice[];
   processingCategories: ProcessingCategory[];
   processingPrices: ProcessingPrice[];
-  modifications: ModificationData[];
 };

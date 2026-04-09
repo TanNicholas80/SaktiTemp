@@ -26,7 +26,6 @@ import { service } from "../src/db/schema/service";
 import { certification } from "../src/db/schema/certification";
 import { glassTypes } from "../src/db/schema/glass_types";
 import { glassPrices } from "../src/db/schema/glass_prices";
-import { modification } from "../src/db/schema/modification";
 import { processingCategories } from "../src/db/schema/processing_categories";
 import { processingPrices } from "../src/db/schema/processing_prices";
 import { socialMedia } from "../src/db/schema/social-media";
@@ -51,7 +50,6 @@ import {
   translateAndSaveCertification,
   translateAndSaveGlassType,
   translateAndSaveGlassPrice,
-  translateAndSaveModification,
   translateAndSaveProcessingCategory,
   translateAndSaveProcessingPrice,
   translateAndSaveSocialMedia,
@@ -240,11 +238,6 @@ async function main() {
   const glassPriceRows = await db.select().from(glassPrices);
   await translateEntity("Glass Prices", glassPriceRows, (g) =>
     translateAndSaveGlassPrice({ glassPricesId: g.glassPricesId, variant: g.variant })
-  );
-
-  const mods = await db.select().from(modification);
-  await translateEntity("Modifications", mods, (m) =>
-    translateAndSaveModification({ modificationId: m.modificationId, name: m.name })
   );
 
   const procCats = await db.select().from(processingCategories);
