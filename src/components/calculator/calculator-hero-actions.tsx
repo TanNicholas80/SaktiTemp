@@ -24,7 +24,6 @@ const STEP_KEYS = [
   { id: "01", titleKey: "step1Title", bodyKey: "step1Body" },
   { id: "02", titleKey: "step2Title", bodyKey: "step2Body" },
   { id: "03", titleKey: "step3Title", bodyKey: "step3Body" },
-  { id: "04", titleKey: "step4Title", bodyKey: "step4Body" },
 ] as const;
 
 export function CalculatorHeroActions() {
@@ -129,7 +128,7 @@ export function CalculatorHeroActions() {
             ref={scrollBodyRef}
             className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-5 py-5 sm:px-8 sm:py-6"
           >
-            <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 lg:grid-cols-4 lg:items-stretch lg:gap-5">
+            <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 lg:grid-cols-3 lg:items-stretch lg:gap-5">
               {STEP_KEYS.map((step) => (
                 <article
                   key={step.id}
