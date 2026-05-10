@@ -75,12 +75,19 @@
     {
       "idx": 10,
       "version": "7",
+      "when": 1743257400000,
+      "tag": "20260329120000_create_glass_calculator_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
       "when": 1743258000000,
       "tag": "20260329130000_glass_prices_composition",
       "breakpoints": true
     },
     {
-      "idx": 11,
+      "idx": 12,
       "version": "7",
       "when": 1743261600000,
       "tag": "20260329160000_thickness_value_double",
