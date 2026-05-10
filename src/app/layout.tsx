@@ -24,16 +24,20 @@ export const metadata: Metadata = {
   description:
     "Produsen kaca tempered berkualitas tinggi berstandar Eropa untuk proyek komersial, residensial, dan arsitektur.",
   icons: {
-    icon: {
-      url: "/favicon.ico",
-      type: "image/x-icon",
-      sizes: "32x32",
-    },
-    apple: {
-      url: "/favicon.ico",
-      type: "image/x-icon",
-      sizes: "180x180",
-    },
+    icon: [
+      {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+        sizes: "32x32",
+      },
+    ],
+    apple: [
+      {
+        url: "/favicon.ico",
+        type: "image/x-icon",
+        sizes: "180x180",
+      },
+    ],
     shortcut: "/favicon.ico",
   },
   openGraph: {

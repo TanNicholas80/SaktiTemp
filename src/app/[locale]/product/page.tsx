@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { desc, eq, inArray, isNotNull, or } from "drizzle-orm";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";
