@@ -5,6 +5,8 @@ import { getCmsHomeHref } from "@/lib/admin-nav";
 import { isCmsUserRole } from "@/lib/roles";
 import { getServerSession } from "@/lib/session";
 
+export const dynamic = "force-dynamic";
+
 export default async function SignInPage() {
   const session = await getServerSession();
 

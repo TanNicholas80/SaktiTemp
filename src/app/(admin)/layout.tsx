@@ -4,6 +4,8 @@ import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 import { DashboardLayoutShell } from "@/components/shared/dashboard-layout-shell";
 import { requireCmsSession } from "@/lib/session";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: {
