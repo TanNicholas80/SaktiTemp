@@ -92,6 +92,34 @@
       "when": 1743261600000,
       "tag": "20260329160000_thickness_value_double",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1743263400000,
+      "tag": "20260316212300_add_content_cache",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1743263500000,
+      "tag": "20260328120000_add_translation_tables",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1743263600000,
+      "tag": "20260330120000_processing_prices_add_single_thickness",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1743263700000,
+      "tag": "20260330121000_processing_unit_add_none",
+      "breakpoints": true
     }
   ]
 }
