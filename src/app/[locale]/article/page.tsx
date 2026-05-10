@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { desc, eq, or } from "drizzle-orm";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 import { ArticlePageContent } from "@/components/article";
 import { FooterSection } from "@/components/footer";

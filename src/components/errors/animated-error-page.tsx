@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import gsap from "gsap";
-import { useParams } from "next/navigation";
 import NextLink from "next/link";
 import { ArrowLeft, Home, RefreshCw } from "lucide-react";
 
@@ -30,19 +29,6 @@ export function AnimatedErrorPage({
   secondaryHref,
   onRetry,
 }: AnimatedErrorPageProps) {
-  const params = useParams();
-  const localeParam = typeof params?.locale === "string" ? params.locale : undefined;
-
-  const withLocale = React.useCallback(
-    (href: string) => {
-      if (!localeParam || localeParam === "id") return href;
-      if (!href.startsWith("/")) return href;
-      if (href.startsWith(`/${localeParam}`)) return href;
-      return `/${localeParam}${href}`;
-    },
-    [localeParam]
-  );
-
   const sectionRef = React.useRef<HTMLElement>(null);
   const codeRef = React.useRef<HTMLDivElement>(null);
   const sheenRef = React.useRef<HTMLDivElement>(null);
@@ -151,7 +137,7 @@ export function AnimatedErrorPage({
 
           <div data-animate="in" className="mt-6 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="bg-primary px-6 hover:bg-primary/90">
-              <NextLink href={withLocale(primaryHref)}>
+              <NextLink href={primaryHref}>
                 <Home className="size-4" />
                 {primaryLabel}
               </NextLink>
@@ -159,7 +145,7 @@ export function AnimatedErrorPage({
 
             {secondaryLabel && secondaryHref ? (
               <Button asChild variant="outline" size="lg" className="px-6">
-                <NextLink href={withLocale(secondaryHref)}>
+                <NextLink href={secondaryHref}>
                   <ArrowLeft className="size-4" />
                   {secondaryLabel}
                 </NextLink>

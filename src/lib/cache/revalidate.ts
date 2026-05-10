@@ -4,13 +4,21 @@ export async function revalidateContentCache(
   entity: string
 ): Promise<void> {
   const cache = getCache();
-  await Promise.all([
-    cache.delByPrefix(`content:${entity}`),
-    cache.delByPrefix(`tr:${entity}`),
-  ]);
+  try {
+    await Promise.all([
+      cache.delByPrefix(`content:${entity}`),
+      cache.delByPrefix(`tr:${entity}`),
+    ]);
+  } catch (error) {
+    console.warn(`[cache] revalidate failed for entity "${entity}"`, error);
+  }
 }
 
 export async function revalidateAllCache(): Promise<void> {
   const cache = getCache();
-  await cache.flush();
+  try {
+    await cache.flush();
+  } catch (error) {
+    console.warn("[cache] flush failed", error);
+  }
 }

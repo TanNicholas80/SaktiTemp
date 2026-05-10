@@ -6,9 +6,20 @@ export async function cachedQuery<T>(
   ttl?: number
 ): Promise<T> {
   const cache = getCache();
-  const cached = await cache.get<T>(cacheKey);
-  if (cached !== null) return cached;
+  try {
+    const cached = await cache.get<T>(cacheKey);
+    if (cached !== null) return cached;
+  } catch (error) {
+    console.warn(`[cache] get failed for key "${cacheKey}", falling back to source`, error);
+  }
+
   const result = await queryFn();
-  await cache.set(cacheKey, result, ttl);
+
+  try {
+    await cache.set(cacheKey, result, ttl);
+  } catch (error) {
+    console.warn(`[cache] set failed for key "${cacheKey}", continuing without cache`, error);
+  }
+
   return result;
 }

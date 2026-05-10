@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { asc, eq, sql } from "drizzle-orm";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ locale: string }>;
