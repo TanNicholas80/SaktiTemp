@@ -388,17 +388,6 @@
       "unitSqm": "m²",
       "addButton": "Tambah Add-On"
     },
-    "modification": {
-      "title": "Modifikasi",
-      "itemLabel": "Modifikasi {index}",
-      "typeLabel": "Tipe Modifikasi",
-      "thicknessLabel": "Ketebalan (Mm)",
-      "thicknessPlaceholder": "Pilih ketebalan...",
-      "sideCountLabel": "Jumlah Sisi",
-      "sideCountPlaceholder": "1",
-      "sideUnit": "sisi",
-      "addButton": "Tambah Modifikasi"
-    },
     "production": {
       "title": "Produksi & Pengiriman",
       "cutting": {
@@ -445,7 +434,6 @@
       "materialLabel": "Material Dasar",
       "dimensionLabel": "Dimensi",
       "addOnLabel": "Add-On {index}",
-      "modificationLabel": "Modifikasi",
       "customPatternSurchargeLabel": "Surcharge Pola Custom (+10%)",
       "expressSurchargeLabel": "Surcharge Express (+20%)",
       "logisticLabel": "Logistik",

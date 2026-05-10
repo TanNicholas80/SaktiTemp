@@ -388,17 +388,6 @@
       "unitSqm": "m²",
       "addButton": "Add Add-On"
     },
-    "modification": {
-      "title": "Modification",
-      "itemLabel": "Modification {index}",
-      "typeLabel": "Modification Type",
-      "thicknessLabel": "Thickness (Mm)",
-      "thicknessPlaceholder": "Select thickness...",
-      "sideCountLabel": "Number of Sides",
-      "sideCountPlaceholder": "1",
-      "sideUnit": "sides",
-      "addButton": "Add Modification"
-    },
     "production": {
       "title": "Production & Delivery",
       "cutting": {
@@ -445,7 +434,6 @@
       "materialLabel": "Base Material",
       "dimensionLabel": "Dimensions",
       "addOnLabel": "Add-On {index}",
-      "modificationLabel": "Modification",
       "customPatternSurchargeLabel": "Custom Pattern Surcharge (+10%)",
       "expressSurchargeLabel": "Express Surcharge (+20%)",
       "logisticLabel": "Logistics",

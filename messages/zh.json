@@ -388,17 +388,6 @@
       "unitSqm": "平方米",
       "addButton": "添加附加项"
     },
-    "modification": {
-      "title": "改造",
-      "itemLabel": "改造 {index}",
-      "typeLabel": "改造类型",
-      "thicknessLabel": "厚度 (Mm)",
-      "thicknessPlaceholder": "请选择厚度...",
-      "sideCountLabel": "边数",
-      "sideCountPlaceholder": "1",
-      "sideUnit": "边",
-      "addButton": "添加改造"
-    },
     "production": {
       "title": "生产与配送",
       "cutting": {
@@ -445,7 +434,6 @@
       "materialLabel": "基础材料",
       "dimensionLabel": "尺寸",
       "addOnLabel": "附加项 {index}",
-      "modificationLabel": "改造",
       "customPatternSurchargeLabel": "自定义图案附加费 (+10%)",
       "expressSurchargeLabel": "加急附加费 (+20%)",
       "logisticLabel": "物流",

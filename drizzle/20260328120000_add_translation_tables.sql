@@ -195,15 +195,6 @@ CREATE TABLE IF NOT EXISTS "glass_prices_translations" (
 CREATE UNIQUE INDEX IF NOT EXISTS "glass_prices_tr_unique" ON "glass_prices_translations" ("glass_prices_id", "locale");
 CREATE INDEX IF NOT EXISTS "glass_prices_tr_locale_idx" ON "glass_prices_translations" ("locale");
 
-CREATE TABLE IF NOT EXISTS "modification_translations" (
-  "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-  "modification_id" uuid NOT NULL REFERENCES "modification"("modification_id") ON DELETE CASCADE,
-  "locale" varchar(10) NOT NULL,
-  "name" varchar(150) NOT NULL
-);
-CREATE UNIQUE INDEX IF NOT EXISTS "modification_tr_unique" ON "modification_translations" ("modification_id", "locale");
-CREATE INDEX IF NOT EXISTS "modification_tr_locale_idx" ON "modification_translations" ("locale");
-
 CREATE TABLE IF NOT EXISTS "processing_categories_translations" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   "processing_category_id" uuid NOT NULL REFERENCES "processing_categories"("processing_category_id") ON DELETE CASCADE,
