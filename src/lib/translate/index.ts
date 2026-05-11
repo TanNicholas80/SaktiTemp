@@ -13,6 +13,7 @@ export {
   applyLocationTranslations,
   applyHeroSectionTranslation,
   applyPortofolioTranslations,
+  applyPortofolioCategoryNameTranslations,
   applyPortofolioDetailTranslations,
   applyPortofolioTypeTranslations,
   applyProductTranslations,
@@ -133,6 +134,8 @@ export type PortofolioInput = {
   portofolioShortDescription: string; portofolioLocation: string;
   portofolioImageUrl: string; portofolioIsPublishedAt: string;
   categoryName: string | null; categorySlug: string | null;
+  /** Untuk menerjemahkan label kategori lewat `category_portofolio_translations`. */
+  categoryPortofolioId?: string | null;
 };
 export type PortofolioOutput = PortofolioInput;
 

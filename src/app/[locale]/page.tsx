@@ -36,6 +36,7 @@ import {
   applyContactTranslations,
   applyLocationTranslations,
   applyPortofolioTranslations,
+  applyPortofolioCategoryNameTranslations,
 } from "@/lib/translate/get-translated";
 import { OrganizationJsonLd } from "@/components/seo/json-ld";
 
@@ -164,6 +165,7 @@ export default async function LandingHomePage({ params }: Props) {
           portofolioLocation: portofolio.portofolioLocation,
           portofolioImageUrl: portofolio.portofolioImageUrl,
           portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
+          categoryPortofolioId: categoryPortofolio.categoryPortofolioId,
           categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
           categoryPortofolioSlug: categoryPortofolio.categoryPortofolioSlug,
         })
@@ -184,6 +186,7 @@ export default async function LandingHomePage({ params }: Props) {
         portofolioLocation: r.portofolioLocation,
         portofolioImageUrl: r.portofolioImageUrl,
         portofolioIsPublishedAt: r.portofolioIsPublishedAt.toISOString(),
+        categoryPortofolioId: r.categoryPortofolioId ?? null,
         categoryName: r.categoryPortofolioName,
         categorySlug: r.categoryPortofolioSlug,
       }));
@@ -292,7 +295,10 @@ export default async function LandingHomePage({ params }: Props) {
   const benefits = await applyBenefitTranslations(rawBenefits, locale);
   const stats = await applyCompanyStatTranslations(rawStats, locale);
   const blogs = await applyBlogWithCategoryTranslations(rawBlogs, locale);
-  const portofolios = await applyPortofolioTranslations(rawPortofolios, locale);
+  const portofolios = await applyPortofolioCategoryNameTranslations(
+    await applyPortofolioTranslations(rawPortofolios, locale),
+    locale
+  );
   const portofolioCategories = Array.from(
     new Map(
       portofolios

@@ -151,6 +151,7 @@ export function VideoSection() {
               preload="metadata"
               className="absolute inset-0 z-0 h-full w-full object-cover"
               playsInline
+              muted
               onClick={togglePlay}
             />
             {/* Red-maroon overlay - lighter when playing so video is visible */}

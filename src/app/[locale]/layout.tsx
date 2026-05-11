@@ -45,7 +45,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider messages={messages} timeZone={timeZone}>
-      <div className="min-h-screen flex flex-col">
+      <div className="landing-light min-h-screen flex flex-col">
         <LandingNavbar />
         <main className="flex-1">{children}</main>
       </div>

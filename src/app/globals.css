@@ -2,8 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Dark mode aktif saat class "dark" atau data-theme="dark" pada elemen ancestor */
-@custom-variant dark (&:is(.dark *));
+/* Dark mode aktif saat class "dark" pada elemen ancestor,
+   KECUALI element berada di dalam subtree .landing-light (force light scope) */
+@custom-variant dark (&:is(.dark *):not(.landing-light *));
 
 @theme inline {
   --color-background: var(--background);
@@ -119,6 +120,46 @@
   --sidebar-border: rgba(255 255 255 / 12%);
   --sidebar-ring: #741e1e;
   --primary-hover: #741e1e; /* Text hover bg maroon */
+}
+
+/* Force light theme di subtree landing page, override .dark ancestor */
+.landing-light {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #721d1d;
+  --primary-foreground: #ffffff;
+  --secondary: #f7f7f7;
+  --secondary-foreground: #000000;
+  --muted: #f7f7f7;
+  --muted-foreground: #666666;
+  --accent: #f39c27;
+  --accent-foreground: #000000;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #c3c3c3;
+  --input: #c3c3c3;
+  --ring: #721d1d;
+  --chart-1: #721d1d;
+  --chart-2: #f39c27;
+  --chart-3: #666666;
+  --chart-4: #8f8f8f;
+  --chart-5: #c3c3c3;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #721d1d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f7f7f7;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #c3c3c3;
+  --sidebar-ring: #721d1d;
+  --primary-hover: #741e1e;
+
+  background-color: var(--background);
+  color: var(--foreground);
+  color-scheme: light;
 }
 
 @layer base {
