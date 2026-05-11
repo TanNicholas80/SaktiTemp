@@ -6,15 +6,19 @@ import {
   Linkedin,
   Youtube,
   Share2,
-  type LucideIcon,
 } from "lucide-react";
 
-const SOCIAL_MEDIA_ICON_MAP: Record<string, LucideIcon> = {
+import { TiktokIcon } from "@/components/icons/tiktok-icon";
+
+type IconComponent = React.ComponentType<{ className?: string }>;
+
+const SOCIAL_MEDIA_ICON_MAP: Record<string, IconComponent> = {
   Facebook,
   Instagram,
   Linkedin,
   Youtube,
   Share2,
+  Tiktok: TiktokIcon,
 };
 
 type SocialMediaIconPreviewProps = {

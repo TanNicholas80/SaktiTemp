@@ -13,7 +13,6 @@ import {
   MapPin,
   MessageCircle,
   Phone,
-  type LucideIcon,
 } from "lucide-react";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -21,18 +20,21 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { TiktokIcon } from "@/components/icons/tiktok-icon";
 import { cn } from "@/lib/utils";
 
 import type { ContactOutput, LocationOutput } from "@/lib/translate";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SOCIAL_ICON_MAP: Record<string, LucideIcon> = {
+type SocialIconComponent = React.ComponentType<{ className?: string }>;
+
+const SOCIAL_ICON_MAP: Record<string, SocialIconComponent> = {
   facebook: Facebook,
   instagram: Instagram,
   linkedin: Linkedin,
   linkedin_in: Linkedin,
-  tiktok: MessageCircle,
+  tiktok: TiktokIcon,
   whatsapp: MessageCircle,
 };
 
@@ -49,7 +51,7 @@ type ContactContentSectionProps = {
   socialMedia: SocialMediaItem[];
 };
 
-function getSocialIcon(iconName: string): LucideIcon {
+function getSocialIcon(iconName: string): SocialIconComponent {
   const key = iconName.toLowerCase().replace(/\s+/g, "_");
   return SOCIAL_ICON_MAP[key] ?? MessageCircle;
 }

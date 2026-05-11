@@ -22,7 +22,8 @@ export const SOCIAL_MEDIA_ICON_OPTIONS = [
   { value: "Instagram", label: "Instagram" },
   { value: "Linkedin", label: "LinkedIn" },
   { value: "Youtube", label: "YouTube" },
-  { value: "Share2", label: "Share2 (TikTok / lainnya)" },
+  { value: "Tiktok", label: "TikTok" },
+  { value: "Share2", label: "Share2 (lainnya)" },
 ] as const;
 
 export type SocialMediaFormValues = {
