@@ -17,6 +17,8 @@ export function VisionMissionSection() {
   const subtitleRef = React.useRef<HTMLParagraphElement>(null);
   const visiBlockRef = React.useRef<HTMLDivElement>(null);
   const misiBlockRef = React.useRef<HTMLDivElement>(null);
+  const visiNumberRef = React.useRef<HTMLDivElement>(null);
+  const misiNumberRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const ctx = gsap.context(() => {
@@ -83,6 +85,44 @@ export function VisionMissionSection() {
           }
         );
       }
+
+      if (visiNumberRef.current) {
+        gsap.fromTo(
+          visiNumberRef.current,
+          { scale: 0.85, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.9,
+            delay: 0.25,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: visiNumberRef.current,
+              start: "top 90%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
+
+      if (misiNumberRef.current) {
+        gsap.fromTo(
+          misiNumberRef.current,
+          { scale: 0.85, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.9,
+            delay: 0.3,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: misiNumberRef.current,
+              start: "top 90%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
     }, sectionRef);
 
     return () => ctx.revert();
@@ -132,6 +172,18 @@ export function VisionMissionSection() {
             className="flex flex-col items-center text-center lg:items-start lg:text-left"
           >
             <div className="flex w-full flex-col items-center lg:items-start">
+              <div
+                ref={visiNumberRef}
+                aria-hidden
+                className="flex h-24 items-start sm:h-28 lg:h-32"
+              >
+                <span className="select-none text-8xl font-bold leading-none text-primary/15 sm:text-9xl">
+                  0
+                </span>
+                <span className="select-none text-8xl font-bold leading-none text-primary/15 sm:text-9xl">
+                  1
+                </span>
+              </div>
               <h3 className="text-xl font-bold text-foreground sm:text-2xl">
                 {t("visionTitle")}
               </h3>
@@ -147,6 +199,18 @@ export function VisionMissionSection() {
             className="flex flex-col items-center text-center lg:items-start lg:text-left"
           >
             <div className="flex w-full flex-col items-center lg:items-start">
+              <div
+                ref={misiNumberRef}
+                aria-hidden
+                className="flex h-24 items-start sm:h-28 lg:h-32"
+              >
+                <span className="select-none text-8xl font-bold leading-none text-accent/15 sm:text-9xl">
+                  0
+                </span>
+                <span className="select-none text-8xl font-bold leading-none text-accent/15 sm:text-9xl">
+                  2
+                </span>
+              </div>
               <h3 className="text-xl font-bold text-foreground sm:text-2xl">
                 {t("missionTitle")}
               </h3>
