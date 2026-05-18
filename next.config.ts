@@ -11,7 +11,30 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "saktitemp.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.saktitemp.com",
+        pathname: "/**",
+      },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: "/api/admin/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, proxy-revalidate",
+          },
+        ],
+      },
+    ];
   },
 };
 
