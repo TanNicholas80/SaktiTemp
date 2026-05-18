@@ -5,6 +5,8 @@ import { getTranslations } from "next-intl/server";
 
 import { and, desc, eq, inArray, ne } from "drizzle-orm";
 
+export const revalidate = 300;
+
 import { FooterSection } from "@/components/footer";
 import {
   PortofolioDetailContent,

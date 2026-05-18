@@ -63,9 +63,16 @@ export default async function CalculatorPage({ params }: Props) {
   const fallbackHero = await getFallbackHero(locale);
   const footerDataPromise = getFooterData(locale);
 
-  const [heroRow, glassTypeList, glassPriceList, processingCategoryList, processingPriceList] =
-    await Promise.all([
-      cachedQuery(contentCacheKey("calculator", "hero"), () =>
+  const calculatorData = await cachedQuery(
+    contentCacheKey("calculator", "page"),
+    async () => {
+      const [
+        heroRow,
+        glassTypeList,
+        glassPriceList,
+        processingCategoryList,
+        processingPriceList,
+      ] = await Promise.all([
         db.query.heroSection.findFirst({
           where: eq(heroSection.pageKey, "calculator"),
           columns: {
@@ -80,57 +87,74 @@ export default async function CalculatorPage({ params }: Props) {
             scrollIndicatorVisible: true,
             breadcrumbItems: true,
           },
-        })
-      ),
-      db
-        .select({
-          glassTypeId: glassTypes.glassTypeId,
-          glassTypeName: glassTypes.glassTypeName,
-          glassTypeImageUrl: glassTypes.glassTypeImageUrl,
-        })
-        .from(glassTypes)
-        .orderBy(asc(glassTypes.glassTypeName)),
-      db
-        .select({
-          glassPricesId: glassPrices.glassPricesId,
-          glassTypeId: glassPrices.glassTypeId,
-          thicknessId: glassPrices.thicknessId,
-          variant: glassPrices.variant,
-          variantImageUrl: glassPrices.variantImageUrl,
-          composition: glassPrices.composition,
-          compositionDetail: glassPrices.compositionDetail,
-          pricePerSqm: glassPrices.pricePerSqm,
-          thicknessValue: thickness.thicknessValue,
-          thicknessUnit: thickness.thicknessUnit,
-        })
-        .from(glassPrices)
-        .innerJoin(thickness, eq(glassPrices.thicknessId, thickness.thicknessId))
-        .orderBy(asc(glassPrices.variant), asc(thickness.thicknessValue)),
-      db
-        .select({
-          processingCategoryId: processingCategories.processingCategoryId,
-          categoryName: processingCategories.categoryName,
-          categoryImageUrl: processingCategories.categoryImageUrl,
-        })
-        .from(processingCategories)
-        .orderBy(asc(processingCategories.categoryName)),
-      db
-        .select({
-          processingPricesId: processingPrices.processingPricesId,
-          categoryId: processingPrices.categoryId,
-          thickness: processingPrices.thickness,
-          minThickness: processingPrices.minThickness,
-          maxThickness: processingPrices.maxThickness,
-          serviceName: processingPrices.serviceName,
-          unit: processingPrices.unit,
-          price: processingPrices.price,
-        })
-        .from(processingPrices)
-        .orderBy(
-          asc(processingPrices.serviceName),
-          asc(sql`coalesce(${processingPrices.minThickness}, ${processingPrices.thickness})`)
-        ),
-    ]);
+        }),
+        db
+          .select({
+            glassTypeId: glassTypes.glassTypeId,
+            glassTypeName: glassTypes.glassTypeName,
+            glassTypeImageUrl: glassTypes.glassTypeImageUrl,
+          })
+          .from(glassTypes)
+          .orderBy(asc(glassTypes.glassTypeName)),
+        db
+          .select({
+            glassPricesId: glassPrices.glassPricesId,
+            glassTypeId: glassPrices.glassTypeId,
+            thicknessId: glassPrices.thicknessId,
+            variant: glassPrices.variant,
+            variantImageUrl: glassPrices.variantImageUrl,
+            composition: glassPrices.composition,
+            compositionDetail: glassPrices.compositionDetail,
+            pricePerSqm: glassPrices.pricePerSqm,
+            thicknessValue: thickness.thicknessValue,
+            thicknessUnit: thickness.thicknessUnit,
+          })
+          .from(glassPrices)
+          .innerJoin(thickness, eq(glassPrices.thicknessId, thickness.thicknessId))
+          .orderBy(asc(glassPrices.variant), asc(thickness.thicknessValue)),
+        db
+          .select({
+            processingCategoryId: processingCategories.processingCategoryId,
+            categoryName: processingCategories.categoryName,
+            categoryImageUrl: processingCategories.categoryImageUrl,
+          })
+          .from(processingCategories)
+          .orderBy(asc(processingCategories.categoryName)),
+        db
+          .select({
+            processingPricesId: processingPrices.processingPricesId,
+            categoryId: processingPrices.categoryId,
+            thickness: processingPrices.thickness,
+            minThickness: processingPrices.minThickness,
+            maxThickness: processingPrices.maxThickness,
+            serviceName: processingPrices.serviceName,
+            unit: processingPrices.unit,
+            price: processingPrices.price,
+          })
+          .from(processingPrices)
+          .orderBy(
+            asc(processingPrices.serviceName),
+            asc(sql`coalesce(${processingPrices.minThickness}, ${processingPrices.thickness})`)
+          ),
+      ]);
+
+      return {
+        heroRow,
+        glassTypeList,
+        glassPriceList,
+        processingCategoryList,
+        processingPriceList,
+      };
+    }
+  );
+
+  const {
+    heroRow,
+    glassTypeList,
+    glassPriceList,
+    processingCategoryList,
+    processingPriceList,
+  } = calculatorData;
 
   const rawHero = heroRow
     ? {
