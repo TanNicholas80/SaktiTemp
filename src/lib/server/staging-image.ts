@@ -69,7 +69,7 @@ export async function promoteStagingImageIfNeeded(
   await unlink(src).catch(() => {});
 
   return {
-    url: `/uploads/${targetFolder}/${filename}`,
+    url: `https://saktitemp.com/uploads/${targetFolder}/${filename}`,
     publicId: filename,
   };
 }
@@ -104,5 +104,5 @@ export async function promoteStagingUrlOnlyIfNeeded(
 
   await unlink(src).catch(() => {});
 
-  return `/uploads/${targetFolder}/${filename}`;
+  return `https://saktitemp.com/uploads/${targetFolder}/${filename}`;
 }
