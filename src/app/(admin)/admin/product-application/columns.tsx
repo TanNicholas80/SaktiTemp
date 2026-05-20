@@ -1,7 +1,6 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
 import { MoreHorizontalIcon, Pencil, Trash2Icon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";

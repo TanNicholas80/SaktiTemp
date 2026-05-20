@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { UploadImage } from "@/lib/upload-image";
 import Link from "next/link";
 import { Check, ChevronRight } from "lucide-react";
 
@@ -52,7 +52,7 @@ export function ProductFormPreviewCard({
     <article className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
         {imageUrl ? (
-          <Image
+          <UploadImage
             src={imageUrl}
             alt={productName || "Preview produk"}
             fill

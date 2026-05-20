@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { UploadImage } from "@/lib/upload-image";
 import { MapPin, Building2, Calendar, Ruler, MessageCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ export function PortofolioDetailPreview({
         <div className="space-y-2">
           <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
             {imageUrl ? (
-              <Image
+              <UploadImage
                 src={imageUrl}
                 alt=""
                 fill
@@ -74,7 +74,7 @@ export function PortofolioDetailPreview({
         {/* Hero */}
         <div className="relative aspect-video overflow-hidden rounded-xl bg-muted">
           {imageUrl ? (
-            <Image
+            <UploadImage
               src={imageUrl}
               alt=""
               fill
@@ -131,7 +131,7 @@ export function PortofolioDetailPreview({
                 >
                   <div className="relative aspect-[4/3] bg-muted">
                     {p.productImageUrl ? (
-                      <Image
+                      <UploadImage
                         src={p.productImageUrl}
                         alt=""
                         fill

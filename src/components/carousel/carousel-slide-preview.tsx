@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { UploadImage } from "@/lib/upload-image";
 import {
   ChevronLeft,
   ChevronRight,
@@ -46,7 +46,7 @@ export function CarouselSlidePreview({
       }`}
     >
       {imageUrl ? (
-        <Image
+        <UploadImage
           src={imageUrl}
           alt=""
           fill

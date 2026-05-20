@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { UploadImage } from "@/lib/upload-image";
 import Link from "next/link";
 import { Calendar, ChevronRight } from "lucide-react";
 
@@ -45,7 +45,7 @@ export function BlogFormPreviewCard({
     <article className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm">
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
         {imageUrl ? (
-          <Image
+          <UploadImage
             src={imageUrl}
             alt={blogTitle || "Preview blog"}
             fill

@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { UploadImage } from "@/lib/upload-image";
 import Link from "next/link";
 
 type BreadcrumbItem = { label: string; href: string };
@@ -37,7 +37,7 @@ export function HeroSectionPreview({
       }`}
     >
       {imageUrl ? (
-        <Image
+        <UploadImage
           src={imageUrl}
           alt=""
           fill

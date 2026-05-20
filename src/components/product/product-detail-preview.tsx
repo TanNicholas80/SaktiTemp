@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { UploadImage } from "@/lib/upload-image";
 import { Check, MapPin, Calculator } from "lucide-react";
 
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
@@ -41,7 +41,7 @@ export function ProductDetailPreview({
         <div className="space-y-2">
           <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
             {imageUrl ? (
-              <Image
+              <UploadImage
                 src={imageUrl}
                 alt=""
                 fill
@@ -80,7 +80,7 @@ export function ProductDetailPreview({
       <div className="space-y-4">
         <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
           {imageUrl ? (
-            <Image
+            <UploadImage
               src={imageUrl}
               alt=""
               fill
@@ -153,7 +153,7 @@ export function ProductDetailPreview({
                 >
                   <div className="relative aspect-square bg-muted">
                     {p.portofolioImageUrl ? (
-                      <Image
+                      <UploadImage
                         src={p.portofolioImageUrl}
                         alt=""
                         fill
