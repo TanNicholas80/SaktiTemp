@@ -19,23 +19,6 @@ export type GlassPrice = {
   thicknessUnit: string;
 };
 
-export type ProcessingCategory = {
-  processingCategoryId: string;
-  categoryName: string;
-  categoryImageUrl: string;
-};
-
-export type ProcessingPrice = {
-  processingPricesId: string;
-  categoryId: string;
-  thickness: number | null;
-  minThickness: number | null;
-  maxThickness: number | null;
-  serviceName: string;
-  unit: "m1" | "pcs" | "sqm" | "none";
-  price: number;
-};
-
 // --- Calculator state types ---
 
 export type GlassSpec = {
@@ -44,26 +27,26 @@ export type GlassSpec = {
   thicknessId: string | null;
   panjang: string;
   lebar: string;
-};
-
-export type AddOnItem = {
-  id: string;
-  categoryId: string | null;
-  serviceName: string | null;
-  thicknessValue: string;
+  /** Jumlah lembar kaca yang dipesan (raw input string, default "1") */
   quantity: string;
 };
 
 // --- Calculation result types ---
 
 export type CalcBreakdown = {
-  /** Harga material: pricePerSqm × luas (tanpa surcharge dimensi) */
+  /** Harga material per lembar: pricePerSqm × luas (tanpa surcharge dimensi). Sudah include Flat Polish Edging. */
   materialCost: number;
-  /** Tambahan % dari material dasar sesuai aturan lembaran */
+  /** Tambahan % dari material dasar per lembar sesuai aturan lembaran */
   dimensionSurcharge: number;
   /** 0, 0.1, atau 0.2 — untuk label ringkasan */
   dimensionSurchargeRate?: 0 | 0.1 | 0.2;
-  addOnCosts: Array<{ label: string; cost: number }>;
+  /** True saat spesifikasi kaca + dimensi sudah lengkap, sehingga baris Flat Polish Edging (Rp 0) ditampilkan. */
+  flatPolishEdgingIncluded: boolean;
+  /** Jumlah lembar kaca yang dipesan (>= 1 saat valid; 0 jika belum diisi). */
+  quantity: number;
+  /** Subtotal per lembar: materialCost + dimensionSurcharge (sebelum dikali quantity) */
+  subtotalPerSheet: number;
+  /** Subtotal total = subtotalPerSheet × quantity */
   subtotal: number;
   ppn: number;
   grandTotal: number;
@@ -74,6 +57,4 @@ export type CalcBreakdown = {
 export type CalculatorSectionProps = {
   glassTypes: GlassType[];
   glassPrices: GlassPrice[];
-  processingCategories: ProcessingCategory[];
-  processingPrices: ProcessingPrice[];
 };

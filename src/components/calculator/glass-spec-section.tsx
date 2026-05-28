@@ -323,6 +323,33 @@ export function GlassSpecSection({
                 <p className="text-sm text-destructive font-medium">{dimensionError}</p>
               )}
             </div>
+
+            {/* Quantity Lembar Kaca */}
+            <div className="space-y-2">
+              <Label htmlFor="glass-quantity" className="text-sm font-semibold">
+                {t("quantityLabel")}
+              </Label>
+              <p className="text-xs text-muted-foreground">
+                {t("quantityHint")}
+              </p>
+              <div className="flex items-center gap-1.5">
+                <Input
+                  id="glass-quantity"
+                  type="number"
+                  min={1}
+                  step={1}
+                  placeholder="1"
+                  className="w-32"
+                  value={spec.quantity}
+                  onChange={(e) =>
+                    onChange({ ...spec, quantity: e.target.value })
+                  }
+                />
+                <span className="text-sm text-muted-foreground">
+                  {t("quantityUnit")}
+                </span>
+              </div>
+            </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

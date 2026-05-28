@@ -17,7 +17,6 @@ export const portofolioTranslations = pgTable(
       .notNull()
       .default(""),
     portofolioAbout: text("portofolio_about").notNull(),
-    portofolioClient: varchar("portofolio_client").notNull(),
     portofolioLocation: varchar("portofolio_location").notNull(),
   },
   (table) => [

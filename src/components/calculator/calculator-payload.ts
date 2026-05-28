@@ -4,9 +4,18 @@ export const CALCULATOR_RINCIAN_STORAGE_KEY = "saktitemp-calculator-rincian-v1";
 
 export type CalculatorRincianPayload = {
   breakdown: CalcBreakdown;
-  glassTypeName?: string;
-  variant?: string;
-  thicknessLabel?: string;
+  // Stable identifiers for re-translation on rincian page
+  glassTypeId?: string;
+  glassTypeName?: string; // fallback
+
+  glassPricesId?: string;
+  variant?: string; // fallback
+
+  thicknessId?: string;
+  thicknessValue?: number; // mm numeric value
+  thicknessUnit?: string; // fallback unit
+  thicknessLabel?: string; // backward-compatible fallback
+
   panjang?: string;
   lebar?: string;
   savedAt: string;
@@ -54,8 +63,16 @@ export function buildCalculatorWhatsAppLines(opts: {
   if (glassSpec.panjang && glassSpec.lebar) {
     lines.push(`Dimensi: ${glassSpec.panjang} mm x ${glassSpec.lebar} mm`);
   }
-  if (breakdown.addOnCosts.length > 0) {
-    lines.push(`Add-On: ${breakdown.addOnCosts.map((a) => a.label).join(", ")}`);
+  if (breakdown.flatPolishEdgingIncluded) {
+    lines.push("Flat Polish Edging: Sudah termasuk di harga material");
+  }
+  if (breakdown.quantity > 0) {
+    lines.push(`Quantity Lembar Kaca: ${breakdown.quantity} lembar`);
+  }
+  if (breakdown.quantity > 1) {
+    lines.push(
+      `Sub-Total / Lembar: Rp ${Math.round(breakdown.subtotalPerSheet).toLocaleString("id-ID")}`
+    );
   }
   lines.push("");
   lines.push(

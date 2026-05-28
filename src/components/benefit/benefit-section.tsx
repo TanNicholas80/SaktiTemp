@@ -147,85 +147,66 @@ export function BenefitSection({ benefits, stats }: BenefitSectionProps) {
           </p>
         </div>
 
-        {/* Benefit Cards + Stats (stat di bawah tiap card, center) */}
+        {/* Benefit Cards — tinggi seragam, terpisah dari statistik */}
         {benefits.length > 0 && (
           <div
             ref={cardsRef}
-            className="mt-12 grid grid-cols-1 gap-8 sm:mt-14 sm:grid-cols-2 md:mt-16 lg:mt-20 lg:grid-cols-4 lg:gap-10"
+            className="mt-12 grid grid-cols-1 items-stretch gap-8 sm:mt-14 sm:grid-cols-2 md:mt-16 lg:mt-20 lg:grid-cols-4 lg:gap-10"
           >
             {benefits.map((benefit, index) => {
               const Icon = getBenefitIcon(benefit.benefitIcon);
-              const stat = stats[index];
 
               return (
-                <div
+                <Card
                   key={benefit.benefitId}
-                  className="flex min-h-0 flex-col items-center"
-                >
-                  <Card
-                    ref={(el) => {
-                      if (el) cardRefs.current[index] = el;
-                    }}
-                    className={cn(
-                      "group flex h-full w-full flex-1 flex-col rounded-2xl transition-all duration-500 ease-out",
-                      "hover:-translate-y-1.5 hover:shadow-xl",
-                      "border-border/60 bg-white hover:bg-primary hover:text-primary-foreground hover:border-primary"
-                    )}
-                  >
-                    <CardHeader className="gap-4 pb-2">
-                      <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-colors duration-300 group-hover:bg-white/20 sm:size-14">
-                        <Icon className="size-6 text-primary transition-colors duration-300 group-hover:text-white sm:size-7" />
-                      </div>
-                      <CardTitle className="text-base font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-white sm:text-lg">
-                        {benefit.benefitName}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-1 flex-col px-6 pb-6 pt-0">
-                      <p className="flex-1 text-sm leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-white/90">
-                        {benefit.benefitDescription}
-                      </p>
-                    </CardContent>
-                  </Card>
-
-                  {/* Stat di bawah card, center */}
-                  {stat && (
-                    <div
-                      ref={(el) => {
-                        if (el) statRefs.current[index] = el;
-                      }}
-                      className="mt-6 flex flex-col items-center text-center"
-                    >
-                      <AnimatedStatValue
-                        value={stat.value}
-                        delay={0.35 + index * 0.08}
-                        className="text-2xl font-bold tracking-tight text-primary sm:text-3xl md:text-[1.75rem] lg:text-4xl"
-                      />
-                      <span className="mt-1 text-sm font-medium text-muted-foreground">
-                        {stat.label}
-                      </span>
-                    </div>
+                  ref={(el) => {
+                    if (el) cardRefs.current[index] = el;
+                  }}
+                  className={cn(
+                    "group flex h-full w-full flex-col rounded-2xl transition-all duration-500 ease-out",
+                    "hover:-translate-y-1.5 hover:shadow-xl",
+                    "border-border/60 bg-white hover:bg-primary hover:text-primary-foreground hover:border-primary"
                   )}
-                </div>
+                >
+                  <CardHeader className="gap-4 pb-2">
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-colors duration-300 group-hover:bg-white/20 sm:size-14">
+                      <Icon className="size-6 text-primary transition-colors duration-300 group-hover:text-white sm:size-7" />
+                    </div>
+                    <CardTitle className="text-base font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-white sm:text-lg">
+                      {benefit.benefitName}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex flex-1 flex-col px-6 pb-6 pt-0">
+                    <p className="flex-1 text-sm leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-white/90">
+                      {benefit.benefitDescription}
+                    </p>
+                  </CardContent>
+                </Card>
               );
             })}
           </div>
         )}
 
-        {/* Stats tambahan jika jumlah stat lebih banyak dari benefit */}
-        {stats.length > benefits.length && benefits.length > 0 && (
-          <div className="mt-10 flex flex-wrap justify-center gap-8 sm:gap-12 md:gap-16">
-            {stats.slice(benefits.length).map((stat, index) => (
+        {/* Statistik — baris terpisah, selalu di tengah */}
+        {stats.length > 0 && (
+          <div
+            className={cn(
+              "flex flex-wrap items-start justify-center gap-x-10 gap-y-8 sm:gap-x-14 md:gap-x-16 lg:gap-x-20",
+              benefits.length > 0 ? "mt-10 sm:mt-12 md:mt-14" : "mt-0"
+            )}
+          >
+            {stats.map((stat, index) => (
               <div
                 key={stat.companyStatId}
                 ref={(el) => {
-                  if (el) statRefs.current[benefits.length + index] = el;
+                  if (el) statRefs.current[index] = el;
                 }}
-                className="flex flex-col items-center text-center"
+                className="flex min-w-[8.5rem] flex-col items-center text-center sm:min-w-[10rem]"
               >
                 <AnimatedStatValue
                   value={stat.value}
-                  delay={0.35 + (benefits.length + index) * 0.08}
-                  className="text-2xl font-bold tracking-tight text-primary sm:text-3xl"
+                  delay={0.35 + index * 0.08}
+                  className="text-2xl font-bold tracking-tight text-primary sm:text-3xl md:text-[1.75rem] lg:text-4xl"
                 />
                 <span className="mt-1 text-sm font-medium text-muted-foreground">
                   {stat.label}

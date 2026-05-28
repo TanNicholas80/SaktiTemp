@@ -33,11 +33,7 @@ export type PortofolioFormValues = {
   slug: string;
   shortDescription: string;
   about: string;
-  client: string;
   location: string;
-  year: number;
-  areaSize: number;
-  areaSizeUnit: string;
   image: { url: string; publicId: string } | null;
   categoryId: string;
   portofolioTypeId: string;
@@ -226,23 +222,6 @@ export function PortofolioForm({
         />
       </Field>
       <Field>
-        <FieldLabel htmlFor="client">Klien</FieldLabel>
-        <Input
-          id="client"
-          value={values.client}
-          onChange={(e) => onChange({ ...values, client: e.target.value })}
-          placeholder="PT. Contoh Client"
-          aria-invalid={!!errors.portofolioClient}
-        />
-        <FieldError
-          errors={
-            errors.portofolioClient
-              ? [{ message: errors.portofolioClient }]
-              : []
-          }
-        />
-      </Field>
-      <Field>
         <FieldLabel htmlFor="location">Lokasi</FieldLabel>
         <Input
           id="location"
@@ -259,71 +238,6 @@ export function PortofolioForm({
           }
         />
       </Field>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field>
-          <FieldLabel htmlFor="year">Tahun</FieldLabel>
-          <Input
-            id="year"
-            type="number"
-            min={1900}
-            max={2100}
-            value={values.year || ""}
-            onChange={(e) =>
-              onChange({
-                ...values,
-                year: Number(e.target.value) || 0,
-              })
-            }
-            placeholder="2024"
-            aria-invalid={!!errors.portofolioYear}
-          />
-          <FieldError
-            errors={
-              errors.portofolioYear
-                ? [{ message: errors.portofolioYear }]
-                : []
-            }
-          />
-        </Field>
-        <Field>
-          <FieldLabel htmlFor="areaSize">Luas Area</FieldLabel>
-          <div className="flex gap-2">
-            <Input
-              id="areaSize"
-              type="number"
-              min={0}
-              value={values.areaSize || ""}
-              onChange={(e) =>
-                onChange({
-                  ...values,
-                  areaSize: Number(e.target.value) || 0,
-                })
-              }
-              placeholder="0"
-              className="flex-1"
-              aria-invalid={!!errors.portofolioAreaSize}
-            />
-            <Input
-              value={values.areaSizeUnit}
-              onChange={(e) =>
-                onChange({ ...values, areaSizeUnit: e.target.value })
-              }
-              placeholder="m²"
-              className="w-20"
-              aria-invalid={!!errors.portofolioAreaSizeUnit}
-            />
-          </div>
-          <FieldError
-            errors={
-              errors.portofolioAreaSize
-                ? [{ message: errors.portofolioAreaSize }]
-                : errors.portofolioAreaSizeUnit
-                  ? [{ message: errors.portofolioAreaSizeUnit }]
-                  : []
-            }
-          />
-        </Field>
-      </div>
       {productApplications.length > 0 && (
         <Field>
           <FieldLabel>Aplikasi Kaca Yang Digunakan</FieldLabel>

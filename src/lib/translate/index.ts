@@ -23,8 +23,6 @@ export {
   applyCertificationTranslations,
   applyGlassTypesTranslations,
   applyGlassPricesTranslations,
-  applyProcessingCategoriesTranslations,
-  applyProcessingPricesTranslations,
   applySocialMediaTranslations,
   applyThicknessTranslations,
 } from "./get-translated";
@@ -51,8 +49,6 @@ export {
   translateAndSaveCertification,
   translateAndSaveGlassType,
   translateAndSaveGlassPrice,
-  translateAndSaveProcessingCategory,
-  translateAndSaveProcessingPrice,
   translateAndSaveSocialMedia,
   translateAndSaveThickness,
 } from "./entity-translators";

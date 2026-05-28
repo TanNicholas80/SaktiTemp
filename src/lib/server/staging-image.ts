@@ -1,13 +1,10 @@
-import { copyFile, mkdir, unlink } from "fs/promises";
-import path from "path";
-
 import {
   FINAL_UPLOAD_FOLDERS,
   STAGING_UPLOAD_DIR,
+  STAGING_URL_SEGMENT,
   type FinalUploadFolder,
 } from "@/lib/constants/admin-upload";
-
-const STAGING_PUBLIC_PREFIX = `/uploads/${STAGING_UPLOAD_DIR}/`;
+import { supabaseAdmin, STORAGE_BUCKET } from "@/lib/supabase/server-client";
 
 export class StagingPromoteError extends Error {
   constructor(message: string) {
@@ -22,8 +19,12 @@ export function isFinalUploadFolder(
   return (FINAL_UPLOAD_FOLDERS as readonly string[]).includes(value);
 }
 
+/**
+ * Mendeteksi URL staging, berlaku untuk URL lokal (/uploads/staging/...)
+ * maupun URL Supabase (...supabase.co/.../staging/...).
+ */
 export function isStagingImageUrl(url: string): boolean {
-  return url.includes(STAGING_PUBLIC_PREFIX);
+  return url.includes(STAGING_URL_SEGMENT);
 }
 
 function filenameFromUrl(url: string): string {
@@ -39,7 +40,8 @@ function resolveStagingFilename(url: string, publicId: string): string {
 }
 
 /**
- * Salin dari staging ke folder final lalu hapus berkas staging.
+ * Pindahkan file dari folder staging ke folder final di Supabase Storage,
+ * lalu kembalikan URL publik final.
  */
 export async function promoteStagingImageIfNeeded(
   url: string,
@@ -53,23 +55,25 @@ export async function promoteStagingImageIfNeeded(
   }
 
   const filename = resolveStagingFilename(trimmedUrl, trimmedPid);
-  const cwd = process.cwd();
-  const src = path.join(cwd, "public", "uploads", STAGING_UPLOAD_DIR, filename);
-  const destDir = path.join(cwd, "public", "uploads", targetFolder);
-  const dest = path.join(destDir, filename);
+  const srcPath = `${STAGING_UPLOAD_DIR}/${filename}`;
+  const destPath = `${targetFolder}/${filename}`;
 
-  try {
-    await mkdir(destDir, { recursive: true });
-    await copyFile(src, dest);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    throw new StagingPromoteError(`Gagal mempromosikan gambar: ${msg}`);
+  const { error: moveError } = await supabaseAdmin.storage
+    .from(STORAGE_BUCKET)
+    .move(srcPath, destPath);
+
+  if (moveError) {
+    throw new StagingPromoteError(
+      `Gagal mempromosikan gambar: ${moveError.message}`
+    );
   }
 
-  await unlink(src).catch(() => {});
+  const { data: publicUrlData } = supabaseAdmin.storage
+    .from(STORAGE_BUCKET)
+    .getPublicUrl(destPath);
 
   return {
-    url: `https://saktitemp.com/uploads/${targetFolder}/${filename}`,
+    url: publicUrlData.publicUrl,
     publicId: filename,
   };
 }
@@ -89,20 +93,22 @@ export async function promoteStagingUrlOnlyIfNeeded(
     throw new StagingPromoteError("URL gambar staging tidak valid");
   }
 
-  const cwd = process.cwd();
-  const src = path.join(cwd, "public", "uploads", STAGING_UPLOAD_DIR, filename);
-  const destDir = path.join(cwd, "public", "uploads", targetFolder);
-  const dest = path.join(destDir, filename);
+  const srcPath = `${STAGING_UPLOAD_DIR}/${filename}`;
+  const destPath = `${targetFolder}/${filename}`;
 
-  try {
-    await mkdir(destDir, { recursive: true });
-    await copyFile(src, dest);
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    throw new StagingPromoteError(`Gagal mempromosikan gambar: ${msg}`);
+  const { error: moveError } = await supabaseAdmin.storage
+    .from(STORAGE_BUCKET)
+    .move(srcPath, destPath);
+
+  if (moveError) {
+    throw new StagingPromoteError(
+      `Gagal mempromosikan gambar: ${moveError.message}`
+    );
   }
 
-  await unlink(src).catch(() => {});
+  const { data: publicUrlData } = supabaseAdmin.storage
+    .from(STORAGE_BUCKET)
+    .getPublicUrl(destPath);
 
-  return `https://saktitemp.com/uploads/${targetFolder}/${filename}`;
+  return publicUrlData.publicUrl;
 }

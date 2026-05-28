@@ -28,8 +28,6 @@ import { serviceTranslations } from "@/db/schema/service-translations";
 import { certificationTranslations } from "@/db/schema/certification-translations";
 import { glassTypesTranslations } from "@/db/schema/glass-types-translations";
 import { glassPricesTranslations } from "@/db/schema/glass-prices-translations";
-import { processingCategoriesTranslations } from "@/db/schema/processing-categories-translations";
-import { processingPricesTranslations } from "@/db/schema/processing-prices-translations";
 import { socialMediaTranslations } from "@/db/schema/social-media-translations";
 import { thicknessTranslations } from "@/db/schema/thickness-translations";
 
@@ -577,7 +575,6 @@ export async function translateAndSavePortofolio(
     portofolioName: string;
     portofolioShortDescription: string;
     portofolioAbout: string;
-    portofolioClient: string;
     portofolioLocation: string;
   },
   previous?: Partial<
@@ -586,7 +583,6 @@ export async function translateAndSavePortofolio(
       | "portofolioName"
       | "portofolioShortDescription"
       | "portofolioAbout"
-      | "portofolioClient"
       | "portofolioLocation"
     >
   > | null
@@ -599,7 +595,6 @@ export async function translateAndSavePortofolio(
         "portofolioName",
         "portofolioShortDescription",
         "portofolioAbout",
-        "portofolioClient",
         "portofolioLocation",
       ]
     )
@@ -612,7 +607,6 @@ export async function translateAndSavePortofolio(
       portofolioName: data.portofolioName,
       portofolioShortDescription: data.portofolioShortDescription,
       portofolioAbout: data.portofolioAbout,
-      portofolioClient: data.portofolioClient,
       portofolioLocation: data.portofolioLocation,
     },
     "portfolio/project showcase"
@@ -628,7 +622,6 @@ export async function translateAndSavePortofolio(
         portofolioName: str(t.portofolioName),
         portofolioShortDescription: str(t.portofolioShortDescription),
         portofolioAbout: str(t.portofolioAbout),
-        portofolioClient: str(t.portofolioClient),
         portofolioLocation: str(t.portofolioLocation),
       })
       .onConflictDoUpdate({
@@ -637,7 +630,6 @@ export async function translateAndSavePortofolio(
           portofolioName: str(t.portofolioName),
           portofolioShortDescription: str(t.portofolioShortDescription),
           portofolioAbout: str(t.portofolioAbout),
-          portofolioClient: str(t.portofolioClient),
           portofolioLocation: str(t.portofolioLocation),
         },
       });
@@ -1087,90 +1079,6 @@ export async function translateAndSaveGlassPrice(
       .onConflictDoUpdate({
         target: [glassPricesTranslations.glassPricesId, glassPricesTranslations.locale],
         set: { variant: str(t.variant) },
-      });
-  }
-}
-
-// ---- Processing Categories ----
-export async function translateAndSaveProcessingCategory(
-  data: {
-    processingCategoryId: string;
-    categoryName: string;
-  },
-  previous?: Partial<Pick<typeof data, "categoryName">> | null
-) {
-  if (
-    translatableTextsUnchanged(
-      previous as Record<string, unknown> | null,
-      data as Record<string, unknown>,
-      ["categoryName"]
-    )
-  ) {
-    return;
-  }
-
-  const result = await translateFields(
-    { categoryName: data.categoryName },
-    "glass processing category name"
-  );
-
-  for (const locale of ALL_STORED_LOCALES) {
-    const t = result[locale];
-    await db
-      .insert(processingCategoriesTranslations)
-      .values({
-        processingCategoryId: data.processingCategoryId,
-        locale,
-        categoryName: str(t.categoryName),
-      })
-      .onConflictDoUpdate({
-        target: [
-          processingCategoriesTranslations.processingCategoryId,
-          processingCategoriesTranslations.locale,
-        ],
-        set: { categoryName: str(t.categoryName) },
-      });
-  }
-}
-
-// ---- Processing Prices ----
-export async function translateAndSaveProcessingPrice(
-  data: {
-    processingPricesId: string;
-    serviceName: string;
-  },
-  previous?: Partial<Pick<typeof data, "serviceName">> | null
-) {
-  if (
-    translatableTextsUnchanged(
-      previous as Record<string, unknown> | null,
-      data as Record<string, unknown>,
-      ["serviceName"]
-    )
-  ) {
-    return;
-  }
-
-  const result = await translateFields(
-    { serviceName: data.serviceName },
-    "glass processing service name"
-  );
-
-  for (const locale of ALL_STORED_LOCALES) {
-    const t = result[locale];
-    await db
-      .insert(processingPricesTranslations)
-      .values({
-        processingPricesId: data.processingPricesId,
-        locale,
-        serviceName: str(t.serviceName),
-      })
-      .onConflictDoUpdate({
-        target: [
-          processingPricesTranslations.processingPricesId,
-          processingPricesTranslations.locale,
-        ],
-        set: { serviceName: str(t.serviceName) },
       });
   }
 }

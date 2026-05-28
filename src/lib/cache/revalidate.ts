@@ -49,7 +49,7 @@ export async function revalidateContentCache(
   }
 
   // 7. Dependensi Halaman Calculator
-  const calculatorDependencies = ["thickness", "glass-types", "glass-prices", "processing-categories", "processing-prices"];
+  const calculatorDependencies = ["thickness", "glass-types", "glass-prices"];
   if (calculatorDependencies.includes(entity) && !prefixes.includes("content:calculator")) {
     prefixes.push(
       "content:calculator", "tr:calculator",

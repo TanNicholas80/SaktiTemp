@@ -26,8 +26,6 @@ import { service } from "../src/db/schema/service";
 import { certification } from "../src/db/schema/certification";
 import { glassTypes } from "../src/db/schema/glass_types";
 import { glassPrices } from "../src/db/schema/glass_prices";
-import { processingCategories } from "../src/db/schema/processing_categories";
-import { processingPrices } from "../src/db/schema/processing_prices";
 import { socialMedia } from "../src/db/schema/social-media";
 import { thickness } from "../src/db/schema/thickness";
 
@@ -50,8 +48,6 @@ import {
   translateAndSaveCertification,
   translateAndSaveGlassType,
   translateAndSaveGlassPrice,
-  translateAndSaveProcessingCategory,
-  translateAndSaveProcessingPrice,
   translateAndSaveSocialMedia,
   translateAndSaveThickness,
 } from "../src/lib/translate/entity-translators";
@@ -166,7 +162,6 @@ async function main() {
       portofolioName: p.portofolioName,
       portofolioShortDescription: p.portofolioShortDescription,
       portofolioAbout: p.portofolioAbout,
-      portofolioClient: p.portofolioClient,
       portofolioLocation: p.portofolioLocation,
     })
   );
@@ -238,16 +233,6 @@ async function main() {
   const glassPriceRows = await db.select().from(glassPrices);
   await translateEntity("Glass Prices", glassPriceRows, (g) =>
     translateAndSaveGlassPrice({ glassPricesId: g.glassPricesId, variant: g.variant })
-  );
-
-  const procCats = await db.select().from(processingCategories);
-  await translateEntity("Processing Categories", procCats, (pc) =>
-    translateAndSaveProcessingCategory({ processingCategoryId: pc.processingCategoryId, categoryName: pc.categoryName })
-  );
-
-  const procPrices = await db.select().from(processingPrices);
-  await translateEntity("Processing Prices", procPrices, (pp) =>
-    translateAndSaveProcessingPrice({ processingPricesId: pp.processingPricesId, serviceName: pp.serviceName })
   );
 
   const socials = await db.select().from(socialMedia);

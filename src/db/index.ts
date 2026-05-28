@@ -26,8 +26,6 @@ import * as productApplicationPortofolioSchema from "./schema/product-applicatio
 import * as contentCacheSchema from "./schema/content-cache";
 import * as glassTypesSchema from "./schema/glass_types";
 import * as glassPricesSchema from "./schema/glass_prices";
-import * as processingCategoriesSchema from "./schema/processing_categories";
-import * as processingPricesSchema from "./schema/processing_prices";
 
 import * as benefitTranslationsSchema from "./schema/benefit-translations";
 import * as blogTranslationsSchema from "./schema/blog-translations";
@@ -48,8 +46,6 @@ import * as serviceTranslationsSchema from "./schema/service-translations";
 import * as certificationTranslationsSchema from "./schema/certification-translations";
 import * as glassTypesTranslationsSchema from "./schema/glass-types-translations";
 import * as glassPricesTranslationsSchema from "./schema/glass-prices-translations";
-import * as processingCategoriesTranslationsSchema from "./schema/processing-categories-translations";
-import * as processingPricesTranslationsSchema from "./schema/processing-prices-translations";
 import * as socialMediaTranslationsSchema from "./schema/social-media-translations";
 import * as thicknessTranslationsSchema from "./schema/thickness-translations";
 
@@ -79,8 +75,6 @@ const schema = {
   ...contentCacheSchema,
   ...glassTypesSchema,
   ...glassPricesSchema,
-  ...processingCategoriesSchema,
-  ...processingPricesSchema,
 
   ...benefitTranslationsSchema,
   ...blogTranslationsSchema,
@@ -101,8 +95,6 @@ const schema = {
   ...certificationTranslationsSchema,
   ...glassTypesTranslationsSchema,
   ...glassPricesTranslationsSchema,
-  ...processingCategoriesTranslationsSchema,
-  ...processingPricesTranslationsSchema,
   ...socialMediaTranslationsSchema,
   ...thicknessTranslationsSchema,
 };

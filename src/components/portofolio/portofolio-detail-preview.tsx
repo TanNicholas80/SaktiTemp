@@ -1,7 +1,7 @@
 "use client";
 
 import { UploadImage } from "@/lib/upload-image";
-import { MapPin, Building2, Calendar, Ruler, MessageCircle } from "lucide-react";
+import { MapPin, MessageCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import type { ProductOption } from "./types";
@@ -9,11 +9,7 @@ import type { ProductOption } from "./types";
 type PortofolioDetailPreviewProps = {
   portofolioName: string;
   portofolioAbout: string;
-  portofolioClient: string;
   portofolioLocation: string;
-  portofolioYear: number;
-  portofolioAreaSize: number;
-  portofolioAreaSizeUnit: string;
   imageUrl: string | null;
   products: ProductOption[];
   variant?: "full" | "compact";
@@ -22,11 +18,7 @@ type PortofolioDetailPreviewProps = {
 export function PortofolioDetailPreview({
   portofolioName,
   portofolioAbout,
-  portofolioClient,
   portofolioLocation,
-  portofolioYear,
-  portofolioAreaSize,
-  portofolioAreaSizeUnit,
   imageUrl,
   products,
   variant = "full",
@@ -167,52 +159,15 @@ export function PortofolioDetailPreview({
         {/* Sidebar Detail */}
         <div className="overflow-hidden rounded-xl bg-primary px-5 py-5 text-white">
           <h4 className="mb-5 text-xl font-bold">Detail Proyek</h4>
-          <div className="space-y-5">
-            <div className="flex items-center gap-3">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <Building2 className="size-5 text-white" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-white/80 text-sm font-normal">Klien</p>
-                <p className="text-white text-base font-semibold">
-                  {portofolioClient || "—"}
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
+              <MapPin className="size-5 text-white" />
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <MapPin className="size-5 text-white" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-white/80 text-sm font-normal">Location</p>
-                <p className="text-white text-base font-semibold">
-                  {portofolioLocation || "—"}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <Calendar className="size-5 text-white" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-white/80 text-sm font-normal">Tahun</p>
-                <p className="text-white text-base font-semibold">
-                  {portofolioYear || "—"}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <Ruler className="size-5 text-white" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-white/80 text-sm font-normal">Luas Area</p>
-                <p className="text-white text-base font-semibold">
-                  {portofolioAreaSize
-                    ? `${portofolioAreaSize.toLocaleString("id-ID")} ${portofolioAreaSizeUnit}`
-                    : "—"}
-                </p>
-              </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-normal text-white/80">Lokasi</p>
+              <p className="text-base font-semibold text-white">
+                {portofolioLocation || "—"}
+              </p>
             </div>
           </div>
           <div className="mt-5 border-t border-white/20 pt-5">

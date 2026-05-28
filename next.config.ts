@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         hostname: "www.saktitemp.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "wbzhmivrkerqxwwsupnz.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
     ],
   },
   async headers() {

@@ -16,6 +16,14 @@ export const GLASS_DIM_MM = {
   TIER2_MAX_LEBAR: 4800,
 } as const;
 
+/**
+ * Flat Polish Edging sudah termasuk di harga material dasar setiap jenis kaca
+ * pada master pricelist, sehingga tidak ada biaya tambahan yang dihitung pada
+ * kalkulator. Baris ringkasan tetap ditampilkan (dengan harga Rp 0) sebagai
+ * informasi bahwa finishing ini selalu disertakan.
+ */
+export const FLAT_POLISH_EDGING_COST = 0;
+
 export type DimensionValidation =
   | { ok: true }
   | { ok: false; code: "invalid_number" | "min_size" | "max_size" };
@@ -36,7 +44,7 @@ export function validateGlassDimensions(
   return { ok: true };
 }
 
-/** Surcharge mengacu pada persentase material dasar (harga × luas), bukan termasuk add-on. */
+/** Surcharge mengacu pada persentase material dasar (harga × luas), terpisah dari Flat Polish Edging. */
 export function getDimensionSurchargeRate(
   panjang: number,
   lebar: number

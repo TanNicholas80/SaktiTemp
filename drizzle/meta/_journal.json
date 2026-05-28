@@ -127,6 +127,13 @@
       "when": 1743263700000,
       "tag": "20260330121000_processing_unit_add_none",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1748344800000,
+      "tag": "20260527150000_drop_processing_tables",
+      "breakpoints": true
     }
   ]
 }

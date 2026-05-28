@@ -4,7 +4,6 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 
 import { GlassSpecSection } from "./glass-spec-section";
-import { AddonSection } from "./addon-section";
 import { EstimateSummary } from "./estimate-summary";
 import {
   dimensionValidationMessage,
@@ -18,45 +17,15 @@ import {
 import type {
   CalculatorSectionProps,
   GlassSpec,
-  AddOnItem,
   CalcBreakdown,
-  ProcessingPrice,
 } from "./types";
 import { useRouter } from "@/i18n/navigation";
 import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { createCalculatorSectionEntrance } from "./calculator-gsap";
 
-function createEmptyAddon(): AddOnItem {
-  return {
-    id: crypto.randomUUID(),
-    categoryId: null,
-    serviceName: null,
-    thicknessValue: "",
-    quantity: "",
-  };
-}
-
-function matchProcessingPrice(
-  prices: ProcessingPrice[],
-  categoryId: string,
-  serviceName: string,
-  thicknessVal: number
-): ProcessingPrice | undefined {
-  return prices.find((p) => {
-    if (p.categoryId !== categoryId || p.serviceName !== serviceName) return false;
-    if (p.thickness !== null) return p.thickness === thicknessVal;
-    if (p.minThickness !== null && p.maxThickness !== null) {
-      return thicknessVal >= p.minThickness && thicknessVal <= p.maxThickness;
-    }
-    return false;
-  });
-}
-
 export function CalculatorSection({
   glassTypes,
   glassPrices,
-  processingCategories,
-  processingPrices,
 }: CalculatorSectionProps) {
   const tDimensionRules = useTranslations("calculatorSection.dimensionRules");
   const router = useRouter();
@@ -77,11 +46,9 @@ export function CalculatorSection({
     thicknessId: null,
     panjang: "",
     lebar: "",
+    quantity: "1",
   });
 
-  const [addons, setAddons] = React.useState<AddOnItem[]>([createEmptyAddon()]);
-
-  // --- Derived values for summary labels ---
   const selectedGlassType = glassTypes.find(
     (gt) => gt.glassTypeId === glassSpec.glassTypeId
   );
@@ -95,7 +62,6 @@ export function CalculatorSection({
     ? `${selectedGlassPrice.thicknessValue} ${selectedGlassPrice.thicknessUnit}`
     : undefined;
 
-  // --- Calculation ---
   const breakdown = React.useMemo<CalcBreakdown>(() => {
     const panjangNum = parseFloat(glassSpec.panjang);
     const lebarNum = parseFloat(glassSpec.lebar);
@@ -121,48 +87,15 @@ export function CalculatorSection({
     const dimensionSurcharge = materialBase * dimSurchargeRate;
     const materialCost = materialBase;
 
-    // Add-on costs
-    const addOnCosts: CalcBreakdown["addOnCosts"] = [];
-    for (const addon of addons) {
-      if (!addon.categoryId || !addon.serviceName) continue;
-      const tv = parseFloat(addon.thicknessValue);
-      if (isNaN(tv)) continue;
-      const price = matchProcessingPrice(
-        processingPrices,
-        addon.categoryId,
-        addon.serviceName,
-        tv
-      );
-      if (!price) continue;
+    const flatPolishEdgingIncluded =
+      !!selectedGlassPrice && dimValid && materialBase > 0;
 
-      let cost = 0;
-      if (price.unit === "none") {
-        cost = price.price;
-      } else if (price.unit === "sqm") {
-        cost = price.price * sqm;
-      } else {
-        const qty = parseFloat(addon.quantity);
-        if (!isNaN(qty) && qty > 0) {
-          cost = price.price * qty;
-        }
-      }
+    const parsedQty = parseInt(glassSpec.quantity, 10);
+    const quantity =
+      Number.isFinite(parsedQty) && parsedQty >= 1 ? Math.floor(parsedQty) : 0;
 
-      const category = processingCategories.find(
-        (c) => c.processingCategoryId === addon.categoryId
-      );
-      addOnCosts.push({
-        label: `${category?.categoryName ?? ""} (${addon.serviceName})`,
-        cost,
-      });
-    }
-
-    // Base (material + surcharge dimensi + addons)
-    const materialSubtotal = materialCost + dimensionSurcharge;
-    const base =
-      materialSubtotal +
-      addOnCosts.reduce((s, a) => s + a.cost, 0);
-
-    const subtotal = base;
+    const subtotalPerSheet = materialCost + dimensionSurcharge;
+    const subtotal = subtotalPerSheet * quantity;
     const ppn = subtotal * 0.11;
     const grandTotal = subtotal + ppn;
 
@@ -170,18 +103,14 @@ export function CalculatorSection({
       materialCost,
       dimensionSurcharge,
       dimensionSurchargeRate: dimSurchargeRate,
-      addOnCosts,
+      flatPolishEdgingIncluded,
+      quantity,
+      subtotalPerSheet,
       subtotal,
       ppn,
       grandTotal,
     };
-  }, [
-    glassSpec,
-    selectedGlassPrice,
-    addons,
-    processingPrices,
-    processingCategories,
-  ]);
+  }, [glassSpec, selectedGlassPrice]);
 
   function handleOrderClick() {
     const lines = buildCalculatorWhatsAppLines({
@@ -202,8 +131,13 @@ export function CalculatorSection({
     if (breakdown.grandTotal <= 0) return;
     saveCalculatorRincianPayload({
       breakdown,
+      glassTypeId: selectedGlassType?.glassTypeId,
       glassTypeName: selectedGlassType?.glassTypeName,
-      variant: glassSpec.variant ?? undefined,
+      glassPricesId: selectedGlassPrice?.glassPricesId,
+      variant: selectedGlassPrice?.variant ?? (glassSpec.variant ?? undefined),
+      thicknessId: selectedGlassPrice?.thicknessId,
+      thicknessValue: selectedGlassPrice?.thicknessValue,
+      thicknessUnit: selectedGlassPrice?.thicknessUnit,
       thicknessLabel,
       panjang: glassSpec.panjang,
       lebar: glassSpec.lebar,
@@ -216,7 +150,6 @@ export function CalculatorSection({
       ref={rootRef}
       className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_420px] xl:gap-8"
     >
-      {/* Left: Accordion Sections */}
       <div className="space-y-4" data-calculator-left>
         <GlassSpecSection
           glassTypes={glassTypes}
@@ -238,15 +171,8 @@ export function CalculatorSection({
               : null
           }
         />
-        <AddonSection
-          processingCategories={processingCategories}
-          processingPrices={processingPrices}
-          items={addons}
-          onChange={setAddons}
-        />
       </div>
 
-      {/* Right: Sticky Summary */}
       <div
         className="lg:sticky lg:top-24 lg:self-start"
         data-calculator-right

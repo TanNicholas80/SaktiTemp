@@ -21,8 +21,6 @@ import { serviceTranslations } from "@/db/schema/service-translations";
 import { certificationTranslations } from "@/db/schema/certification-translations";
 import { glassTypesTranslations } from "@/db/schema/glass-types-translations";
 import { glassPricesTranslations } from "@/db/schema/glass-prices-translations";
-import { processingCategoriesTranslations } from "@/db/schema/processing-categories-translations";
-import { processingPricesTranslations } from "@/db/schema/processing-prices-translations";
 import { socialMediaTranslations } from "@/db/schema/social-media-translations";
 import { thicknessTranslations } from "@/db/schema/thickness-translations";
 
@@ -225,7 +223,6 @@ export async function applyPortofolioDetailTranslations<
     portofolioName: string;
     portofolioShortDescription: string;
     portofolioAbout: string;
-    portofolioClient: string;
     portofolioLocation: string;
   },
 >(item: T, locale: string): Promise<T> {
@@ -241,7 +238,6 @@ export async function applyPortofolioDetailTranslations<
     portofolioName: tr.portofolioName,
     portofolioShortDescription: tr.portofolioShortDescription,
     portofolioAbout: tr.portofolioAbout,
-    portofolioClient: tr.portofolioClient,
     portofolioLocation: tr.portofolioLocation,
   };
 }
@@ -549,49 +545,6 @@ export async function applyGlassPricesTranslations<
     const tr = m.get(item.glassPricesId);
     if (!tr) return item;
     return { ...item, variant: tr.variant };
-  });
-}
-
-// ---- Processing Categories ----
-export async function applyProcessingCategoriesTranslations<
-  T extends { processingCategoryId: string; categoryName: string },
->(items: T[], locale: string): Promise<T[]> {
-  if (items.length === 0) return items;
-  const ids = items.map((i) => i.processingCategoryId);
-  const rows = await db
-    .select()
-    .from(processingCategoriesTranslations)
-    .where(
-      and(
-        inArray(processingCategoriesTranslations.processingCategoryId, ids),
-        eq(processingCategoriesTranslations.locale, locale)
-      )
-    );
-  const m = new Map(rows.map((r) => [r.processingCategoryId, r]));
-  return items.map((item) => {
-    const tr = m.get(item.processingCategoryId);
-    if (!tr) return item;
-    return { ...item, categoryName: tr.categoryName };
-  });
-}
-
-// ---- Processing Prices ----
-export async function applyProcessingPricesTranslations<
-  T extends { processingPricesId: string; serviceName: string },
->(items: T[], locale: string): Promise<T[]> {
-  if (items.length === 0) return items;
-  const ids = items.map((i) => i.processingPricesId);
-  const rows = await db
-    .select()
-    .from(processingPricesTranslations)
-    .where(
-      and(inArray(processingPricesTranslations.processingPricesId, ids), eq(processingPricesTranslations.locale, locale))
-    );
-  const m = new Map(rows.map((r) => [r.processingPricesId, r]));
-  return items.map((item) => {
-    const tr = m.get(item.processingPricesId);
-    if (!tr) return item;
-    return { ...item, serviceName: tr.serviceName };
   });
 }
 

@@ -9,13 +9,15 @@ import {
   ADMIN_IMAGE_ACCEPT_ATTR,
   ADMIN_IMAGE_ACCEPT_MIME,
   ADMIN_IMAGE_MAX_BYTES,
-  STAGING_UPLOAD_DIR,
+  STAGING_URL_SEGMENT,
   type FinalUploadFolder,
 } from "@/lib/constants/admin-upload";
 import { cn } from "@/lib/utils";
 
-const STAGING_URL_SEGMENT = `/uploads/${STAGING_UPLOAD_DIR}/`;
-
+/**
+ * Deteksi URL staging untuk local (/uploads/staging/...) dan
+ * Supabase (...supabase.co/.../staging/...).
+ */
 function isStagingImageUrl(url: string): boolean {
   return url.includes(STAGING_URL_SEGMENT);
 }

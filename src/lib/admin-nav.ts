@@ -42,10 +42,6 @@ export const defaultNavItems: NavItem[] = [
     icon: Calculator,
     items: [
       { name: "Daftar PriceList Kaca", href: "/admin/price-list/glass" },
-      {
-        name: "Daftar PriceList Additional",
-        href: "/admin/price-list/additional-service",
-      },
     ],
   },
   {

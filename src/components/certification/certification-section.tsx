@@ -106,8 +106,8 @@ export function CertificationSection({ certifications }: CertificationSectionPro
 
         <div
           className={cn(
-            "mt-12 sm:mt-14 md:mt-16",
-            "flex flex-wrap items-center justify-center gap-8 sm:gap-10 md:gap-12 lg:gap-16"
+            "mt-12 flex flex-wrap items-center justify-center sm:mt-14 md:mt-16",
+            "gap-x-10 gap-y-8 sm:gap-x-14 sm:gap-y-10 md:gap-x-16 lg:gap-x-20"
           )}
         >
           {certifications.map((cert, index) => (
@@ -117,7 +117,7 @@ export function CertificationSection({ certifications }: CertificationSectionPro
                 badgeRefs.current[index] = el;
               }}
               className={cn(
-                "flex items-center justify-center",
+                "flex min-w-[7.5rem] items-center justify-center sm:min-w-[8.5rem] md:min-w-[9.5rem]",
                 "transition-transform duration-300 ease-out",
                 "hover:scale-105 hover:-translate-y-0.5"
               )}
@@ -126,7 +126,7 @@ export function CertificationSection({ certifications }: CertificationSectionPro
               <img
                 src={cert.image}
                 alt={cert.name}
-                className="h-24 w-auto object-contain sm:h-28 md:h-32"
+                className="h-24 w-auto max-w-[9.5rem] object-contain sm:h-28 sm:max-w-[11rem] md:h-32 md:max-w-[12.5rem]"
                 sizes="(max-width: 640px) 96px, (max-width: 768px) 112px, 128px"
               />
             </div>

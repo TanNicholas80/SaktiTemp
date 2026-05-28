@@ -39,11 +39,7 @@ export async function GET(_request: Request, { params }: Params) {
         portofolioSlug: portofolio.portofolioSlug,
         portofolioShortDescription: portofolio.portofolioShortDescription,
         portofolioAbout: portofolio.portofolioAbout,
-        portofolioClient: portofolio.portofolioClient,
         portofolioLocation: portofolio.portofolioLocation,
-        portofolioYear: portofolio.portofolioYear,
-        portofolioAreaSize: portofolio.portofolioAreaSize,
-        portofolioAreaSizeUnit: portofolio.portofolioAreaSizeUnit,
         portofolioImageUrl: portofolio.portofolioImageUrl,
         portofolioImagePublicId: portofolio.portofolioImagePublicId,
         portofolioViews: portofolio.portofolioViews,
@@ -237,16 +233,8 @@ export async function PATCH(request: Request, { params }: Params) {
       updateData.portofolioShortDescription = parsed.data.portofolioShortDescription ?? "";
     if (parsed.data.portofolioAbout !== undefined)
       updateData.portofolioAbout = parsed.data.portofolioAbout;
-    if (parsed.data.portofolioClient !== undefined)
-      updateData.portofolioClient = parsed.data.portofolioClient;
     if (parsed.data.portofolioLocation !== undefined)
       updateData.portofolioLocation = parsed.data.portofolioLocation;
-    if (parsed.data.portofolioYear !== undefined)
-      updateData.portofolioYear = parsed.data.portofolioYear;
-    if (parsed.data.portofolioAreaSize !== undefined)
-      updateData.portofolioAreaSize = parsed.data.portofolioAreaSize;
-    if (parsed.data.portofolioAreaSizeUnit !== undefined)
-      updateData.portofolioAreaSizeUnit = parsed.data.portofolioAreaSizeUnit;
     if (
       parsed.data.portofolioImageUrl !== undefined &&
       parsed.data.portofolioImagePublicId !== undefined
@@ -316,7 +304,6 @@ export async function PATCH(request: Request, { params }: Params) {
       portofolioName: existing.portofolioName,
       portofolioShortDescription: existing.portofolioShortDescription,
       portofolioAbout: existing.portofolioAbout,
-      portofolioClient: existing.portofolioClient,
       portofolioLocation: existing.portofolioLocation,
     }).catch((err) => console.error("Translation failed:", err));
 

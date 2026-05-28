@@ -177,10 +177,10 @@ export function VisionMissionSection() {
                 aria-hidden
                 className="flex h-24 items-start sm:h-28 lg:h-32"
               >
-                <span className="select-none text-8xl font-bold leading-none text-primary/15 sm:text-9xl">
+                <span className="select-none text-8xl font-bold leading-none text-primary sm:text-9xl">
                   0
                 </span>
-                <span className="select-none text-8xl font-bold leading-none text-primary/15 sm:text-9xl">
+                <span className="select-none text-8xl font-bold leading-none text-primary sm:text-9xl">
                   1
                 </span>
               </div>
@@ -204,10 +204,10 @@ export function VisionMissionSection() {
                 aria-hidden
                 className="flex h-24 items-start sm:h-28 lg:h-32"
               >
-                <span className="select-none text-8xl font-bold leading-none text-accent/15 sm:text-9xl">
+                <span className="select-none text-8xl font-bold leading-none text-accent sm:text-9xl">
                   0
                 </span>
-                <span className="select-none text-8xl font-bold leading-none text-accent/15 sm:text-9xl">
+                <span className="select-none text-8xl font-bold leading-none text-accent sm:text-9xl">
                   2
                 </span>
               </div>

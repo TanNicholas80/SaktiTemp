@@ -11,6 +11,9 @@ import { db } from "@/db";
 import { heroSection } from "@/db/schema/hero-section";
 import { getFooterData } from "@/lib/footer/get-footer-data";
 import { applyHeroSectionTranslation } from "@/lib/translate/get-translated";
+import { glassTypesTranslations } from "@/db/schema/glass-types-translations";
+import { glassPricesTranslations } from "@/db/schema/glass-prices-translations";
+import { thicknessTranslations } from "@/db/schema/thickness-translations";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -96,6 +99,47 @@ export default async function CalculatorRincianPage({ params }: Props) {
   const hero = await applyHeroSectionTranslation(rawHero, locale);
   const footerData = await footerDataPromise;
 
+  // Load translation lookups for rincian (client rendering uses payload ids).
+  const [glassTypeTranslationRows, glassPricesTranslationRows, thicknessTranslationRows] =
+    await Promise.all([
+      db
+        .select({
+          glassTypeId: glassTypesTranslations.glassTypeId,
+          glassTypeName: glassTypesTranslations.glassTypeName,
+        })
+        .from(glassTypesTranslations)
+        .where(eq(glassTypesTranslations.locale, locale)),
+      db
+        .select({
+          glassPricesId: glassPricesTranslations.glassPricesId,
+          variant: glassPricesTranslations.variant,
+        })
+        .from(glassPricesTranslations)
+        .where(eq(glassPricesTranslations.locale, locale)),
+      db
+        .select({
+          thicknessId: thicknessTranslations.thicknessId,
+          thicknessUnit: thicknessTranslations.thicknessUnit,
+        })
+        .from(thicknessTranslations)
+        .where(eq(thicknessTranslations.locale, locale)),
+    ]);
+
+  const glassTypeNameById: Record<string, string> = {};
+  for (const r of glassTypeTranslationRows) {
+    glassTypeNameById[r.glassTypeId] = r.glassTypeName;
+  }
+
+  const variantByGlassPricesId: Record<string, string> = {};
+  for (const r of glassPricesTranslationRows) {
+    variantByGlassPricesId[r.glassPricesId] = r.variant;
+  }
+
+  const thicknessUnitById: Record<string, string> = {};
+  for (const r of thicknessTranslationRows) {
+    thicknessUnitById[r.thicknessId] = r.thicknessUnit;
+  }
+
   return (
     <div className="w-full">
       <PageHeroSection hero={hero!} />
@@ -103,7 +147,11 @@ export default async function CalculatorRincianPage({ params }: Props) {
         className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14"
         aria-label="Rincian penawaran"
       >
-        <CalculatorRincianView />
+        <CalculatorRincianView
+          glassTypeNameById={glassTypeNameById}
+          variantByGlassPricesId={variantByGlassPricesId}
+          thicknessUnitById={thicknessUnitById}
+        />
       </section>
       <FooterSection
         contacts={footerData.contacts}

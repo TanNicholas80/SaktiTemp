@@ -56,7 +56,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       portofolioName: portofolio.portofolioName,
       portofolioShortDescription: portofolio.portofolioShortDescription,
       portofolioLocation: portofolio.portofolioLocation,
-      portofolioClient: portofolio.portofolioClient,
       portofolioImageUrl: portofolio.portofolioImageUrl,
       categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
     })
@@ -77,7 +76,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     ?? t("descriptionFallback", {
       name: row.portofolioName,
       location: row.portofolioLocation ?? t("defaultLocation"),
-      client: row.portofolioClient ?? t("defaultClient"),
     });
 
   const baseKeywords = t("baseKeywords").split(",");
@@ -85,7 +83,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const dynamicKeywords: string[] = [
     row.portofolioName,
     row.portofolioLocation ?? "",
-    row.portofolioClient ?? "",
     row.categoryPortofolioName ?? "",
   ].filter(Boolean);
 
@@ -114,11 +111,7 @@ export default async function PortofolioDetailPage({ params }: Props) {
       portofolioName: portofolio.portofolioName,
       portofolioSlug: portofolio.portofolioSlug,
       portofolioAbout: portofolio.portofolioAbout,
-      portofolioClient: portofolio.portofolioClient,
       portofolioLocation: portofolio.portofolioLocation,
-      portofolioYear: portofolio.portofolioYear,
-      portofolioAreaSize: portofolio.portofolioAreaSize,
-      portofolioAreaSizeUnit: portofolio.portofolioAreaSizeUnit,
       portofolioImageUrl: portofolio.portofolioImageUrl,
       portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
       categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
@@ -225,11 +218,7 @@ export default async function PortofolioDetailPage({ params }: Props) {
     portofolioName: row.portofolioName,
     portofolioSlug: row.portofolioSlug,
     portofolioAbout: row.portofolioAbout,
-    portofolioClient: row.portofolioClient,
     portofolioLocation: row.portofolioLocation,
-    portofolioYear: row.portofolioYear,
-    portofolioAreaSize: row.portofolioAreaSize,
-    portofolioAreaSizeUnit: row.portofolioAreaSizeUnit,
     portofolioImageUrl: row.portofolioImageUrl,
     portofolioIsPublishedAt: row.portofolioIsPublishedAt.toISOString(),
     category: row.categoryPortofolioName

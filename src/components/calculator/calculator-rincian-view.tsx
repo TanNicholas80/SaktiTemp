@@ -15,7 +15,17 @@ import {
 import { EstimateSummary } from "./estimate-summary";
 import { createCalculatorRincianEntrance } from "./calculator-gsap";
 
-export function CalculatorRincianView() {
+type Props = {
+  glassTypeNameById?: Record<string, string>;
+  variantByGlassPricesId?: Record<string, string>;
+  thicknessUnitById?: Record<string, string>;
+};
+
+export function CalculatorRincianView({
+  glassTypeNameById,
+  variantByGlassPricesId,
+  thicknessUnitById,
+}: Props) {
   const t = useTranslations("calculatorSection.rincian");
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [payload, setPayload] = React.useState(
@@ -48,14 +58,40 @@ export function CalculatorRincianView() {
     );
   }
 
-  const { breakdown, glassTypeName, variant, thicknessLabel, panjang, lebar } = payload;
+  const {
+    breakdown,
+    glassTypeId,
+    glassTypeName,
+    glassPricesId,
+    variant,
+    thicknessId,
+    thicknessValue,
+    thicknessUnit,
+    thicknessLabel,
+    panjang,
+    lebar,
+  } = payload;
+
+  const resolvedGlassTypeName =
+    (glassTypeId && glassTypeNameById?.[glassTypeId]) ?? glassTypeName;
+
+  const resolvedVariant =
+    (glassPricesId && variantByGlassPricesId?.[glassPricesId]) ?? variant;
+
+  const resolvedThicknessUnit =
+    (thicknessId && thicknessUnitById?.[thicknessId]) ?? thicknessUnit;
+
+  const resolvedThicknessLabel =
+    thicknessValue != null && resolvedThicknessUnit
+      ? `${thicknessValue} ${resolvedThicknessUnit.toUpperCase()}`
+      : thicknessLabel;
 
   function handleWhatsApp() {
     const lines = buildCalculatorWhatsAppLines({
-      selectedGlassTypeName: glassTypeName,
+      selectedGlassTypeName: resolvedGlassTypeName,
       glassSpec: {
-        variant: variant ?? null,
-        thicknessLabel,
+        variant: resolvedVariant ?? null,
+        thicknessLabel: resolvedThicknessLabel,
         panjang: panjang ?? "",
         lebar: lebar ?? "",
       },
@@ -73,9 +109,9 @@ export function CalculatorRincianView() {
       <div data-rincian-step data-rincian-card>
         <EstimateSummary
           breakdown={breakdown}
-          glassTypeName={glassTypeName}
-          variant={variant}
-          thicknessLabel={thicknessLabel}
+          glassTypeName={resolvedGlassTypeName}
+          variant={resolvedVariant}
+          thicknessLabel={resolvedThicknessLabel}
           panjang={panjang}
           lebar={lebar}
           heading={t("heading")}

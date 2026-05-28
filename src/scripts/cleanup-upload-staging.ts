@@ -1,6 +1,5 @@
 import "dotenv/config";
-import { readdir, stat, unlink } from "fs/promises";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 
 import { STAGING_UPLOAD_DIR } from "@/lib/constants/admin-upload";
 
@@ -22,49 +21,70 @@ function parseArgs(): { maxAgeMs: number } {
 
 async function main() {
   const { maxAgeMs } = parseArgs();
-  const stagingDir = path.join(
-    process.cwd(),
-    "public",
-    "uploads",
-    STAGING_UPLOAD_DIR
-  );
 
-  let removed = 0;
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? "saktitemp-uploads";
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    console.error(
+      "[cleanup-upload-staging] SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY harus diisi."
+    );
+    process.exit(1);
+  }
+
+  const supabase = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+
+  const { data: files, error: listError } = await supabase.storage
+    .from(bucket)
+    .list(STAGING_UPLOAD_DIR, { limit: 1000, offset: 0 });
+
+  if (listError) {
+    console.error("[cleanup-upload-staging] Gagal list file:", listError.message);
+    process.exit(1);
+  }
+
+  if (!files || files.length === 0) {
+    console.log("[cleanup-upload-staging] Folder staging kosong. Tidak ada yang dihapus.");
+    return;
+  }
+
+  const now = Date.now();
+  const toRemove: string[] = [];
   let skipped = 0;
 
-  try {
-    const names = await readdir(stagingDir);
-    const now = Date.now();
+  for (const file of files) {
+    if (!file.name.endsWith(".webp")) continue;
+    const createdAt = file.created_at ? new Date(file.created_at).getTime() : null;
+    if (createdAt === null) continue;
 
-    for (const name of names) {
-      if (!name.endsWith(".webp")) continue;
-      const full = path.join(stagingDir, name);
-      const st = await stat(full);
-      if (!st.isFile()) continue;
+    if (now - createdAt > maxAgeMs) {
+      toRemove.push(`${STAGING_UPLOAD_DIR}/${file.name}`);
+    } else {
+      skipped += 1;
+    }
+  }
 
-      if (now - st.mtimeMs > maxAgeMs) {
-        await unlink(full);
-        removed += 1;
-      } else {
-        skipped += 1;
-      }
-    }
-  } catch (err: unknown) {
-    const code =
-      err && typeof err === "object" && "code" in err
-        ? (err as { code?: string }).code
-        : undefined;
-    if (code === "ENOENT") {
-      console.log(
-        `[cleanup-upload-staging] Folder tidak ada: ${stagingDir} (lewati)`
-      );
-      return;
-    }
-    throw err;
+  if (toRemove.length === 0) {
+    console.log(
+      `[cleanup-upload-staging] Tidak ada file yang kedaluwarsa. Dipertahankan: ${skipped}. Max usia: ${(maxAgeMs / 3600000).toFixed(2)} jam`
+    );
+    return;
+  }
+
+  const { error: removeError } = await supabase.storage
+    .from(bucket)
+    .remove(toRemove);
+
+  if (removeError) {
+    console.error("[cleanup-upload-staging] Gagal menghapus file:", removeError.message);
+    process.exit(1);
   }
 
   console.log(
-    `[cleanup-upload-staging] Selesai. Dihapus: ${removed}, dipertahankan (masih segar): ${skipped}. Max usia: ${(maxAgeMs / 3600000).toFixed(2)} jam`
+    `[cleanup-upload-staging] Selesai. Dihapus: ${toRemove.length}, dipertahankan (masih segar): ${skipped}. Max usia: ${(maxAgeMs / 3600000).toFixed(2)} jam`
   );
 }
 

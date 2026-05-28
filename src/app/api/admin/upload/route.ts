@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir, unlink } from "fs/promises";
-import path from "path";
 import sharp from "sharp";
 
 import { requireBlogCmsApi } from "@/lib/api-auth";
@@ -12,9 +10,10 @@ import {
   STAGING_UPLOAD_DIR,
   type FinalUploadFolder,
 } from "@/lib/constants/admin-upload";
+import { supabaseAdmin, STORAGE_BUCKET } from "@/lib/supabase/server-client";
 
 const ALLOWED_TYPES = [...ADMIN_IMAGE_ACCEPT_MIME];
-const MAX_SIZE = ADMIN_IMAGE_MAX_BYTES; // sebelum optimasi Sharp
+const MAX_SIZE = ADMIN_IMAGE_MAX_BYTES;
 const MAX_WIDTH = 1920;
 const WEBP_QUALITY = 80;
 
@@ -26,7 +25,7 @@ function parseTargetFolderHint(request: Request): FinalUploadFolder {
     : "blog";
 }
 
-/** Hanya dipakai untuk validasi query; unggahan selalu ke staging. */
+/** Upload selalu ke folder staging di Supabase Storage. */
 export async function POST(request: Request) {
   const auth = await requireBlogCmsApi();
   if (auth.error || !auth.session) {
@@ -78,21 +77,28 @@ export async function POST(request: Request) {
       .toBuffer();
 
     const filename = `${crypto.randomUUID()}.webp`;
-    const uploadDir = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
-      STAGING_UPLOAD_DIR
-    );
-    const filepath = path.join(uploadDir, filename);
+    const storagePath = `${STAGING_UPLOAD_DIR}/${filename}`;
 
-    await mkdir(uploadDir, { recursive: true });
-    await writeFile(filepath, optimizedBuffer);
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(STORAGE_BUCKET)
+      .upload(storagePath, optimizedBuffer, {
+        contentType: "image/webp",
+        upsert: false,
+      });
 
-    const url = `/uploads/${STAGING_UPLOAD_DIR}/${filename}`;
-    const publicId = filename;
+    if (uploadError) {
+      console.error("[upload/route] Supabase upload error:", uploadError);
+      return NextResponse.json(
+        { error: "Gagal mengunggah file ke storage" },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json({ url, publicId });
+    const { data: publicUrlData } = supabaseAdmin.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(storagePath);
+
+    return NextResponse.json({ url: publicUrlData.publicUrl, publicId: filename });
   } catch {
     return NextResponse.json(
       { error: "Gagal mengunggah file" },
@@ -118,20 +124,15 @@ export async function DELETE(request: Request) {
     );
   }
 
-  const filepath = path.join(
-    process.cwd(),
-    "public",
-    "uploads",
-    STAGING_UPLOAD_DIR,
-    publicId
-  );
+  const storagePath = `${STAGING_UPLOAD_DIR}/${publicId}`;
 
-  try {
-    await unlink(filepath);
-    return NextResponse.json({ ok: true });
-  } catch (err: unknown) {
-    const code = err && typeof err === "object" && "code" in err ? (err as { code?: string }).code : undefined;
-    if (code === "ENOENT") {
+  const { error } = await supabaseAdmin.storage
+    .from(STORAGE_BUCKET)
+    .remove([storagePath]);
+
+  if (error) {
+    // Jika file tidak ditemukan, anggap sukses (idempotent)
+    if (error.message?.toLowerCase().includes("not found")) {
       return NextResponse.json({ ok: true });
     }
     return NextResponse.json(
@@ -139,4 +140,6 @@ export async function DELETE(request: Request) {
       { status: 500 }
     );
   }
+
+  return NextResponse.json({ ok: true });
 }

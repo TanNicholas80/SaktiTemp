@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { asc, eq, sql } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 
 export const revalidate = 300;
 
@@ -31,11 +31,14 @@ import { contentCacheKey } from "@/lib/cache";
 import { db } from "@/db";
 import { heroSection } from "@/db/schema/hero-section";
 import { getFooterData } from "@/lib/footer/get-footer-data";
-import { applyHeroSectionTranslation } from "@/lib/translate/get-translated";
+import {
+  applyHeroSectionTranslation,
+  applyGlassTypesTranslations,
+  applyGlassPricesTranslations,
+  applyThicknessTranslations,
+} from "@/lib/translate/get-translated";
 import { glassTypes } from "@/db/schema/glass_types";
 import { glassPrices } from "@/db/schema/glass_prices";
-import { processingCategories } from "@/db/schema/processing_categories";
-import { processingPrices } from "@/db/schema/processing_prices";
 import { thickness } from "@/db/schema/thickness";
 
 async function getFallbackHero(locale: string) {
@@ -64,15 +67,9 @@ export default async function CalculatorPage({ params }: Props) {
   const footerDataPromise = getFooterData(locale);
 
   const calculatorData = await cachedQuery(
-    contentCacheKey("calculator", "page"),
+    contentCacheKey("calculator", "page", locale),
     async () => {
-      const [
-        heroRow,
-        glassTypeList,
-        glassPriceList,
-        processingCategoryList,
-        processingPriceList,
-      ] = await Promise.all([
+      const [heroRow, glassTypeList, glassPriceList] = await Promise.all([
         db.query.heroSection.findFirst({
           where: eq(heroSection.pageKey, "calculator"),
           columns: {
@@ -112,49 +109,34 @@ export default async function CalculatorPage({ params }: Props) {
           .from(glassPrices)
           .innerJoin(thickness, eq(glassPrices.thicknessId, thickness.thicknessId))
           .orderBy(asc(glassPrices.variant), asc(thickness.thicknessValue)),
-        db
-          .select({
-            processingCategoryId: processingCategories.processingCategoryId,
-            categoryName: processingCategories.categoryName,
-            categoryImageUrl: processingCategories.categoryImageUrl,
-          })
-          .from(processingCategories)
-          .orderBy(asc(processingCategories.categoryName)),
-        db
-          .select({
-            processingPricesId: processingPrices.processingPricesId,
-            categoryId: processingPrices.categoryId,
-            thickness: processingPrices.thickness,
-            minThickness: processingPrices.minThickness,
-            maxThickness: processingPrices.maxThickness,
-            serviceName: processingPrices.serviceName,
-            unit: processingPrices.unit,
-            price: processingPrices.price,
-          })
-          .from(processingPrices)
-          .orderBy(
-            asc(processingPrices.serviceName),
-            asc(sql`coalesce(${processingPrices.minThickness}, ${processingPrices.thickness})`)
-          ),
       ]);
+
+      const translatedGlassTypes = await applyGlassTypesTranslations(
+        glassTypeList,
+        locale
+      );
+      const glassPricesWithIds = glassPriceList.map((row) => ({
+        ...row,
+        pricePerSqm: Number(row.pricePerSqm),
+      }));
+      const variantTranslated = await applyGlassPricesTranslations(
+        glassPricesWithIds,
+        locale
+      );
+      const fullyTranslatedPrices = await applyThicknessTranslations(
+        variantTranslated,
+        locale
+      );
 
       return {
         heroRow,
-        glassTypeList,
-        glassPriceList,
-        processingCategoryList,
-        processingPriceList,
+        glassTypeList: translatedGlassTypes,
+        glassPriceList: fullyTranslatedPrices,
       };
     }
   );
 
-  const {
-    heroRow,
-    glassTypeList,
-    glassPriceList,
-    processingCategoryList,
-    processingPriceList,
-  } = calculatorData;
+  const { heroRow, glassTypeList, glassPriceList } = calculatorData;
 
   const rawHero = heroRow
     ? {
@@ -190,19 +172,7 @@ export default async function CalculatorPage({ params }: Props) {
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
           <CalculatorSection
             glassTypes={glassTypeList}
-            glassPrices={glassPriceList.map((r) => ({
-              ...r,
-              pricePerSqm: Number(r.pricePerSqm),
-            }))}
-            processingCategories={processingCategoryList}
-            processingPrices={processingPriceList.map((r) => ({
-              ...r,
-              thickness: r.thickness !== null ? Number(r.thickness) : null,
-              minThickness: r.minThickness !== null ? Number(r.minThickness) : null,
-              maxThickness: r.maxThickness !== null ? Number(r.maxThickness) : null,
-              price: Number(r.price),
-              unit: r.unit as "m1" | "pcs" | "sqm" | "none",
-            }))}
+            glassPrices={glassPriceList}
           />
         </div>
       </section>

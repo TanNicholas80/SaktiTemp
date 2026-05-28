@@ -3,12 +3,7 @@
 import * as React from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import {
-  Building2,
-  MapPin,
-  Calendar,
-  Ruler,
-} from "lucide-react";
+import { MapPin } from "lucide-react";
 
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
@@ -23,33 +18,10 @@ type PortofolioDetailSidebarProps = {
   variant?: "landing" | "admin";
 };
 
-function DetailRow({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string | number;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
-        <Icon className="size-5 text-white" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-white/80 text-sm font-normal">{label}</p>
-        <p className="text-white text-base font-semibold">{value}</p>
-      </div>
-    </div>
-  );
-}
-
 export function PortofolioDetailSidebar({
   portofolio,
   variant = "admin",
 }: PortofolioDetailSidebarProps) {
-  const areaDisplay = `${portofolio.portofolioAreaSize.toLocaleString("id-ID")} ${portofolio.portofolioAreaSizeUnit}`;
   const asideRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
@@ -79,27 +51,16 @@ export function PortofolioDetailSidebar({
     <aside ref={asideRef}>
       <div className="overflow-hidden rounded-xl bg-primary px-5 py-5 text-white">
         <h2 className="mb-5 text-xl font-bold">Detail Proyek</h2>
-        <div className="space-y-5">
-          <DetailRow
-            icon={Building2}
-            label="Klien"
-            value={portofolio.portofolioClient}
-          />
-          <DetailRow
-            icon={MapPin}
-            label="Location"
-            value={portofolio.portofolioLocation}
-          />
-          <DetailRow
-            icon={Calendar}
-            label="Tahun"
-            value={portofolio.portofolioYear}
-          />
-          <DetailRow
-            icon={Ruler}
-            label="Luas Area"
-            value={areaDisplay}
-          />
+        <div className="flex items-center gap-3">
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
+            <MapPin className="size-5 text-white" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-normal text-white/80">Lokasi</p>
+            <p className="text-base font-semibold text-white">
+              {portofolio.portofolioLocation}
+            </p>
+          </div>
         </div>
         <div className="mt-5 border-t border-white/20 pt-5">
           <Button

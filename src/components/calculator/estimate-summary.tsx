@@ -86,13 +86,18 @@ export function EstimateSummary({
   const {
     materialCost,
     dimensionSurcharge,
-    addOnCosts,
+    flatPolishEdgingIncluded,
+    quantity,
+    subtotalPerSheet,
     subtotal,
     ppn,
     grandTotal,
   } = breakdown;
 
-  const hasAnyCost = grandTotal > 0;
+  const hasMaterial = materialCost > 0;
+  const hasGrandTotal = grandTotal > 0;
+  const hasMultipleSheets = quantity > 1;
+  const needsQuantity = hasMaterial && quantity <= 0;
 
   const materialLabel =
     glassTypeName && variant
@@ -105,6 +110,9 @@ export function EstimateSummary({
   const dimRate = breakdown.dimensionSurchargeRate ?? 0;
   const dimSuffix = dimensionSurchargeLabel(dimRate, tDimensionRules);
 
+  const showFlatPolishEdging = flatPolishEdgingIncluded === true;
+  const perSheetSuffix = hasMultipleSheets ? ` ${t("perSheetSuffix")}` : "";
+
   return (
     <div className="rounded-xl border border-border bg-card shadow-sm">
       <div className="px-5 py-4 border-b border-border">
@@ -112,7 +120,7 @@ export function EstimateSummary({
       </div>
 
       <div className="px-5 py-4 space-y-0.5">
-        {!hasAnyCost && (
+        {!hasMaterial && (
           <p className="py-6 text-center text-sm text-muted-foreground">
             {t("emptyState")}
           </p>
@@ -120,7 +128,7 @@ export function EstimateSummary({
 
         {materialCost > 0 && (
           <SummaryLine
-            label={t("materialLabel")}
+            label={`${t("materialLabel")}${perSheetSuffix}`}
             sublabel={materialLabel}
             amount={materialCost}
           />
@@ -128,7 +136,7 @@ export function EstimateSummary({
 
         {hasDimSurcharge && (
           <SummaryLine
-            label={t("dimensionLabel")}
+            label={`${t("dimensionLabel")}${perSheetSuffix}`}
             sublabel={
               dimLabel
                 ? `${dimLabel} ${dimSuffix}`.trim()
@@ -138,16 +146,48 @@ export function EstimateSummary({
           />
         )}
 
-        {addOnCosts.map((a, i) => (
+        {showFlatPolishEdging && (
           <SummaryLine
-            key={i}
-            label={t("addOnLabel", { index: i + 1 })}
-            sublabel={a.label}
-            amount={a.cost}
+            label={t("flatPolishEdgingLabel")}
+            sublabel={t("flatPolishEdgingIncludedSublabel")}
+            amount={0}
           />
-        ))}
+        )}
 
-        {hasAnyCost && (
+        {needsQuantity && (
+          <div className="mt-2 rounded-md border border-amber-300/60 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800 dark:border-amber-400/30 dark:bg-amber-500/10 dark:text-amber-200">
+            {t("quantityWarning")}
+          </div>
+        )}
+
+        {hasGrandTotal && hasMultipleSheets && (
+          <>
+            <Separator className="my-3" />
+            <div className="flex items-center justify-between py-1.5">
+              <span className="text-sm font-medium text-muted-foreground">
+                {t("subTotalPerSheetLabel")}
+              </span>
+              <span className="text-sm font-semibold tabular-nums text-foreground">
+                Rp {fmt(Math.round(subtotalPerSheet))}
+              </span>
+            </div>
+            <div className="flex items-start justify-between py-1.5">
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-foreground">
+                  {t("quantityLabel")}
+                </div>
+                <div className="mt-0.5 text-xs text-muted-foreground leading-snug">
+                  {t("quantitySublabel", { count: quantity })}
+                </div>
+              </div>
+              <span className="text-sm font-semibold tabular-nums text-primary">
+                × {fmt(quantity)}
+              </span>
+            </div>
+          </>
+        )}
+
+        {hasGrandTotal && (
           <>
             <Separator className="my-3" />
             <div className="flex items-center justify-between py-1.5">
@@ -173,7 +213,7 @@ export function EstimateSummary({
         )}
       </div>
 
-      {hasAnyCost &&
+      {hasGrandTotal &&
         !hideBuiltInActions &&
         (onViewFinalClick || onOrderClick) && (
         <div className="space-y-2 px-5 pb-5">

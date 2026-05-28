@@ -116,12 +116,6 @@ export function PortofolioJsonLd({
         name: portofolio.portofolioLocation,
       },
     }),
-    ...(portofolio.portofolioClient && {
-      contributor: {
-        "@type": "Organization",
-        name: portofolio.portofolioClient,
-      },
-    }),
   };
 
   return (

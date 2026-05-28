@@ -56,7 +56,7 @@ export function CompanyStatsSection({ stats }: CompanyStatsSectionProps) {
       className="relative overflow-hidden bg-primary py-16 sm:py-20 md:py-24"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-12 md:grid-cols-4 md:gap-8 lg:gap-12">
+        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-10 sm:gap-x-14 sm:gap-y-12 md:gap-x-16 lg:gap-x-24">
           {stats.map((stat, index) => (
             <div
               key={stat.companyStatId}
@@ -64,7 +64,7 @@ export function CompanyStatsSection({ stats }: CompanyStatsSectionProps) {
                 itemRefs.current[index] = el;
               }}
               className={cn(
-                "flex flex-col items-center justify-center text-center",
+                "flex min-w-[8.5rem] flex-col items-center justify-center text-center sm:min-w-[10rem] md:min-w-[11rem]",
                 "rounded-xl px-4 py-6 transition-all duration-300",
                 "hover:scale-105 hover:bg-primary/90"
               )}
