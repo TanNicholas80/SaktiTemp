@@ -23,17 +23,17 @@ async function main() {
   const { maxAgeMs } = parseArgs();
 
   const supabaseUrl = process.env.SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? "saktitemp-uploads";
+  const apiKey = process.env.SUPABASE_API_KEY;
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? "SaktiTemp Storage";
 
-  if (!supabaseUrl || !serviceRoleKey) {
+  if (!supabaseUrl || !apiKey) {
     console.error(
-      "[cleanup-upload-staging] SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY harus diisi."
+      "[cleanup-upload-staging] SUPABASE_URL dan SUPABASE_API_KEY harus diisi."
     );
     process.exit(1);
   }
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey, {
+  const supabase = createClient(supabaseUrl, apiKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 

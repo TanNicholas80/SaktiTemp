@@ -2,15 +2,15 @@ import { createClient } from "@supabase/supabase-js";
 
 function createSupabaseAdmin() {
   const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseApiKey = process.env.SUPABASE_API_KEY;
 
-  if (!supabaseUrl || !supabaseServiceRoleKey) {
+  if (!supabaseUrl || !supabaseApiKey) {
     throw new Error(
-      "SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY harus diisi di environment variables."
+      "SUPABASE_URL dan SUPABASE_API_KEY harus diisi di environment variables."
     );
   }
 
-  return createClient(supabaseUrl, supabaseServiceRoleKey, {
+  return createClient(supabaseUrl, supabaseApiKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
@@ -40,4 +40,4 @@ export const supabaseAdmin = new Proxy({} as SupabaseAdminClient, {
   },
 });
 
-export const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET ?? "saktitemp-uploads";
+export const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET ?? "SaktiTemp Storage";
