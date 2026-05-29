@@ -18,13 +18,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-} from "@/components/ui/combobox";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { ProductOption } from "./types";
 
 export type ProductExcellenceFormValues = {
@@ -95,30 +94,34 @@ export function ProductExcellenceFormDialog({
                   className="bg-muted"
                 />
               ) : (
-                <Combobox
-                  items={products}
-                  itemToStringLabel={(p) => p.productName}
-                  itemToStringValue={(p) => p.productId}
-                  isItemEqualToValue={(a, b) => a?.productId === b?.productId}
-                  value={selectedProduct}
-                  onValueChange={(p) => setProductId(p?.productId ?? "")}
+                <Select
+                  value={productId || undefined}
+                  onValueChange={setProductId}
+                  disabled={products.length === 0}
                 >
-                  <ComboboxInput
-                    placeholder="Pilih produk"
+                  <SelectTrigger
                     className="w-full"
                     aria-invalid={!!errors.productId}
-                  />
-                  <ComboboxContent>
-                    <ComboboxEmpty>Tidak ada produk ditemukan.</ComboboxEmpty>
-                    <ComboboxList>
-                      {(p) => (
-                        <ComboboxItem key={p.productId} value={p}>
-                          {p.productName}
-                        </ComboboxItem>
-                      )}
-                    </ComboboxList>
-                  </ComboboxContent>
-                </Combobox>
+                  >
+                    <SelectValue
+                      placeholder={
+                        products.length === 0
+                          ? "Belum ada produk"
+                          : "Pilih produk"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent
+                    position="popper"
+                    className="z-[100] max-h-64"
+                  >
+                    {products.map((p) => (
+                      <SelectItem key={p.productId} value={p.productId}>
+                        {p.productName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
               <FieldError
                 errors={errors.productId ? [{ message: errors.productId }] : []}
@@ -151,7 +154,10 @@ export function ProductExcellenceFormDialog({
             >
               Batal
             </Button>
-            <Button type="submit" disabled={submitting}>
+            <Button
+              type="submit"
+              disabled={submitting || (!disableProductSelect && !productId)}
+            >
               {submitting ? "Menyimpan..." : "Simpan"}
             </Button>
           </div>

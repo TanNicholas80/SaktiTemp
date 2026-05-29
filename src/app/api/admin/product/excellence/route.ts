@@ -33,10 +33,10 @@ export async function GET() {
     const list = rows.map((r) => ({
       productExellenceId: r.productExellenceId,
       productId: r.productId,
-      productName: r.productName,
+      productName: r.productName ?? null,
       productExellenceDescription: r.productExellenceDescription,
-      createdAt: r.createdAt,
-      updatedAt: r.updatedAt,
+      createdAt: r.createdAt.toISOString(),
+      updatedAt: r.updatedAt.toISOString(),
     }));
 
     return NextResponse.json(list);
