@@ -88,8 +88,13 @@ export async function POST(request: Request) {
 
     if (uploadError) {
       console.error("[upload/route] Supabase upload error:", uploadError);
+      const hint =
+        uploadError.message?.toLowerCase().includes("bucket") ||
+        uploadError.message?.toLowerCase().includes("invalid")
+          ? " Periksa SUPABASE_STORAGE_BUCKET di env (nama bucket harus sama persis dengan Supabase, tanpa spasi)."
+          : "";
       return NextResponse.json(
-        { error: "Gagal mengunggah file ke storage" },
+        { error: `Gagal mengunggah file ke storage: ${uploadError.message}.${hint}` },
         { status: 500 }
       );
     }

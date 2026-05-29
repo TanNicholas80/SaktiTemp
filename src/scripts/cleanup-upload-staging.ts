@@ -24,7 +24,8 @@ async function main() {
 
   const supabaseUrl = process.env.SUPABASE_URL;
   const apiKey = process.env.SUPABASE_API_KEY;
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET ?? "SaktiTemp Storage";
+  const bucket =
+    process.env.SUPABASE_STORAGE_BUCKET?.trim() || "saktitemp-uploads";
 
   if (!supabaseUrl || !apiKey) {
     console.error(
