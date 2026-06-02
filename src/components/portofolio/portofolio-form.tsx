@@ -19,7 +19,6 @@ import {
   ComboboxList,
 } from "@/components/ui/combobox";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
-import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { slugify } from "@/lib/utils/slug";
 import { PortofolioFormPreviewCard } from "./portofolio-form-preview-card";
 import type {
@@ -32,7 +31,7 @@ export type PortofolioFormValues = {
   name: string;
   slug: string;
   shortDescription: string;
-  about: string;
+  galleryImages: { url: string; publicId: string }[];
   location: string;
   image: { url: string; publicId: string } | null;
   categoryId: string;
@@ -90,6 +89,27 @@ export function PortofolioForm({
       ? values.productApplicationIds.filter((id) => id !== productApplicationId)
       : [...values.productApplicationIds, productApplicationId];
     onChange({ ...values, productApplicationIds: next });
+  }
+
+  function addGalleryImageSlot() {
+    if (values.galleryImages.length >= 3) return;
+    onChange({
+      ...values,
+      galleryImages: [...values.galleryImages, { url: "", publicId: "" }],
+    });
+  }
+
+  function updateGalleryImage(
+    index: number,
+    value: { url: string; publicId: string } | null
+  ) {
+    const next = [...values.galleryImages];
+    if (value) {
+      next[index] = value;
+    } else {
+      next.splice(index, 1);
+    }
+    onChange({ ...values, galleryImages: next });
   }
 
   return (
@@ -208,16 +228,37 @@ export function PortofolioForm({
         />
       </Field>
       <Field>
-        <FieldLabel htmlFor="about">Tentang Proyek</FieldLabel>
-        <RichTextEditor
-          value={values.about}
-          onChange={(content) => onChange({ ...values, about: content })}
-          placeholder="Deskripsi proyek..."
-          minHeight="200px"
-        />
+        <FieldLabel>Galeri Proyek (Maksimal 3 gambar)</FieldLabel>
+        <div className="space-y-3">
+          {values.galleryImages.map((img, idx) => (
+            <div key={`${img.publicId || "new"}-${idx}`} className="rounded-md border p-3">
+              <div className="mb-2 text-xs font-medium text-muted-foreground">
+                Gambar {idx + 1}
+              </div>
+              <ImageUploadField
+                value={img.url && img.publicId ? img : null}
+                onChange={(val) => updateGalleryImage(idx, val)}
+                folder="portofolio"
+                size="compact"
+              />
+            </div>
+          ))}
+
+          {values.galleryImages.length < 3 && (
+            <button
+              type="button"
+              onClick={addGalleryImageSlot}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              + Tambah gambar galeri
+            </button>
+          )}
+        </div>
         <FieldError
           errors={
-            errors.portofolioAbout ? [{ message: errors.portofolioAbout }] : []
+            errors.portofolioGalleryImages
+              ? [{ message: errors.portofolioGalleryImages }]
+              : []
           }
         />
       </Field>

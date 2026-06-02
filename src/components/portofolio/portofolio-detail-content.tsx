@@ -4,7 +4,7 @@ import * as React from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import { ArrowRightIcon, Box } from "lucide-react";
+import { ArrowRightIcon, Box, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import type { PortofolioDetailData } from "./types";
@@ -29,13 +29,33 @@ export function PortofolioDetailContent({
     variant === "landing" ? "/product" : "/admin/product";
 
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const aboutRef = React.useRef<HTMLElement>(null);
+  const galleryRef = React.useRef<HTMLElement>(null);
   const appsRef = React.useRef<HTMLElement>(null);
+  const [lightboxOpen, setLightboxOpen] = React.useState(false);
+  const [activeImageIndex, setActiveImageIndex] = React.useState(0);
+  const galleryImages = portofolio.portofolioGalleryImages ?? [];
+
+  function openLightboxAt(index: number) {
+    setActiveImageIndex(index);
+    setLightboxOpen(true);
+  }
+
+  function showPrevImage() {
+    setActiveImageIndex((prev) =>
+      prev === 0 ? galleryImages.length - 1 : prev - 1
+    );
+  }
+
+  function showNextImage() {
+    setActiveImageIndex((prev) =>
+      prev === galleryImages.length - 1 ? 0 : prev + 1
+    );
+  }
 
   React.useEffect(() => {
     if (variant !== "landing") return;
     const ctx = gsap.context(() => {
-      [aboutRef, appsRef].forEach((ref, i) => {
+      [galleryRef, appsRef].forEach((ref, i) => {
         if (ref.current) {
           gsap.fromTo(
             ref.current,
@@ -60,15 +80,46 @@ export function PortofolioDetailContent({
     return () => ctx.revert();
   }, [variant]);
 
+  React.useEffect(() => {
+    if (!lightboxOpen) return;
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setLightboxOpen(false);
+      if (e.key === "ArrowLeft") showPrevImage();
+      if (e.key === "ArrowRight") showNextImage();
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [lightboxOpen, galleryImages.length]);
+
   return (
     <div ref={containerRef} className="space-y-8">
-      <section ref={aboutRef}>
-        <h2 className="mb-3 font-bold text-xl">Tentang Proyek</h2>
-        <div
-          className="prose prose-sm dark:prose-invert max-w-none [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-4 [&_h1]:mb-2 [&_h1]:first:mt-0 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-4 [&_h2]:mb-2 [&_h2]:first:mt-0 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-2 [&_li]:my-0.5"
-          dangerouslySetInnerHTML={{ __html: portofolio.portofolioAbout }}
-        />
-      </section>
+      {galleryImages.length > 0 && (
+        <section ref={galleryRef}>
+          <h2 className="mb-3 text-xl font-bold">Galeri Proyek</h2>
+          <p className="mb-4 text-sm text-muted-foreground">
+            Klik gambar untuk memperbesar dan lihat detail proyek.
+          </p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {galleryImages.map((img, idx) => (
+              <button
+                key={`${img.publicId}-${idx}`}
+                type="button"
+                onClick={() => openLightboxAt(idx)}
+                className="group relative aspect-[4/3] overflow-hidden rounded-xl border bg-muted text-left"
+              >
+                <Image
+                  src={img.url}
+                  alt={`${portofolio.portofolioName} - Galeri ${idx + 1}`}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       {portofolio.productApplications.length > 0 && (
         <section ref={appsRef}>
@@ -119,6 +170,51 @@ export function PortofolioDetailContent({
             ))}
           </div>
         </section>
+      )}
+
+      {lightboxOpen && galleryImages[activeImageIndex] && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4">
+          <button
+            type="button"
+            aria-label="Tutup galeri"
+            onClick={() => setLightboxOpen(false)}
+            className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+          >
+            <X className="size-5" />
+          </button>
+
+          {galleryImages.length > 1 && (
+            <button
+              type="button"
+              aria-label="Gambar sebelumnya"
+              onClick={showPrevImage}
+              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+            >
+              <ChevronLeft className="size-6" />
+            </button>
+          )}
+
+          <div className="relative h-[78vh] w-full max-w-6xl overflow-hidden rounded-xl">
+            <Image
+              src={galleryImages[activeImageIndex].url}
+              alt={`${portofolio.portofolioName} - Galeri ${activeImageIndex + 1}`}
+              fill
+              className="object-contain"
+              sizes="100vw"
+            />
+          </div>
+
+          {galleryImages.length > 1 && (
+            <button
+              type="button"
+              aria-label="Gambar berikutnya"
+              onClick={showNextImage}
+              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
+            >
+              <ChevronRight className="size-6" />
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

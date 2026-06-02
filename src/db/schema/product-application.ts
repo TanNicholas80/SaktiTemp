@@ -4,7 +4,7 @@ import { product } from "./product";
 
 export const productApplication = pgTable("product-application", {
     productApplicationId: uuid("product_application_id").primaryKey().defaultRandom(),
-    productId: uuid("product_id").references(() => product.productId),
+    productId: uuid("product_id").references(() => product.productId, { onDelete: "cascade" }),
     productApplicationImageUrl: varchar("product_application_image_url").notNull(),
     productApplicationImagePublicId: varchar("product_application_image_public_id").notNull(),
     productApplicationName: varchar("product_application_name").notNull(),
@@ -18,6 +18,6 @@ export const productApplication = pgTable("product-application", {
         columns: [table.productId],
         foreignColumns: [product.productId],
         name: "fk_product_application_product_id",
-    }),
+    }).onDelete("cascade"),
     index("product_application_product_id_idx").on(table.productId),
 ]);

@@ -4,7 +4,7 @@ import { categoryProduct } from "./category-product";
 
 export const product = pgTable("product", {
     productId: uuid("product_id").primaryKey().defaultRandom(),
-    categoryProductId: uuid("category_product_id").references(() => categoryProduct.categoryProductId),
+    categoryProductId: uuid("category_product_id").references(() => categoryProduct.categoryProductId, { onDelete: "set null" }),
     productName: varchar("product_name").notNull(),
     productSlug: varchar("product_slug").notNull(),
     productShortDescription: varchar("product_short_description", { length: 500 }).notNull().default(""),
@@ -21,7 +21,7 @@ export const product = pgTable("product", {
         columns: [table.categoryProductId],
         foreignColumns: [categoryProduct.categoryProductId],
         name: "fk_product_category_product_id",
-    }),
+    }).onDelete("set null"),
     uniqueIndex("product_slug_unique").on(table.productSlug),
     index("product_category_product_id_idx").on(table.categoryProductId),
     index("product_is_published_at_idx").on(table.productIsPublishedAt),

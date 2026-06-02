@@ -9,11 +9,11 @@ export const glassPrices = pgTable("glass_prices", {
   glassPricesId: uuid("glass_prices_id").primaryKey().defaultRandom(),
 
   glassTypeId: uuid("glass_type_id")
-    .references(() => glassTypes.glassTypeId)
+    .references(() => glassTypes.glassTypeId, { onDelete: "cascade" })
     .notNull(),
 
   thicknessId: uuid("thickness_id")
-    .references(() => thickness.thicknessId)
+    .references(() => thickness.thicknessId, { onDelete: "cascade" })
     .notNull(),
 
   variant: varchar("variant", { length: 100 }).notNull(),

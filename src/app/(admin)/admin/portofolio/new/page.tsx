@@ -41,7 +41,7 @@ export default function NewPortofolioPage() {
     name: "",
     slug: "",
     shortDescription: "",
-    about: "",
+    galleryImages: [],
     location: "",
     image: null,
     categoryId: "",
@@ -80,7 +80,10 @@ export default function NewPortofolioPage() {
       portofolioName: values.name.trim(),
       portofolioSlug: values.slug.trim(),
       portofolioShortDescription: values.shortDescription.trim() || undefined,
-      portofolioAbout: values.about,
+      portofolioAbout: undefined,
+      portofolioGalleryImages: values.galleryImages.filter(
+        (img) => img.url.trim() && img.publicId.trim()
+      ),
       portofolioLocation: values.location.trim(),
       portofolioImageUrl: values.image?.url ?? "",
       portofolioImagePublicId: values.image?.publicId ?? "",

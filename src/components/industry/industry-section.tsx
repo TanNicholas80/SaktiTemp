@@ -5,15 +5,6 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTranslations } from "next-intl";
-import {
-  Briefcase,
-  Building2,
-  Factory,
-  FolderOpen,
-  Home,
-  Landmark,
-  type LucideIcon,
-} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -22,19 +13,6 @@ import { cn } from "@/lib/utils";
 import type { CategoryPortofolioOutput } from "@/lib/translate";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const INDUSTRY_ICON_MAP: Record<string, LucideIcon> = {
-  FolderOpen,
-  Briefcase,
-  Building2,
-  Home,
-  Landmark,
-  Factory,
-};
-
-function getIndustryIcon(iconName: string): LucideIcon {
-  return INDUSTRY_ICON_MAP[iconName] ?? Building2;
-}
 
 type IndustrySectionProps = {
   industries: CategoryPortofolioOutput[];
@@ -124,15 +102,15 @@ export function IndustrySection({ industries }: IndustrySectionProps) {
         </div>
 
         {/* Industry Cards */}
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:mt-14 sm:gap-8 md:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-10">
+        <div className="mt-12 flex flex-wrap justify-center gap-6 sm:mt-14 sm:gap-8 lg:mt-16 lg:gap-10">
           {industries.map((industry, index) => {
-            const Icon = getIndustryIcon(industry.categoryPortofolioIcon);
             const hasImage = !!industry.categoryPortofolioImage?.trim();
             const imageUrl = industry.categoryPortofolioImage?.trim() || "/logo_saktitemp.png";
 
             return (
               <div
                 key={industry.categoryPortofolioId}
+                className="w-full max-w-[360px] md:w-[calc(50%-1rem)] md:max-w-[380px] lg:w-[calc(33.333%-1.75rem)] lg:max-w-[400px]"
                 ref={(el) => {
                   cardRefs.current[index] = el;
                 }}
@@ -155,7 +133,9 @@ export function IndustrySection({ industries }: IndustrySectionProps) {
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary to-primary/70">
-                        <Icon className="size-24 text-primary-foreground/30" strokeWidth={1} aria-hidden />
+                        <span className="text-lg font-semibold text-primary-foreground/40">
+                          {industry.categoryPortofolioName}
+                        </span>
                       </div>
                     )}
                     {/* Reddish-brown semi-transparent overlay - full card */}
@@ -163,23 +143,8 @@ export function IndustrySection({ industries }: IndustrySectionProps) {
                       className="absolute inset-0 bg-primary/60"
                       aria-hidden
                     />
-                    {/* Content: icon, title, subtitle - stacked left-aligned at bottom */}
+                    {/* Content: title + subtitle - stacked left-aligned at bottom */}
                     <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-3 p-5 sm:p-6">
-                      {/* Icon - rounded square outline, transparent fill */}
-                      <div
-                        className={cn(
-                          "flex size-12 shrink-0 items-center justify-center rounded-lg",
-                          "border-2 border-accent bg-transparent",
-                          "transition-transform duration-300 group-hover:scale-105"
-                        )}
-                      >
-                        <Icon
-                          className="size-6 text-accent"
-                          strokeWidth={2}
-                          fill="none"
-                          aria-hidden
-                        />
-                      </div>
                       <h3 className="text-xl font-bold text-white sm:text-2xl">
                         {industry.categoryPortofolioName}
                       </h3>

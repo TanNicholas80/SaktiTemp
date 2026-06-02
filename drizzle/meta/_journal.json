@@ -134,6 +134,13 @@
       "when": 1748344800000,
       "tag": "20260527150000_drop_processing_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1780410236873,
+      "tag": "20260602142356_mushy_echo",
+      "breakpoints": true
     }
   ]
 }

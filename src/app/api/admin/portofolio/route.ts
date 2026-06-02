@@ -29,6 +29,7 @@ export async function GET() {
         portofolioSlug: portofolio.portofolioSlug,
         portofolioShortDescription: portofolio.portofolioShortDescription,
         portofolioAbout: portofolio.portofolioAbout,
+        portofolioGalleryImages: portofolio.portofolioGalleryImages,
         portofolioLocation: portofolio.portofolioLocation,
         portofolioImageUrl: portofolio.portofolioImageUrl,
         portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
@@ -48,6 +49,9 @@ export async function GET() {
       portofolioSlug: r.portofolioSlug,
       portofolioShortDescription: r.portofolioShortDescription,
       portofolioAbout: r.portofolioAbout,
+      portofolioGalleryImages: Array.isArray(r.portofolioGalleryImages)
+        ? r.portofolioGalleryImages
+        : [],
       portofolioLocation: r.portofolioLocation,
       portofolioImageUrl: r.portofolioImageUrl,
       portofolioIsPublishedAt: r.portofolioIsPublishedAt,
@@ -110,13 +114,35 @@ export async function POST(request: Request) {
       throw e;
     }
 
+    const galleryImages = parsed.data.portofolioGalleryImages ?? [];
+    const promotedGalleryImages: { url: string; publicId: string }[] = [];
+    for (const img of galleryImages) {
+      try {
+        const promoted = await promoteStagingImageIfNeeded(
+          img.url.trim(),
+          img.publicId.trim(),
+          "portofolio"
+        );
+        promotedGalleryImages.push({
+          url: promoted.url,
+          publicId: promoted.publicId,
+        });
+      } catch (e) {
+        if (e instanceof StagingPromoteError) {
+          return NextResponse.json({ error: e.message }, { status: 500 });
+        }
+        throw e;
+      }
+    }
+
     const [inserted] = await db
       .insert(portofolio)
       .values({
         portofolioName: parsed.data.portofolioName,
         portofolioSlug: slug,
         portofolioShortDescription: parsed.data.portofolioShortDescription ?? "",
-        portofolioAbout: parsed.data.portofolioAbout,
+        portofolioAbout: parsed.data.portofolioAbout ?? "",
+        portofolioGalleryImages: promotedGalleryImages,
         portofolioLocation: parsed.data.portofolioLocation,
         portofolioImageUrl,
         portofolioImagePublicId,

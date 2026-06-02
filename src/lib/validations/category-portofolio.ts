@@ -13,10 +13,6 @@ export const createCategoryPortofolioSchema = z.object({
     .max(120, "Slug maksimal 120 karakter")
     .regex(slugRegex, "Slug hanya boleh huruf kecil, angka, dan strip")
     .optional(),
-  categoryPortofolioIcon: z
-    .string()
-    .max(50, "Nama ikon maksimal 50 karakter")
-    .optional(),
   categoryPortofolioImage: z
     .string()
     .max(255, "Path gambar maksimal 255 karakter")
@@ -35,10 +31,6 @@ export const updateCategoryPortofolioSchema = z.object({
     .min(2, "Slug minimal 2 karakter")
     .max(120, "Slug maksimal 120 karakter")
     .regex(slugRegex, "Slug hanya boleh huruf kecil, angka, dan strip")
-    .optional(),
-  categoryPortofolioIcon: z
-    .string()
-    .max(50, "Nama ikon maksimal 50 karakter")
     .optional(),
   categoryPortofolioImage: z
     .string()

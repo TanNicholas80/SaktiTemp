@@ -123,7 +123,6 @@ export default async function PortfolioPage({ params }: Props) {
           categoryPortofolioId: true,
           categoryPortofolioName: true,
           categoryPortofolioSlug: true,
-          categoryPortofolioIcon: true,
           categoryPortofolioImage: true,
           categoryPortofolioDescription: true,
         },
@@ -225,7 +224,6 @@ export default async function PortfolioPage({ params }: Props) {
     categoryPortofolioId: r.categoryPortofolioId,
     categoryPortofolioName: r.categoryPortofolioName,
     categoryPortofolioSlug: r.categoryPortofolioSlug,
-    categoryPortofolioIcon: r.categoryPortofolioIcon ?? "",
     categoryPortofolioImage: r.categoryPortofolioImage ?? "",
     categoryPortofolioDescription:
       (r.categoryPortofolioDescription as string) ?? "",

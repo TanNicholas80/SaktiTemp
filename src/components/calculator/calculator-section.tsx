@@ -10,6 +10,7 @@ import {
   validateGlassDimensions,
   getDimensionSurchargeRate,
   getFlatPolishEdgingPricePerMeter,
+  parseLaminatedGlassLayers,
 } from "./dimension-rules";
 import {
   saveCalculatorRincianPayload,
@@ -87,9 +88,18 @@ export function CalculatorSection({
     const materialBase = pricePerSqm * sqm;
     const dimensionSurcharge = materialBase * dimSurchargeRate;
     const materialCost = materialBase;
-    const flatPolishEdgingUnitPrice = getFlatPolishEdgingPricePerMeter(
-      selectedGlassPrice?.thicknessValue
+    // Untuk kaca laminated: harga FPE dihitung per lapisan kaca × jumlah lapisan.
+    // Contoh: 5+0,78+5 → 2 lapisan 5mm → 10.500 × 2 = 21.000/m
+    // Untuk kaca biasa: tidak ada compositionDetail → pakai thicknessValue langsung.
+    const laminatedLayers = parseLaminatedGlassLayers(
+      selectedGlassPrice?.compositionDetail
     );
+    const effectiveLayerThickness = laminatedLayers
+      ? laminatedLayers.layerThicknessMm
+      : selectedGlassPrice?.thicknessValue;
+    const layerCount = laminatedLayers ? laminatedLayers.layerCount : 1;
+    const flatPolishEdgingUnitPrice =
+      getFlatPolishEdgingPricePerMeter(effectiveLayerThickness) * layerCount;
     const flatPolishEdgingLengthFactor = dimValid
       ? ((panjangNum + lebarNum) / 1000) * 2
       : 0;

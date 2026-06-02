@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm install --include=dev && next build && npm prune --omit=dev",
+    "build": "npm install --include=dev && npm run db:migrate && next build && npm prune --omit=dev",
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",

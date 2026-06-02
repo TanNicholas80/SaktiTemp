@@ -39,6 +39,7 @@ export async function GET(_request: Request, { params }: Params) {
         portofolioSlug: portofolio.portofolioSlug,
         portofolioShortDescription: portofolio.portofolioShortDescription,
         portofolioAbout: portofolio.portofolioAbout,
+        portofolioGalleryImages: portofolio.portofolioGalleryImages,
         portofolioLocation: portofolio.portofolioLocation,
         portofolioImageUrl: portofolio.portofolioImageUrl,
         portofolioImagePublicId: portofolio.portofolioImagePublicId,
@@ -162,6 +163,9 @@ export async function GET(_request: Request, { params }: Params) {
 
     return NextResponse.json({
       ...row,
+      portofolioGalleryImages: Array.isArray(row.portofolioGalleryImages)
+        ? row.portofolioGalleryImages
+        : [],
       category: row.categoryPortofolioName
         ? {
             name: row.categoryPortofolioName,
@@ -232,7 +236,7 @@ export async function PATCH(request: Request, { params }: Params) {
     if (parsed.data.portofolioShortDescription !== undefined)
       updateData.portofolioShortDescription = parsed.data.portofolioShortDescription ?? "";
     if (parsed.data.portofolioAbout !== undefined)
-      updateData.portofolioAbout = parsed.data.portofolioAbout;
+      updateData.portofolioAbout = parsed.data.portofolioAbout ?? "";
     if (parsed.data.portofolioLocation !== undefined)
       updateData.portofolioLocation = parsed.data.portofolioLocation;
     if (
@@ -275,6 +279,39 @@ export async function PATCH(request: Request, { params }: Params) {
     const oldPublicId = existing.portofolioImagePublicId;
     const imageChanged =
       newPublicId !== undefined && oldPublicId && newPublicId !== oldPublicId;
+
+    if (parsed.data.portofolioGalleryImages !== undefined) {
+      const oldGallery = Array.isArray(existing.portofolioGalleryImages)
+        ? (existing.portofolioGalleryImages as { url: string; publicId: string }[])
+        : [];
+      const nextRaw = parsed.data.portofolioGalleryImages;
+      const nextGallery: { url: string; publicId: string }[] = [];
+      for (const img of nextRaw) {
+        try {
+          const promoted = await promoteStagingImageIfNeeded(
+            img.url.trim(),
+            img.publicId.trim(),
+            "portofolio"
+          );
+          nextGallery.push({ url: promoted.url, publicId: promoted.publicId });
+        } catch (e) {
+          if (e instanceof StagingPromoteError) {
+            return NextResponse.json({ error: e.message }, { status: 500 });
+          }
+          throw e;
+        }
+      }
+      updateData.portofolioGalleryImages = nextGallery;
+
+      // Hapus gambar lama yang tidak lagi dipakai
+      const nextIds = new Set(nextGallery.map((g) => g.publicId));
+      const toDelete = oldGallery
+        .map((g) => g.publicId)
+        .filter((id) => id && !nextIds.has(id));
+      for (const publicId of toDelete) {
+        await deletePortofolioImageFile(publicId);
+      }
+    }
 
     const [updated] = await db
       .update(portofolio)
@@ -339,6 +376,15 @@ export async function DELETE(_request: Request, { params }: Params) {
 
     if (existing.portofolioImagePublicId) {
       await deletePortofolioImageFile(existing.portofolioImagePublicId);
+    }
+
+    const gallery = Array.isArray(existing.portofolioGalleryImages)
+      ? (existing.portofolioGalleryImages as { url: string; publicId: string }[])
+      : [];
+    for (const img of gallery) {
+      if (img?.publicId) {
+        await deletePortofolioImageFile(img.publicId);
+      }
     }
 
     await db

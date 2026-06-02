@@ -84,8 +84,6 @@ export async function PATCH(request: Request, { params }: Params) {
       categoryPortofolioSlug: slug,
       updatedAt: new Date(),
     };
-    if (parsed.data.categoryPortofolioIcon !== undefined)
-      updatePayload.categoryPortofolioIcon = parsed.data.categoryPortofolioIcon ?? "";
     if (parsed.data.categoryPortofolioImage !== undefined) {
       const raw = parsed.data.categoryPortofolioImage ?? "";
       if (raw) {

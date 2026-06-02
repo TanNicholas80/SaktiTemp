@@ -399,12 +399,8 @@ export async function DELETE(_request: Request, { params }: Params) {
       await deleteProductImageFile(existing.productImagePublicId);
     }
 
-    await db
-      .delete(productThickness)
-      .where(eq(productThickness.productId, existing.productId));
-    await db
-      .delete(productExellence)
-      .where(eq(productExellence.productId, existing.productId));
+    // productThickness, productExellence, dan productApplication
+    // sudah dikonfigurasi onDelete: "cascade" di DB — ikut terhapus otomatis.
     await db.delete(product).where(eq(product.productId, existing.productId));
 
     await revalidateContentCache("product");

@@ -17,7 +17,7 @@ export const GLASS_DIM_MM = {
 } as const;
 
 /**
- * Harga Flat Polish Edging per meter berdasarkan ketebalan kaca (mm).
+ * Harga Flat Polish Edging per meter berdasarkan ketebalan satu lapisan kaca (mm).
  * Ketebalan yang belum tersedia pada daftar mengembalikan 0.
  */
 export function getFlatPolishEdgingPricePerMeter(thicknessValue?: number): number {
@@ -27,6 +27,44 @@ export function getFlatPolishEdgingPricePerMeter(thicknessValue?: number): numbe
   if (thicknessValue >= 8 && thicknessValue <= 10) return 20000;
   if (thicknessValue >= 15 && thicknessValue <= 19) return 88000;
   return 0;
+}
+
+/**
+ * Parse compositionDetail kaca laminated untuk mengekstrak ketebalan setiap lapisan kaca.
+ *
+ * Format yang didukung (contoh dari DB):
+ *   "5 mm + 0,78 mm + 5 mm"
+ *   "4mm Temp + 0,76 + 4mm Temp"
+ *   "10mm + 0,76 + 10mm"
+ *
+ * Cara kerja:
+ *   - Ekstrak semua angka dari string (ganti koma desimal → titik)
+ *   - Lapisan kaca = nilai >= 1 mm (film interlayer PVB/EVA selalu < 1: 0,38 / 0,76 / 0,78)
+ *
+ * Mengembalikan null jika string kosong atau tidak mengandung lapisan kaca yang valid.
+ */
+export function parseLaminatedGlassLayers(
+  compositionDetail: string | null | undefined
+): { layerThicknessMm: number; layerCount: number } | null {
+  if (!compositionDetail || !compositionDetail.trim()) return null;
+
+  const text = compositionDetail.replace(/,/g, ".");
+  const allValues: number[] = [];
+  const numRegex = /(\d+(?:\.\d+)?)/g;
+  let m: RegExpExecArray | null;
+  while ((m = numRegex.exec(text)) !== null) {
+    const v = parseFloat(m[1]);
+    if (Number.isFinite(v)) allValues.push(v);
+  }
+
+  // Lapisan kaca >= 1 mm; film interlayer (PVB/EVA) < 1 mm
+  const glassLayers = allValues.filter((v) => v >= 1);
+  if (glassLayers.length === 0) return null;
+
+  return {
+    layerThicknessMm: glassLayers[0],
+    layerCount: glassLayers.length,
+  };
 }
 
 export type DimensionValidation =

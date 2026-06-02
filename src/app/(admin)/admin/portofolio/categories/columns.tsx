@@ -18,7 +18,6 @@ export type CategoryPortofolio = {
   categoryPortofolioId: string;
   categoryPortofolioName: string;
   categoryPortofolioSlug: string;
-  categoryPortofolioIcon?: string;
   categoryPortofolioImage?: string;
   categoryPortofolioDescription?: string;
   createdAt: string;

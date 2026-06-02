@@ -1,15 +1,6 @@
 "use client";
 
 import * as React from "react";
-import {
-  Briefcase,
-  Building2,
-  Factory,
-  FolderOpen,
-  Home,
-  Landmark,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 
 import {
   Dialog,
@@ -26,67 +17,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { slugify } from "@/lib/utils/slug";
-
-export const CATEGORY_PORTOFOLIO_ICON_OPTIONS = [
-  { value: "FolderOpen", label: "Folder Open" },
-  { value: "Briefcase", label: "Briefcase" },
-  { value: "Building2", label: "Building" },
-  { value: "Home", label: "Home" },
-  { value: "Landmark", label: "Landmark" },
-  { value: "Factory", label: "Factory" },
-] as const;
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  FolderOpen,
-  Briefcase,
-  Building2,
-  Home,
-  Landmark,
-  Factory,
-};
-
-function CategoryPortofolioIconPreview({ iconValue }: { iconValue: string }) {
-  const Icon = iconValue ? ICON_MAP[iconValue] : null;
-  const label =
-    CATEGORY_PORTOFOLIO_ICON_OPTIONS.find((o) => o.value === iconValue)
-      ?.label ?? "Pilih ikon";
-
-  return (
-    <div className="mt-3 space-y-2">
-      <span className="text-muted-foreground text-xs font-medium">
-        Preview Ikon
-      </span>
-      <div className="flex items-center gap-3 rounded-lg border bg-muted/30 px-3 py-2">
-        <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors ${
-            Icon ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-          }`}
-        >
-          {Icon ? (
-            <Icon className="size-5" />
-          ) : (
-            <span className="text-xs">—</span>
-          )}
-        </div>
-        <span className="text-muted-foreground text-sm">{label}</span>
-      </div>
-    </div>
-  );
-}
 
 export type CategoryPortofolioFormValues = {
   categoryPortofolioName: string;
   categoryPortofolioSlug: string;
-  categoryPortofolioIcon: string;
   categoryPortofolioImage: { url: string; publicId: string } | null;
   categoryPortofolioDescription: string;
 };
@@ -111,7 +47,6 @@ export function CategoryPortofolioFormDialog({
   errors,
 }: CategoryPortofolioFormDialogProps) {
   const [name, setName] = React.useState(defaultValues.categoryPortofolioName);
-  const [icon, setIcon] = React.useState(defaultValues.categoryPortofolioIcon);
   const [image, setImage] = React.useState<{ url: string; publicId: string } | null>(
     defaultValues.categoryPortofolioImage
   );
@@ -122,7 +57,6 @@ export function CategoryPortofolioFormDialog({
   React.useEffect(() => {
     if (open) {
       setName(defaultValues.categoryPortofolioName);
-      setIcon(defaultValues.categoryPortofolioIcon);
       setImage(defaultValues.categoryPortofolioImage);
       setDescription(defaultValues.categoryPortofolioDescription);
     }
@@ -134,7 +68,6 @@ export function CategoryPortofolioFormDialog({
     onSubmit({
       categoryPortofolioName: name.trim(),
       categoryPortofolioSlug,
-      categoryPortofolioIcon: icon,
       categoryPortofolioImage: image,
       categoryPortofolioDescription: description.trim(),
     });
@@ -164,32 +97,6 @@ export function CategoryPortofolioFormDialog({
                     : []
                 }
               />
-            </Field>
-            <Field>
-              <FieldLabel>Ikon</FieldLabel>
-              <Select value={icon || ""} onValueChange={setIcon}>
-                <SelectTrigger
-                  className="w-full"
-                  aria-invalid={!!errors.categoryPortofolioIcon}
-                >
-                  <SelectValue placeholder="Pilih ikon" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CATEGORY_PORTOFOLIO_ICON_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError
-                errors={
-                  errors.categoryPortofolioIcon
-                    ? [{ message: errors.categoryPortofolioIcon }]
-                    : []
-                }
-              />
-              <CategoryPortofolioIconPreview iconValue={icon} />
             </Field>
             <Field>
               <FieldLabel>Gambar</FieldLabel>

@@ -26,7 +26,6 @@ export async function GET() {
         categoryPortofolioId: true,
         categoryPortofolioName: true,
         categoryPortofolioSlug: true,
-        categoryPortofolioIcon: true,
         categoryPortofolioImage: true,
         categoryPortofolioDescription: true,
         createdAt: true,
@@ -105,7 +104,6 @@ export async function POST(request: Request) {
       .values({
         categoryPortofolioName: name,
         categoryPortofolioSlug: slug,
-        categoryPortofolioIcon: parsed.data.categoryPortofolioIcon ?? "",
         categoryPortofolioImage,
         categoryPortofolioDescription: parsed.data.categoryPortofolioDescription ?? "",
       })

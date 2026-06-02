@@ -83,7 +83,6 @@ export default function CategoriesPortofolioPage() {
     const parsed = createCategoryPortofolioSchema.safeParse({
       categoryPortofolioName: values.categoryPortofolioName,
       categoryPortofolioSlug: values.categoryPortofolioSlug || undefined,
-      categoryPortofolioIcon: values.categoryPortofolioIcon || undefined,
       categoryPortofolioImage: values.categoryPortofolioImage?.url || undefined,
       categoryPortofolioDescription: values.categoryPortofolioDescription || undefined,
     });
@@ -141,7 +140,6 @@ export default function CategoriesPortofolioPage() {
     const parsed = updateCategoryPortofolioSchema.safeParse({
       categoryPortofolioName: values.categoryPortofolioName,
       categoryPortofolioSlug: values.categoryPortofolioSlug || undefined,
-      categoryPortofolioIcon: values.categoryPortofolioIcon || undefined,
       categoryPortofolioImage: values.categoryPortofolioImage?.url || undefined,
       categoryPortofolioDescription: values.categoryPortofolioDescription || undefined,
     });
@@ -286,7 +284,6 @@ export default function CategoriesPortofolioPage() {
         defaultValues={{
           categoryPortofolioName: "",
           categoryPortofolioSlug: "",
-          categoryPortofolioIcon: "",
           categoryPortofolioImage: null,
           categoryPortofolioDescription: "",
         }}
@@ -304,7 +301,6 @@ export default function CategoriesPortofolioPage() {
             ? {
                 categoryPortofolioName: editCat.categoryPortofolioName,
                 categoryPortofolioSlug: editCat.categoryPortofolioSlug,
-                categoryPortofolioIcon: editCat.categoryPortofolioIcon ?? "",
                 categoryPortofolioImage: editCat.categoryPortofolioImage
                   ? { url: editCat.categoryPortofolioImage, publicId: "" }
                   : null,
@@ -313,7 +309,6 @@ export default function CategoriesPortofolioPage() {
             : {
                 categoryPortofolioName: "",
                 categoryPortofolioSlug: "",
-                categoryPortofolioIcon: "",
                 categoryPortofolioImage: null,
                 categoryPortofolioDescription: "",
               }

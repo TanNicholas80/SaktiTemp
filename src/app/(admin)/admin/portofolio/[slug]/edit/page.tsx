@@ -46,7 +46,7 @@ export default function EditPortofolioPage() {
     name: "",
     slug: "",
     shortDescription: "",
-    about: "",
+    galleryImages: [],
     location: "",
     image: null,
     categoryId: "",
@@ -81,7 +81,12 @@ export default function EditPortofolioPage() {
           name: port.portofolioName,
           slug: port.portofolioSlug,
           shortDescription: port.portofolioShortDescription ?? "",
-          about: port.portofolioAbout,
+          galleryImages: Array.isArray(port.portofolioGalleryImages)
+            ? port.portofolioGalleryImages.filter(
+                (img: { url?: string; publicId?: string }) =>
+                  !!img?.url && !!img?.publicId
+              )
+            : [],
           location: port.portofolioLocation,
           image: {
             url: port.portofolioImageUrl,
@@ -107,7 +112,10 @@ export default function EditPortofolioPage() {
       portofolioName: values.name.trim(),
       portofolioSlug: values.slug.trim(),
       portofolioShortDescription: values.shortDescription.trim() || undefined,
-      portofolioAbout: values.about,
+      portofolioAbout: undefined,
+      portofolioGalleryImages: values.galleryImages.filter(
+        (img) => img.url.trim() && img.publicId.trim()
+      ),
       portofolioLocation: values.location.trim(),
       portofolioImageUrl: values.image?.url ?? "",
       portofolioImagePublicId: values.image?.publicId ?? "",

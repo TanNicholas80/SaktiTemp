@@ -124,7 +124,6 @@ export default async function AboutCompanyPage({ params }: Props) {
             categoryPortofolioId: true,
             categoryPortofolioName: true,
             categoryPortofolioSlug: true,
-            categoryPortofolioIcon: true,
             categoryPortofolioImage: true,
             categoryPortofolioDescription: true,
           },
@@ -244,7 +243,6 @@ export default async function AboutCompanyPage({ params }: Props) {
         categoryPortofolioId: r.categoryPortofolioId,
         categoryPortofolioName: r.categoryPortofolioName,
         categoryPortofolioSlug: r.categoryPortofolioSlug,
-        categoryPortofolioIcon: r.categoryPortofolioIcon || "Building2",
         categoryPortofolioImage: r.categoryPortofolioImage || "",
         categoryPortofolioDescription: r.categoryPortofolioDescription || "",
       }));

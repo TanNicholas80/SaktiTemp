@@ -4,7 +4,7 @@ import { categoryBlog } from "./category-blog";
 
 export const blog = pgTable("blog", {
     blogId: uuid("blog_id").primaryKey().defaultRandom(),
-    categoryBlogId: uuid("category_blog_id").references(() => categoryBlog.categoryBlogId),
+    categoryBlogId: uuid("category_blog_id").references(() => categoryBlog.categoryBlogId, { onDelete: "set null" }),
     blogTitle: varchar("blog_title").notNull(),
     blogSlug: varchar("blog_slug").notNull(),
     blogExcerpt: varchar("blog_excerpt", { length: 500 }).notNull().default(""),
@@ -21,7 +21,7 @@ export const blog = pgTable("blog", {
         columns: [table.categoryBlogId],
         foreignColumns: [categoryBlog.categoryBlogId],
         name: "fk_blog_category_blog_id",
-    }),
+    }).onDelete("set null"),
     uniqueIndex("blog_slug_unique").on(table.blogSlug),
     index("blog_category_blog_id_idx").on(table.categoryBlogId),
     index("blog_is_published_at_idx").on(table.blogIsPublishedAt),

@@ -1,6 +1,10 @@
 import { z } from "zod";
 
 const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const galleryImageSchema = z.object({
+  url: z.string().min(1, "URL gambar galeri wajib diisi"),
+  publicId: z.string().min(1, "Public ID gambar galeri wajib diisi"),
+});
 
 export const createPortofolioSchema = z.object({
   portofolioName: z
@@ -13,7 +17,12 @@ export const createPortofolioSchema = z.object({
     .max(255, "Slug maksimal 255 karakter")
     .regex(slugRegex, "Slug hanya boleh huruf kecil, angka, dan strip"),
   portofolioShortDescription: z.string().max(500, "Deskripsi singkat maksimal 500 karakter").optional(),
-  portofolioAbout: z.string().min(1, "Tentang proyek wajib diisi"),
+  portofolioAbout: z.string().optional(),
+  portofolioGalleryImages: z
+    .array(galleryImageSchema)
+    .max(3, "Maksimal 3 gambar galeri")
+    .optional()
+    .default([]),
   portofolioLocation: z.string().min(1, "Lokasi wajib diisi"),
   portofolioImageUrl: z.string().min(1, "Gambar cover wajib diunggah"),
   portofolioImagePublicId: z.string().min(1, "Gambar cover wajib diunggah"),
@@ -44,7 +53,11 @@ export const updatePortofolioSchema = z.object({
     .regex(slugRegex, "Slug hanya boleh huruf kecil, angka, dan strip")
     .optional(),
   portofolioShortDescription: z.string().max(500, "Deskripsi singkat maksimal 500 karakter").optional(),
-  portofolioAbout: z.string().min(1, "Tentang proyek wajib diisi").optional(),
+  portofolioAbout: z.string().optional(),
+  portofolioGalleryImages: z
+    .array(galleryImageSchema)
+    .max(3, "Maksimal 3 gambar galeri")
+    .optional(),
   portofolioLocation: z.string().min(1, "Lokasi wajib diisi").optional(),
   portofolioImageUrl: z
     .string()

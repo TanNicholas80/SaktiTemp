@@ -109,6 +109,7 @@ export default async function PortofolioDetailPage({ params }: Props) {
       portofolioName: portofolio.portofolioName,
       portofolioSlug: portofolio.portofolioSlug,
       portofolioAbout: portofolio.portofolioAbout,
+      portofolioGalleryImages: portofolio.portofolioGalleryImages,
       portofolioLocation: portofolio.portofolioLocation,
       portofolioImageUrl: portofolio.portofolioImageUrl,
       portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
@@ -216,6 +217,9 @@ export default async function PortofolioDetailPage({ params }: Props) {
     portofolioName: row.portofolioName,
     portofolioSlug: row.portofolioSlug,
     portofolioAbout: row.portofolioAbout,
+    portofolioGalleryImages: Array.isArray(row.portofolioGalleryImages)
+      ? row.portofolioGalleryImages
+      : [],
     portofolioLocation: row.portofolioLocation,
     portofolioImageUrl: row.portofolioImageUrl,
     portofolioIsPublishedAt: row.portofolioIsPublishedAt.toISOString(),
