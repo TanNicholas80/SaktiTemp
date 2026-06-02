@@ -74,13 +74,41 @@ export default function ProductExcellencePage() {
       if (!productsRes.ok) throw new Error("Gagal mengambil data produk");
       const itemsData = await itemsRes.json();
       const productsData = await productsRes.json();
-      setItems(itemsData);
+
+      if (!Array.isArray(itemsData)) {
+        throw new Error("Format data keunggulan tidak valid");
+      }
+      if (!Array.isArray(productsData)) {
+        throw new Error("Format data produk tidak valid");
+      }
+
+      setItems(
+        itemsData.map(
+          (row: {
+            productExellenceId: string;
+            productId: string | null;
+            productName: string | null;
+            productExellenceDescription: string;
+            createdAt: string;
+            updatedAt: string;
+          }) => ({
+            productExellenceId: row.productExellenceId,
+            productId: row.productId,
+            productName: row.productName,
+            productExellenceDescription: row.productExellenceDescription,
+            createdAt: row.createdAt,
+            updatedAt: row.updatedAt,
+          })
+        )
+      );
       setProducts(
-        productsData.map((p: { productId: string; productName: string; productSlug: string }) => ({
-          productId: p.productId,
-          productName: p.productName,
-          productSlug: p.productSlug,
-        }))
+        productsData.map(
+          (p: { productId: string; productName: string; productSlug: string }) => ({
+            productId: p.productId,
+            productName: p.productName,
+            productSlug: p.productSlug,
+          })
+        )
       );
     } catch {
       toast.error("Gagal memuat data");

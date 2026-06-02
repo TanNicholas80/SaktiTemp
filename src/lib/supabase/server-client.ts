@@ -40,4 +40,6 @@ export const supabaseAdmin = new Proxy({} as SupabaseAdminClient, {
   },
 });
 
-export const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET ?? "SaktiTemp Storage";
+/** Nama bucket persis seperti di Supabase Dashboard (huruf kecil, tanpa spasi). */
+export const STORAGE_BUCKET =
+  process.env.SUPABASE_STORAGE_BUCKET?.trim() || "saktitemp-uploads";

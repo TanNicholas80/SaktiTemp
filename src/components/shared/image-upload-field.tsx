@@ -63,15 +63,6 @@ export function ImageUploadField({
   const valueRef = React.useRef(value);
   valueRef.current = value;
 
-  React.useEffect(() => {
-    return () => {
-      const v = valueRef.current;
-      if (v && isStagingImageUrl(v.url)) {
-        void deleteStagingFile(v.publicId);
-      }
-    };
-  }, []);
-
   async function uploadFile(file: File) {
     if (!isImageFile(file)) {
       toast.error("Format gambar tidak didukung", {

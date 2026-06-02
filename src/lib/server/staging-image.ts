@@ -39,6 +39,76 @@ function resolveStagingFilename(url: string, publicId: string): string {
   throw new StagingPromoteError("Nama file staging tidak valid");
 }
 
+function publicUrlForPath(path: string): string {
+  const { data } = supabaseAdmin.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+async function objectExists(path: string): Promise<boolean> {
+  const { data, error } = await supabaseAdmin.storage
+    .from(STORAGE_BUCKET)
+    .download(path);
+  return !error && !!data;
+}
+
+/**
+ * Pindahkan staging → folder final. Fallback copy jika move gagal;
+ * idempoten jika file sudah ada di folder final (submit ulang).
+ */
+async function promoteStorageObject(
+  srcPath: string,
+  destPath: string,
+  filename: string
+): Promise<{ url: string; publicId: string }> {
+  const bucket = supabaseAdmin.storage.from(STORAGE_BUCKET);
+
+  const destReady = await objectExists(destPath);
+  if (destReady) {
+    await bucket.remove([srcPath]).catch(() => {});
+    return { url: publicUrlForPath(destPath), publicId: filename };
+  }
+
+  const { error: moveError } = await bucket.move(srcPath, destPath);
+
+  if (!moveError) {
+    return { url: publicUrlForPath(destPath), publicId: filename };
+  }
+
+  const moveMsg = moveError.message?.toLowerCase() ?? "";
+  const srcMissing =
+    moveMsg.includes("not found") || moveMsg.includes("object not found");
+
+  if (srcMissing) {
+    const { data: blob, error: downloadError } = await bucket.download(srcPath);
+
+    if (!downloadError && blob) {
+      const buffer = Buffer.from(await blob.arrayBuffer());
+      const { error: uploadError } = await bucket.upload(destPath, buffer, {
+        contentType: "image/webp",
+        upsert: true,
+      });
+
+      if (!uploadError) {
+        await bucket.remove([srcPath]).catch(() => {});
+        return { url: publicUrlForPath(destPath), publicId: filename };
+      }
+
+      throw new StagingPromoteError(
+        `Gagal mempromosikan gambar: ${uploadError.message}`
+      );
+    }
+
+    throw new StagingPromoteError(
+      "Gagal mempromosikan gambar: file staging tidak ditemukan di storage. " +
+        "Unggah ulang gambar lalu simpan lagi. Pastikan SUPABASE_STORAGE_BUCKET benar di server."
+    );
+  }
+
+  throw new StagingPromoteError(
+    `Gagal mempromosikan gambar: ${moveError.message}`
+  );
+}
+
 /**
  * Pindahkan file dari folder staging ke folder final di Supabase Storage,
  * lalu kembalikan URL publik final.
@@ -58,24 +128,7 @@ export async function promoteStagingImageIfNeeded(
   const srcPath = `${STAGING_UPLOAD_DIR}/${filename}`;
   const destPath = `${targetFolder}/${filename}`;
 
-  const { error: moveError } = await supabaseAdmin.storage
-    .from(STORAGE_BUCKET)
-    .move(srcPath, destPath);
-
-  if (moveError) {
-    throw new StagingPromoteError(
-      `Gagal mempromosikan gambar: ${moveError.message}`
-    );
-  }
-
-  const { data: publicUrlData } = supabaseAdmin.storage
-    .from(STORAGE_BUCKET)
-    .getPublicUrl(destPath);
-
-  return {
-    url: publicUrlData.publicUrl,
-    publicId: filename,
-  };
+  return promoteStorageObject(srcPath, destPath, filename);
 }
 
 /**
@@ -96,19 +149,6 @@ export async function promoteStagingUrlOnlyIfNeeded(
   const srcPath = `${STAGING_UPLOAD_DIR}/${filename}`;
   const destPath = `${targetFolder}/${filename}`;
 
-  const { error: moveError } = await supabaseAdmin.storage
-    .from(STORAGE_BUCKET)
-    .move(srcPath, destPath);
-
-  if (moveError) {
-    throw new StagingPromoteError(
-      `Gagal mempromosikan gambar: ${moveError.message}`
-    );
-  }
-
-  const { data: publicUrlData } = supabaseAdmin.storage
-    .from(STORAGE_BUCKET)
-    .getPublicUrl(destPath);
-
-  return publicUrlData.publicUrl;
+  const result = await promoteStorageObject(srcPath, destPath, filename);
+  return result.url;
 }

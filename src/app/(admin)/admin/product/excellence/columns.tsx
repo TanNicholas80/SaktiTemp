@@ -28,6 +28,18 @@ type CreateColumnsOptions = {
   onDelete: (row: ProductExcellenceRow) => void;
 };
 
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "-";
+  return d.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export function createProductExcellenceColumns({
   onEdit,
   onDelete,
@@ -40,8 +52,10 @@ export function createProductExcellenceColumns({
         <DataTableColumnHeader column={column} title="Produk" />
       ),
       cell: ({ row }) => (
-        <div className="font-medium">
-          {row.getValue("productName") ?? "-"}
+        <div className="max-w-[200px] font-medium">
+          {row.original.productName?.trim() || (
+            <span className="text-muted-foreground">Produk tidak ditemukan</span>
+          )}
         </div>
       ),
     },
@@ -51,10 +65,28 @@ export function createProductExcellenceColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Deskripsi" />
       ),
+      cell: ({ row }) => {
+        const text = row.original.productExellenceDescription;
+        return (
+          <div
+            className="max-w-md truncate text-muted-foreground"
+            title={text}
+          >
+            {text}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      meta: { label: "Dibuat" },
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Dibuat" />
+      ),
       cell: ({ row }) => (
-        <div className="max-w-md truncate text-muted-foreground">
-          {row.getValue("productExellenceDescription")}
-        </div>
+        <span className="text-muted-foreground whitespace-nowrap text-sm">
+          {formatDate(row.original.createdAt)}
+        </span>
       ),
     },
     {
