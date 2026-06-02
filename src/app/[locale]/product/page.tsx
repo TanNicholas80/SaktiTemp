@@ -3,8 +3,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { desc, eq, inArray, isNotNull, or } from "drizzle-orm";
 
-export const revalidate = 300;
-
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";
 import { ProductPageContent } from "@/components/product/product-page-content";

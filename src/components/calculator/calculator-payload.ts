@@ -64,7 +64,10 @@ export function buildCalculatorWhatsAppLines(opts: {
     lines.push(`Dimensi: ${glassSpec.panjang} mm x ${glassSpec.lebar} mm`);
   }
   if (breakdown.flatPolishEdgingIncluded) {
-    lines.push("Flat Polish Edging: Sudah termasuk di harga material");
+    const flatPolishEdgingCost = breakdown.flatPolishEdgingCost ?? 0;
+    lines.push(
+      `Flat Polish Edging: Rp ${Math.round(flatPolishEdgingCost).toLocaleString("id-ID")}`
+    );
   }
   if (breakdown.quantity > 0) {
     lines.push(`Quantity Lembar Kaca: ${breakdown.quantity} lembar`);

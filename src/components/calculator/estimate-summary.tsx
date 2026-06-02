@@ -86,6 +86,7 @@ export function EstimateSummary({
   const {
     materialCost,
     dimensionSurcharge,
+    flatPolishEdgingCost = 0,
     flatPolishEdgingIncluded,
     quantity,
     subtotalPerSheet,
@@ -149,8 +150,12 @@ export function EstimateSummary({
         {showFlatPolishEdging && (
           <SummaryLine
             label={t("flatPolishEdgingLabel")}
-            sublabel={t("flatPolishEdgingIncludedSublabel")}
-            amount={0}
+            sublabel={
+              flatPolishEdgingCost > 0
+                ? undefined
+                : t("flatPolishEdgingIncludedSublabel")
+            }
+            amount={flatPolishEdgingCost}
           />
         )}
 

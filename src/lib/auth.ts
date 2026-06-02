@@ -10,6 +10,8 @@ import {
 } from "@/db/schema/auth";
 
 export const auth = betterAuth({
+  // Izinkan kedua origin production (www & non-www)
+  trustedOrigins: ["https://saktitemp.com", "https://www.saktitemp.com"],
   session: {
     expiresIn: 60 * 60 * 8, // 8 jam total lifetime
     updateAge: 60 * 60, // refresh tiap 1 jam jika user aktif

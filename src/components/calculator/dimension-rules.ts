@@ -17,12 +17,17 @@ export const GLASS_DIM_MM = {
 } as const;
 
 /**
- * Flat Polish Edging sudah termasuk di harga material dasar setiap jenis kaca
- * pada master pricelist, sehingga tidak ada biaya tambahan yang dihitung pada
- * kalkulator. Baris ringkasan tetap ditampilkan (dengan harga Rp 0) sebagai
- * informasi bahwa finishing ini selalu disertakan.
+ * Harga Flat Polish Edging per meter berdasarkan ketebalan kaca (mm).
+ * Ketebalan yang belum tersedia pada daftar mengembalikan 0.
  */
-export const FLAT_POLISH_EDGING_COST = 0;
+export function getFlatPolishEdgingPricePerMeter(thicknessValue?: number): number {
+  if (typeof thicknessValue !== "number" || !Number.isFinite(thicknessValue)) return 0;
+  if (thicknessValue === 12) return 23000;
+  if (thicknessValue >= 5 && thicknessValue <= 6) return 10500;
+  if (thicknessValue >= 8 && thicknessValue <= 10) return 20000;
+  if (thicknessValue >= 15 && thicknessValue <= 19) return 88000;
+  return 0;
+}
 
 export type DimensionValidation =
   | { ok: true }

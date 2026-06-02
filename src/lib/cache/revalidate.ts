@@ -1,6 +1,23 @@
 import { getCache } from "./index";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Prefix locale untuk next-intl dengan localePrefix: "as-needed".
+ * Locale default (id) tidak punya prefix URL, en dan zh punya /en dan /zh.
+ */
+const LOCALE_PREFIXES = ["", "/en", "/zh"] as const;
+
+/** Revalidate satu path untuk semua locale. */
+function revalidateAllLocales(pagePath: string): void {
+  for (const prefix of LOCALE_PREFIXES) {
+    try {
+      revalidatePath(prefix + pagePath, "page");
+    } catch {
+      // abaikan — tidak semua path pasti exist di setiap deploy
+    }
+  }
+}
+
 export async function revalidateContentCache(
   entity: string
 ): Promise<void> {
@@ -57,14 +74,48 @@ export async function revalidateContentCache(
     );
   }
 
-  // Filter agar array unik (tidak ada duplikat prefix)
   const uniquePrefixes = Array.from(new Set(prefixes));
-  
   await Promise.all(uniquePrefixes.map(prefix => cache.delByPrefix(prefix)));
 
-  // Menghapus cache ISR Next.js secara global agar layout & page ter-refresh
+  // Revalidasi Next.js Full Route Cache secara eksplisit per locale.
+  // revalidatePath("/", "layout") sebagai fallback global, ditambah path
+  // spesifik per halaman agar multi-locale next-intl ter-hit dengan pasti.
   try {
     revalidatePath("/", "layout");
+
+    // Halaman Produk
+    if (["product", "product-application", "category-product"].includes(entity)) {
+      revalidateAllLocales("/product");
+      revalidateAllLocales("/product/[slug]");
+    }
+
+    // Halaman Portofolio
+    if (["portofolio", "category-portofolio", "product", "product-application"].includes(entity)) {
+      revalidateAllLocales("/portofolio");
+      revalidateAllLocales("/portofolio/[slug]");
+    }
+
+    // Halaman Artikel / Blog
+    if (["blog", "category-blog"].includes(entity)) {
+      revalidateAllLocales("/article");
+      revalidateAllLocales("/article/[slug]");
+    }
+
+    // Halaman Calculator
+    if (["thickness", "glass-types", "glass-prices"].includes(entity)) {
+      revalidateAllLocales("/calculator");
+    }
+
+    // Halaman About
+    if (["company-stat", "location", "certification", "hero-section"].includes(entity)) {
+      revalidateAllLocales("/about/company");
+      revalidateAllLocales("/about/contact");
+    }
+
+    // Landing page (beranda)
+    if (["carousel", "benefit", "blog", "portofolio", "location", "company-stat", "contact", "social-media", "category-product"].includes(entity)) {
+      revalidateAllLocales("/");
+    }
   } catch (err) {
     console.error("[Cache] Failed to revalidate Next.js path", err);
   }
@@ -76,6 +127,22 @@ export async function revalidateAllCache(): Promise<void> {
 
   try {
     revalidatePath("/", "layout");
+    // Revalidasi semua halaman publik untuk semua locale
+    const publicPaths = [
+      "/",
+      "/product",
+      "/product/[slug]",
+      "/portofolio",
+      "/portofolio/[slug]",
+      "/article",
+      "/article/[slug]",
+      "/calculator",
+      "/about/company",
+      "/about/contact",
+    ];
+    for (const p of publicPaths) {
+      revalidateAllLocales(p);
+    }
   } catch (err) {
     console.error("[Cache] Failed to revalidate Next.js path", err);
   }

@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { and, desc, eq, ne } from "drizzle-orm";
 
-export const revalidate = 300;
-
 import {
   BlogDetailContent,
   BlogDetailHero,

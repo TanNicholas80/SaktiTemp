@@ -4,8 +4,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { eq, inArray } from "drizzle-orm";
 
-export const revalidate = 300;
-
 import { FooterSection } from "@/components/footer";
 import { ProductDetailSection } from "@/components/product/product-detail-section";
 import { db } from "@/db";

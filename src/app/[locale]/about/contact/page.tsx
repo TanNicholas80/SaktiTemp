@@ -3,8 +3,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { eq } from "drizzle-orm";
 
-export const revalidate = 300;
-
 import { ContactContentSection } from "@/components/contact";
 
 import { FooterSection } from "@/components/footer";

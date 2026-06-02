@@ -4,8 +4,6 @@ import { getTranslations } from "next-intl/server";
 
 import { desc, eq, or } from "drizzle-orm";
 
-export const revalidate = 300;
-
 import { CompanyStatsSection } from "@/components/company-stat";
 import { FooterSection } from "@/components/footer";
 import { PageHeroSection } from "@/components/hero-section";

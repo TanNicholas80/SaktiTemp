@@ -34,17 +34,19 @@ export type GlassSpec = {
 // --- Calculation result types ---
 
 export type CalcBreakdown = {
-  /** Harga material per lembar: pricePerSqm × luas (tanpa surcharge dimensi). Sudah include Flat Polish Edging. */
+  /** Harga material per lembar: pricePerSqm × luas (tanpa surcharge dimensi). */
   materialCost: number;
   /** Tambahan % dari material dasar per lembar sesuai aturan lembaran */
   dimensionSurcharge: number;
   /** 0, 0.1, atau 0.2 — untuk label ringkasan */
   dimensionSurchargeRate?: 0 | 0.1 | 0.2;
-  /** True saat spesifikasi kaca + dimensi sudah lengkap, sehingga baris Flat Polish Edging (Rp 0) ditampilkan. */
+  /** Biaya Flat Polish Edging per lembar: ((panjang + lebar) / 1000) * 2 * harga berdasarkan ketebalan */
+  flatPolishEdgingCost: number;
+  /** True saat spesifikasi kaca + dimensi sudah lengkap, sehingga baris Flat Polish Edging ditampilkan. */
   flatPolishEdgingIncluded: boolean;
   /** Jumlah lembar kaca yang dipesan (>= 1 saat valid; 0 jika belum diisi). */
   quantity: number;
-  /** Subtotal per lembar: materialCost + dimensionSurcharge (sebelum dikali quantity) */
+  /** Subtotal per lembar: materialCost + dimensionSurcharge + flatPolishEdgingCost (sebelum dikali quantity) */
   subtotalPerSheet: number;
   /** Subtotal total = subtotalPerSheet × quantity */
   subtotal: number;

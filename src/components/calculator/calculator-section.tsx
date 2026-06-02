@@ -9,6 +9,7 @@ import {
   dimensionValidationMessage,
   validateGlassDimensions,
   getDimensionSurchargeRate,
+  getFlatPolishEdgingPricePerMeter,
 } from "./dimension-rules";
 import {
   saveCalculatorRincianPayload,
@@ -86,15 +87,24 @@ export function CalculatorSection({
     const materialBase = pricePerSqm * sqm;
     const dimensionSurcharge = materialBase * dimSurchargeRate;
     const materialCost = materialBase;
+    const flatPolishEdgingUnitPrice = getFlatPolishEdgingPricePerMeter(
+      selectedGlassPrice?.thicknessValue
+    );
+    const flatPolishEdgingLengthFactor = dimValid
+      ? ((panjangNum + lebarNum) / 1000) * 2
+      : 0;
+    const flatPolishEdgingCost =
+      flatPolishEdgingLengthFactor * flatPolishEdgingUnitPrice;
 
     const flatPolishEdgingIncluded =
-      !!selectedGlassPrice && dimValid && materialBase > 0;
+      !!selectedGlassPrice && dimValid;
 
     const parsedQty = parseInt(glassSpec.quantity, 10);
     const quantity =
       Number.isFinite(parsedQty) && parsedQty >= 1 ? Math.floor(parsedQty) : 0;
 
-    const subtotalPerSheet = materialCost + dimensionSurcharge;
+    const subtotalPerSheet =
+      materialCost + dimensionSurcharge + flatPolishEdgingCost;
     const subtotal = subtotalPerSheet * quantity;
     const ppn = subtotal * 0.11;
     const grandTotal = subtotal + ppn;
@@ -103,6 +113,7 @@ export function CalculatorSection({
       materialCost,
       dimensionSurcharge,
       dimensionSurchargeRate: dimSurchargeRate,
+      flatPolishEdgingCost,
       flatPolishEdgingIncluded,
       quantity,
       subtotalPerSheet,
