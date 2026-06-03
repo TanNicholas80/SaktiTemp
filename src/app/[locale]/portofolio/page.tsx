@@ -19,10 +19,10 @@ import { portofolio } from "@/db/schema/portofolio";
 import { socialMedia } from "@/db/schema/social-media";
 import {
   applyCompanyStatTranslations,
-  applyCategoryPortofolioTranslations,
   applyCategoryProductTranslations,
   applyContactTranslations,
   applyHeroSectionTranslation,
+  applyPortofolioCategoryNameTranslations,
   applyPortofolioTranslations,
 } from "@/lib/translate/get-translated";
 import type { PortfolioPageCardData } from "@/components/portofolio/portfolio-page-card";
@@ -77,7 +77,6 @@ export default async function PortfolioPage({ params }: Props) {
   const {
     heroRow,
     statsRows,
-    categoryRows,
     portofolioRows,
     contactRows,
     socialMediaRows,
@@ -86,7 +85,6 @@ export default async function PortfolioPage({ params }: Props) {
     const [
       heroRaw,
       statsRaw,
-      categoryRaw,
       portofolioRaw,
       contactRaw,
       socialMediaRaw,
@@ -120,15 +118,6 @@ export default async function PortfolioPage({ params }: Props) {
         where: eq(companyStat.isPublished, true),
         orderBy: (s, { asc }) => [asc(s.displayOrder)],
       }),
-      db.query.categoryPortofolio.findMany({
-        columns: {
-          categoryPortofolioId: true,
-          categoryPortofolioName: true,
-          categoryPortofolioSlug: true,
-          categoryPortofolioImage: true,
-          categoryPortofolioDescription: true,
-        },
-      }),
       db
         .select({
           portofolioId: portofolio.portofolioId,
@@ -138,6 +127,7 @@ export default async function PortfolioPage({ params }: Props) {
           portofolioLocation: portofolio.portofolioLocation,
           portofolioImageUrl: portofolio.portofolioImageUrl,
           portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
+          categoryPortofolioId: portofolio.categoryPortofolioId,
           categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
           categoryPortofolioSlug: categoryPortofolio.categoryPortofolioSlug,
         })
@@ -180,7 +170,6 @@ export default async function PortfolioPage({ params }: Props) {
     return {
       heroRow: heroRaw,
       statsRows: statsRaw,
-      categoryRows: categoryRaw,
       portofolioRows: portofolioRaw.map((r) => ({
         portofolioId: r.portofolioId,
         portofolioName: r.portofolioName,
@@ -189,6 +178,7 @@ export default async function PortfolioPage({ params }: Props) {
         portofolioLocation: r.portofolioLocation,
         portofolioImageUrl: r.portofolioImageUrl,
         portofolioIsPublishedAt: r.portofolioIsPublishedAt.toISOString(),
+        categoryPortofolioId: r.categoryPortofolioId ?? null,
         categoryPortofolioName: r.categoryPortofolioName,
         categoryPortofolioSlug: r.categoryPortofolioSlug,
       })),
@@ -222,15 +212,6 @@ export default async function PortfolioPage({ params }: Props) {
     displayOrder: r.displayOrder,
   }));
 
-  const rawCategories = categoryRows.map((r) => ({
-    categoryPortofolioId: r.categoryPortofolioId,
-    categoryPortofolioName: r.categoryPortofolioName,
-    categoryPortofolioSlug: r.categoryPortofolioSlug,
-    categoryPortofolioImage: r.categoryPortofolioImage ?? "",
-    categoryPortofolioDescription:
-      (r.categoryPortofolioDescription as string) ?? "",
-  }));
-
   const rawPortofolios = portofolioRows.map((r) => ({
     portofolioId: r.portofolioId,
     portofolioName: r.portofolioName,
@@ -239,17 +220,19 @@ export default async function PortfolioPage({ params }: Props) {
     portofolioLocation: r.portofolioLocation,
     portofolioImageUrl: r.portofolioImageUrl,
     portofolioIsPublishedAt: r.portofolioIsPublishedAt,
+    categoryPortofolioId: r.categoryPortofolioId ?? null,
     categoryName: r.categoryPortofolioName,
     categorySlug: r.categoryPortofolioSlug,
   }));
 
-  const [hero, stats, categoriesTranslated, portofoliosTranslated] =
-    await Promise.all([
-      applyHeroSectionTranslation(rawHero, locale),
-      applyCompanyStatTranslations(rawStats, locale),
-      applyCategoryPortofolioTranslations(rawCategories, locale),
-      applyPortofolioTranslations(rawPortofolios, locale),
-    ]);
+  const [hero, stats, portofoliosTranslated] = await Promise.all([
+    applyHeroSectionTranslation(rawHero, locale),
+    applyCompanyStatTranslations(rawStats, locale),
+    applyPortofolioCategoryNameTranslations(
+      await applyPortofolioTranslations(rawPortofolios, locale),
+      locale
+    ),
+  ]);
 
   const portofolioCards: PortfolioPageCardData[] = portofoliosTranslated.map(
     (p) => ({
@@ -264,11 +247,26 @@ export default async function PortfolioPage({ params }: Props) {
     })
   );
 
-  const categoriesForFilter = categoriesTranslated.map((c) => ({
-    categoryPortofolioId: c.categoryPortofolioId,
-    categoryPortofolioName: c.categoryPortofolioName,
-    categoryPortofolioSlug: c.categoryPortofolioSlug,
-  }));
+  /** Hanya kategori yang dipakai minimal satu portofolio published (sama seperti home). */
+  const categoriesForFilter = Array.from(
+    new Map(
+      portofoliosTranslated
+        .filter(
+          (p) =>
+            p.categoryPortofolioId &&
+            p.categoryName &&
+            p.categorySlug
+        )
+        .map((p) => [
+          p.categorySlug!,
+          {
+            categoryPortofolioId: p.categoryPortofolioId!,
+            categoryPortofolioName: p.categoryName!,
+            categoryPortofolioSlug: p.categorySlug!,
+          },
+        ])
+    ).values()
+  );
 
   const rawContacts = contactRows.map((r) => ({
     contactId: r.contactId,
