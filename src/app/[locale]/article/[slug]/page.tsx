@@ -25,6 +25,8 @@ import type { BlogDetailData } from "@/components/blog/types";
 import { routing } from "@/i18n/routing";
 import { BlogJsonLd } from "@/components/seo/json-ld";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };

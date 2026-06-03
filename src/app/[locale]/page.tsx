@@ -40,6 +40,8 @@ import {
 } from "@/lib/translate/get-translated";
 import { OrganizationJsonLd } from "@/components/seo/json-ld";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string }>;
 };

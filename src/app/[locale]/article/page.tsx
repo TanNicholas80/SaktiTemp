@@ -23,6 +23,8 @@ import type { ArticleCardData } from "@/components/article";
 import type { ArticleFeaturedCardData } from "@/components/article";
 import type { CategoryOption } from "@/components/article";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string }>;
 };

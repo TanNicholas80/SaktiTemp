@@ -32,6 +32,8 @@ import {
 import { routing } from "@/i18n/routing";
 import { PortofolioJsonLd } from "@/components/seo/json-ld";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };

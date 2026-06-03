@@ -34,6 +34,8 @@ import {
   applyServiceTranslations,
 } from "@/lib/translate/get-translated";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string }>;
 };

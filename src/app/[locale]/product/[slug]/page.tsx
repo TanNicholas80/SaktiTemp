@@ -28,6 +28,8 @@ import type { ProductDetailData } from "@/components/product/types";
 import { routing } from "@/i18n/routing";
 import { ProductJsonLd } from "@/components/seo/json-ld";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };

@@ -27,6 +27,8 @@ import {
 } from "@/lib/translate/get-translated";
 import type { PortfolioPageCardData } from "@/components/portofolio/portfolio-page-card";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string }>;
 };
