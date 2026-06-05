@@ -44,7 +44,7 @@ export function CalculatorSection({
 
   const [glassSpec, setGlassSpec] = React.useState<GlassSpec>({
     glassTypeId: null,
-    variant: null,
+    variantKey: null,
     thicknessId: null,
     panjang: "",
     lebar: "",
@@ -57,9 +57,10 @@ export function CalculatorSection({
   const selectedGlassPrice = glassPrices.find(
     (gp) =>
       gp.glassTypeId === glassSpec.glassTypeId &&
-      gp.variant === glassSpec.variant &&
+      gp.variantKey === glassSpec.variantKey &&
       gp.thicknessId === glassSpec.thicknessId
   );
+  const variantLabel = selectedGlassPrice?.variant;
   const thicknessLabel = selectedGlassPrice
     ? `${selectedGlassPrice.thicknessValue} ${selectedGlassPrice.thicknessUnit}`
     : undefined;
@@ -137,7 +138,7 @@ export function CalculatorSection({
     const lines = buildCalculatorWhatsAppLines({
       selectedGlassTypeName: selectedGlassType?.glassTypeName,
       glassSpec: {
-        variant: glassSpec.variant,
+        variant: variantLabel ?? null,
         thicknessLabel,
         panjang: glassSpec.panjang,
         lebar: glassSpec.lebar,
@@ -155,7 +156,7 @@ export function CalculatorSection({
       glassTypeId: selectedGlassType?.glassTypeId,
       glassTypeName: selectedGlassType?.glassTypeName,
       glassPricesId: selectedGlassPrice?.glassPricesId,
-      variant: selectedGlassPrice?.variant ?? (glassSpec.variant ?? undefined),
+      variant: variantLabel ?? undefined,
       thicknessId: selectedGlassPrice?.thicknessId,
       thicknessValue: selectedGlassPrice?.thicknessValue,
       thicknessUnit: selectedGlassPrice?.thicknessUnit,
@@ -201,7 +202,7 @@ export function CalculatorSection({
         <EstimateSummary
           breakdown={breakdown}
           glassTypeName={selectedGlassType?.glassTypeName}
-          variant={glassSpec.variant ?? undefined}
+          variant={variantLabel}
           thicknessLabel={thicknessLabel}
           panjang={glassSpec.panjang}
           lebar={glassSpec.lebar}

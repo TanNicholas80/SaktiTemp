@@ -46,18 +46,26 @@ export function GlassSpecSection({
   dimensionError = null,
 }: Props) {
   const t = useTranslations("calculatorSection.glassSpec");
-  // Compute available variants for selected glass type
+  // Compute available variants for selected glass type (dedupe by variantKey, tampilkan label terjemahan)
   const availableVariants = React.useMemo(() => {
     if (!spec.glassTypeId) return [];
     const pricesForType = glassPrices.filter(
       (p) => p.glassTypeId === spec.glassTypeId
     );
     const seen = new Set<string>();
-    const variants: Array<{ variant: string; variantImageUrl: string }> = [];
+    const variants: Array<{
+      variantKey: string;
+      variantLabel: string;
+      variantImageUrl: string;
+    }> = [];
     for (const p of pricesForType) {
-      if (!seen.has(p.variant)) {
-        seen.add(p.variant);
-        variants.push({ variant: p.variant, variantImageUrl: p.variantImageUrl });
+      if (!seen.has(p.variantKey)) {
+        seen.add(p.variantKey);
+        variants.push({
+          variantKey: p.variantKey,
+          variantLabel: p.variant,
+          variantImageUrl: p.variantImageUrl,
+        });
       }
     }
     return variants;
@@ -65,11 +73,12 @@ export function GlassSpecSection({
 
   // Compute available thicknesses for selected glass type + variant
   const availableThicknesses = React.useMemo(() => {
-    if (!spec.glassTypeId || !spec.variant) return [];
+    if (!spec.glassTypeId || !spec.variantKey) return [];
     return glassPrices
       .filter(
         (p) =>
-          p.glassTypeId === spec.glassTypeId && p.variant === spec.variant
+          p.glassTypeId === spec.glassTypeId &&
+          p.variantKey === spec.variantKey
       )
       .sort((a, b) => a.thicknessValue - b.thicknessValue)
       .map((p) => ({
@@ -77,14 +86,14 @@ export function GlassSpecSection({
         thicknessValue: p.thicknessValue,
         thicknessUnit: p.thicknessUnit,
       }));
-  }, [spec.glassTypeId, spec.variant, glassPrices]);
+  }, [spec.glassTypeId, spec.variantKey, glassPrices]);
 
   function handleTypeSelect(id: string) {
-    onChange({ ...spec, glassTypeId: id, variant: null, thicknessId: null });
+    onChange({ ...spec, glassTypeId: id, variantKey: null, thicknessId: null });
   }
 
-  function handleVariantSelect(variant: string) {
-    onChange({ ...spec, variant, thicknessId: null });
+  function handleVariantSelect(variantKey: string) {
+    onChange({ ...spec, variantKey, thicknessId: null });
   }
 
   function handleThicknessChange(thicknessId: string) {
@@ -104,7 +113,7 @@ export function GlassSpecSection({
   const selectedGlassPrice = glassPrices.find(
     (gp) =>
       gp.glassTypeId === spec.glassTypeId &&
-      gp.variant === spec.variant &&
+      gp.variantKey === spec.variantKey &&
       gp.thicknessId === spec.thicknessId
   );
   const composition = selectedGlassPrice?.composition?.trim();
@@ -170,13 +179,13 @@ export function GlassSpecSection({
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-2 xl:grid-cols-3">
                   {availableVariants.map((v) => (
                     <button
-                      key={v.variant}
+                      key={v.variantKey}
                       type="button"
-                      onClick={() => handleVariantSelect(v.variant)}
+                      onClick={() => handleVariantSelect(v.variantKey)}
                       className={cn(
                         "flex flex-col items-center rounded-lg border p-2 text-center transition-all",
                         "hover:border-primary/60 hover:shadow-sm",
-                        spec.variant === v.variant
+                        spec.variantKey === v.variantKey
                           ? "border-primary bg-primary/5 shadow-sm"
                           : "border-border bg-background"
                       )}
@@ -185,7 +194,7 @@ export function GlassSpecSection({
                         {v.variantImageUrl ? (
                           <Image
                             src={v.variantImageUrl}
-                            alt={v.variant}
+                            alt={v.variantLabel}
                             fill
                             sizes="(max-width: 640px) 45vw, 160px"
                             className="object-cover"
@@ -195,7 +204,7 @@ export function GlassSpecSection({
                         )}
                       </div>
                       <span className="text-xs font-medium leading-tight text-foreground">
-                        {v.variant}
+                        {v.variantLabel}
                       </span>
                     </button>
                   ))}
@@ -204,7 +213,7 @@ export function GlassSpecSection({
             )}
 
             {/* Ketebalan */}
-            {spec.variant && availableThicknesses.length > 0 && (
+            {spec.variantKey && availableThicknesses.length > 0 && (
               <div className="space-y-2">
                 <Label htmlFor="glass-thickness" className="text-sm font-semibold">
                   {t("thicknessLabel")}
