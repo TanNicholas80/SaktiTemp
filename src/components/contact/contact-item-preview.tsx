@@ -1,12 +1,14 @@
 "use client";
 
 import { Phone, Mail, Clock, MapPin, type LucideIcon } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 
-const CONTACT_ICON_MAP: Record<string, LucideIcon> = {
+const CONTACT_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Phone,
   Mail,
   Clock,
   MapPin,
+  WhatsApp: WhatsAppIcon,
 };
 
 type ContactItemPreviewProps = {

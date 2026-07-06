@@ -8,6 +8,7 @@ import { ArrowRightIcon, Box, ChevronLeft, ChevronRight, X } from "lucide-react"
 
 import { Link } from "@/i18n/navigation";
 import type { PortofolioDetailData } from "./types";
+import { BrandText } from "@/components/shared/brand-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -125,8 +126,8 @@ export function PortofolioDetailContent({
         <section ref={appsRef}>
           <h2 className="mb-3 font-bold text-xl">Aplikasi Kaca Yang Digunakan</h2>
           <p className="text-muted-foreground mb-4 text-sm">
-            Berikut adalah dokumentasi pengaplikasian kaca tempered SAKTITEMP
-            pada berbagai area di {portofolio.portofolioName}.
+            <BrandText text="Berikut adalah dokumentasi pengaplikasian kaca tempered SAKTITEMP" />{" "}
+            <BrandText text={`pada berbagai area di ${portofolio.portofolioName}.`} />
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {portofolio.productApplications.map((pa) => (
@@ -144,17 +145,17 @@ export function PortofolioDetailContent({
                   />
                   <div className="absolute inset-x-0 bottom-0 flex min-h-[45%] flex-col justify-end bg-gradient-to-t from-[#8B2F2F]/95 via-[#8B2F2F]/50 to-transparent px-4 pb-4 pt-8 rounded-xl">
                     <h3 className="font-bold text-white text-lg">
-                      {pa.productApplicationName}
+                      <BrandText text={pa.productApplicationName} />
                     </h3>
                   </div>
                 </div>
                 <div className="py-4">
                   <p className="line-clamp-3 text-foreground text-sm">
-                    {stripHtml(pa.productApplicationDescription)}
+                    <BrandText text={stripHtml(pa.productApplicationDescription)} />
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-1.5 text-foreground text-sm">
                     <Box className="size-4 shrink-0 text-[#8B2F2F]" />
-                    <span>{pa.product.productName}</span>
+                    <span><BrandText text={pa.product.productName} /></span>
                   </div>
                   {pa.product.productSlug && (
                     <Link

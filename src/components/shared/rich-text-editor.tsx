@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useEditor, EditorContent, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import TextAlign from "@tiptap/extension-text-align";
 import {
   BoldIcon,
   ItalicIcon,
@@ -12,6 +13,10 @@ import {
   Heading2Icon,
   UndoIcon,
   RedoIcon,
+  AlignLeftIcon,
+  AlignCenterIcon,
+  AlignRightIcon,
+  AlignJustifyIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -91,6 +96,42 @@ function Toolbar({ editor }: { editor: Editor | null }) {
         type="button"
         variant="ghost"
         size="icon-sm"
+        onClick={() => editor.chain().focus().setTextAlign("left").run()}
+        className={editor.isActive({ textAlign: "left" }) ? "bg-muted" : ""}
+      >
+        <AlignLeftIcon className="size-4" />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        onClick={() => editor.chain().focus().setTextAlign("center").run()}
+        className={editor.isActive({ textAlign: "center" }) ? "bg-muted" : ""}
+      >
+        <AlignCenterIcon className="size-4" />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        onClick={() => editor.chain().focus().setTextAlign("right").run()}
+        className={editor.isActive({ textAlign: "right" }) ? "bg-muted" : ""}
+      >
+        <AlignRightIcon className="size-4" />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
+        onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+        className={editor.isActive({ textAlign: "justify" }) ? "bg-muted" : ""}
+      >
+        <AlignJustifyIcon className="size-4" />
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon-sm"
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().chain().focus().undo().run()}
       >
@@ -119,7 +160,12 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
+    ],
     content: value,
     editable: !disabled,
     onUpdate: ({ editor }) => {

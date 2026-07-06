@@ -30,6 +30,7 @@ export const CONTACT_ICON_OPTIONS = [
   { value: "Mail", label: "Mail (Email)" },
   { value: "Clock", label: "Clock (Jam)" },
   { value: "MapPin", label: "MapPin (Lokasi)" },
+  { value: "WhatsApp", label: "WhatsApp (WA)" },
 ] as const;
 
 export type ContactFormValues = {

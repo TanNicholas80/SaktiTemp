@@ -11,6 +11,7 @@ import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { BrandText } from "@/components/shared/brand-text";
 
 export type HeroCarouselSlide = {
   carouselId: string;
@@ -209,23 +210,23 @@ export function HeroCarousel({ slides }: HeroCarouselProps) {
                 </span>
                 <span className="h-px w-4 sm:w-6 xl:w-8 min-[2560px]:w-10 shrink-0 bg-white/50" aria-hidden />
                 <span className="font-light text-white/70 text-xs sm:text-sm md:text-base xl:text-lg min-[1920px]:text-xl min-[2560px]:text-2xl">
-                  /{String(index + 1).padStart(2, "0")}
+                  /{String(totalSlides).padStart(2, "0")}
                 </span>
               </div>
 
               {/* Heading & subheading */}
               <div className="space-y-0.5 sm:space-y-1 min-[2560px]:space-y-2">
                 <h2 className="font-bold uppercase tracking-wide text-white text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-[2.75rem] min-[1920px]:text-[3.5rem] min-[2560px]:text-[4.5rem] leading-tight">
-                  {slide.carouselHeading}
+                  <BrandText text={slide.carouselHeading} />
                 </h2>
                 <p className="font-medium italic text-accent text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl min-[1920px]:text-3xl min-[2560px]:text-4xl">
-                  {slide.carouselSubheading}
+                  <BrandText text={slide.carouselSubheading} />
                 </p>
               </div>
 
               {/* Deskripsi — disembunyikan di layar sangat kecil */}
               <p className="hidden sm:block line-clamp-2 leading-relaxed text-white/90 text-xs sm:text-sm md:text-base xl:text-lg min-[1920px]:text-xl min-[2560px]:text-2xl max-w-sm sm:max-w-md md:max-w-lg xl:max-w-xl min-[1920px]:max-w-2xl min-[2560px]:max-w-3xl">
-                {slide.carouselDescription}
+                <BrandText text={slide.carouselDescription} />
               </p>
 
               {/* Tombol CTA */}

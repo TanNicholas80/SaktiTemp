@@ -23,6 +23,7 @@ export const SOCIAL_MEDIA_ICON_OPTIONS = [
   { value: "Linkedin", label: "LinkedIn" },
   { value: "Youtube", label: "YouTube" },
   { value: "Tiktok", label: "TikTok" },
+  { value: "WhatsApp", label: "WhatsApp" },
   { value: "Share2", label: "Share2 (lainnya)" },
 ] as const;
 

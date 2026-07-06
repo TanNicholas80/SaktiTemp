@@ -32,11 +32,13 @@ import type { ContactOutput, LocationOutput } from "@/lib/translate";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const CONTACT_ICON_MAP: Record<string, LucideIcon> = {
+const CONTACT_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Phone,
   Mail,
   Clock,
+  MapPin,
   "map-pin": MapPin,
+  WhatsApp: WhatsAppIcon,
 };
 
 type ContactSectionProps = {

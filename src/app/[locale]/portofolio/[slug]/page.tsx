@@ -28,6 +28,9 @@ import {
   applyCategoryProductTranslations,
   applyContactTranslations,
   applyPortofolioTranslations,
+  applyPortofolioDetailTranslations,
+  applyProductApplicationTranslations,
+  applyProductTranslations,
 } from "@/lib/translate/get-translated";
 import { routing } from "@/i18n/routing";
 import { PortofolioJsonLd } from "@/components/seo/json-ld";
@@ -129,10 +132,28 @@ export default async function PortofolioDetailPage({ params }: Props) {
     )
     .limit(1);
 
-  const row = rows[0];
-  if (!row) {
+  const dbRow = rows[0];
+  if (!dbRow) {
     notFound();
   }
+
+  const translatedPortofolio = await applyPortofolioDetailTranslations(
+    {
+      portofolioId: dbRow.portofolioId,
+      portofolioName: dbRow.portofolioName,
+      portofolioShortDescription: "",
+      portofolioAbout: dbRow.portofolioAbout,
+      portofolioLocation: dbRow.portofolioLocation ?? "",
+    },
+    locale
+  );
+
+  const row = {
+    ...dbRow,
+    portofolioName: translatedPortofolio.portofolioName,
+    portofolioAbout: translatedPortofolio.portofolioAbout,
+    portofolioLocation: translatedPortofolio.portofolioLocation || dbRow.portofolioLocation,
+  };
 
   const papLinks = await db
     .select({ productApplicationId: productApplicationPortofolio.productApplicationId })
@@ -196,20 +217,61 @@ export default async function PortofolioDetailPage({ params }: Props) {
       }
     }
 
-    productApplications = paRows.map((r) => ({
-      productApplicationId: r.productApplicationId,
-      productApplicationName: r.productApplicationName,
-      productApplicationDescription: r.productApplicationDescription,
-      productApplicationImageUrl: r.productApplicationImageUrl,
-      product: {
-        productId: r.productId ?? "",
-        productName: r.productName ?? "-",
-        productSlug: r.productSlug ?? "",
-        thicknesses: r.productId
-          ? thicknessByProduct.get(r.productId) ?? []
-          : [],
-      },
-    }));
+    const translatedPaRows = await applyProductApplicationTranslations(
+      paRows.map((r) => ({
+        productApplicationId: r.productApplicationId,
+        productApplicationName: r.productApplicationName,
+        productApplicationDescription: r.productApplicationDescription,
+      })),
+      locale
+    );
+
+    const paTranslationMap = new Map(
+      translatedPaRows.map((tr) => [tr.productApplicationId, tr])
+    );
+
+    const uniqueProducts = Array.from(
+      new Map(
+        paRows
+          .filter((r) => r.productId != null)
+          .map((r) => [
+            r.productId,
+            {
+              productId: r.productId!,
+              productName: r.productName ?? "-",
+              productShortDescription: "",
+              productDescription: "",
+            },
+          ])
+      ).values()
+    );
+
+    const translatedProducts = uniqueProducts.length > 0
+      ? await applyProductTranslations(uniqueProducts, locale)
+      : [];
+
+    const productTranslationMap = new Map(
+      translatedProducts.map((p) => [p.productId, p.productName])
+    );
+
+    productApplications = paRows.map((r) => {
+      const paTr = paTranslationMap.get(r.productApplicationId);
+      const translatedProductName = r.productId ? productTranslationMap.get(r.productId) : undefined;
+      return {
+        productApplicationId: r.productApplicationId,
+        productApplicationName: paTr?.productApplicationName ?? r.productApplicationName,
+        productApplicationDescription: paTr?.productApplicationDescription ?? r.productApplicationDescription,
+        productApplicationImageUrl: r.productApplicationImageUrl,
+        product: {
+          productId: r.productId ?? "",
+          productName: translatedProductName ?? r.productName ?? "-",
+          productSlug: r.productSlug ?? "",
+          thicknesses: r.productId
+            ? thicknessByProduct.get(r.productId) ?? []
+            : [],
+        },
+      };
+    });
   }
 
   const portofolioDetail: PortofolioDetailData = {

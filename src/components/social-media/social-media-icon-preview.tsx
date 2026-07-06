@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import { TiktokIcon } from "@/components/icons/tiktok-icon";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 
 type IconComponent = React.ComponentType<{ className?: string }>;
 
@@ -19,6 +20,7 @@ const SOCIAL_MEDIA_ICON_MAP: Record<string, IconComponent> = {
   Youtube,
   Share2,
   Tiktok: TiktokIcon,
+  WhatsApp: WhatsAppIcon,
 };
 
 type SocialMediaIconPreviewProps = {

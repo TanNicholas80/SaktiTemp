@@ -17,6 +17,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { TiktokIcon } from "@/components/icons/tiktok-icon";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { cn } from "@/lib/utils";
 
 import type { ContactOutput } from "@/lib/translate";
@@ -32,7 +33,7 @@ const SOCIAL_ICON_MAP: Record<string, SocialIconComponent> = {
   linkedin: Linkedin,
   linkedin_in: Linkedin,
   tiktok: TiktokIcon,
-  whatsapp: MessageCircle,
+  whatsapp: WhatsAppIcon,
 };
 
 type SocialMediaItem = {

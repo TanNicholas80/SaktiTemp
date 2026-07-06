@@ -11,6 +11,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { BrandText } from "@/components/shared/brand-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -82,8 +83,8 @@ function HeadingWithHighlight({ text }: { text: string }) {
         "text-foreground"
       )}
     >
-      {rest && <span>{rest} </span>}
-      {last && <span className="text-primary">{last}</span>}
+      {rest && <BrandText text={rest + " "} />}
+      {last && <span className="text-primary"><BrandText text={last} /></span>}
     </h2>
   );
 }
@@ -103,9 +104,9 @@ function RichParagraph({
       {parts.map((part, i) => {
         const boldMatch = part.match(/^\*\*([\s\S]*?)\*\*$/);
         const maroonMatch = part.match(/^\[\[([\s\S]*?)\]\]$/);
-        if (boldMatch) return <strong key={i} className="font-bold">{boldMatch[1]}</strong>;
-        if (maroonMatch) return <span key={i} className="text-primary">{maroonMatch[1]}</span>;
-        return part;
+        if (boldMatch) return <strong key={i} className="font-bold"><BrandText text={boldMatch[1]} /></strong>;
+        if (maroonMatch) return <span key={i} className="text-primary"><BrandText text={maroonMatch[1]} /></span>;
+        return <BrandText key={i} text={part} />;
       })}
     </span>
   );
