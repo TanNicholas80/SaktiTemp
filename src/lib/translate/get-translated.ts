@@ -530,6 +530,28 @@ export async function applyGlassTypesTranslations<
   });
 }
 
+/** Kalkulator: locale non-id hanya menampilkan jenis kaca yang punya terjemahan. */
+export async function applyCalculatorGlassTypesTranslations<
+  T extends { glassTypeId: string; glassTypeName: string },
+>(items: T[], locale: string): Promise<T[]> {
+  if (items.length === 0) return items;
+  if (locale === "id") return items;
+
+  const ids = items.map((i) => i.glassTypeId);
+  const rows = await db
+    .select()
+    .from(glassTypesTranslations)
+    .where(and(inArray(glassTypesTranslations.glassTypeId, ids), eq(glassTypesTranslations.locale, locale)));
+  const m = new Map(rows.map((r) => [r.glassTypeId, r]));
+
+  return items
+    .filter((item) => m.has(item.glassTypeId))
+    .map((item) => {
+      const tr = m.get(item.glassTypeId)!;
+      return { ...item, glassTypeName: tr.glassTypeName };
+    });
+}
+
 // ---- Glass Prices ----
 export async function applyGlassPricesTranslations<
   T extends { glassPricesId: string; variant: string },
@@ -546,6 +568,31 @@ export async function applyGlassPricesTranslations<
     if (!tr) return item;
     return { ...item, variant: tr.variant };
   });
+}
+
+/** Kalkulator: locale non-id hanya menampilkan varian yang punya terjemahan; variantKey = nama dasar (id). */
+export async function applyCalculatorGlassPricesTranslations<
+  T extends { glassPricesId: string; variant: string },
+>(items: T[], locale: string): Promise<(T & { variantKey: string })[]> {
+  if (items.length === 0) return [];
+
+  const withKey = items.map((item) => ({ ...item, variantKey: item.variant }));
+
+  if (locale === "id") return withKey;
+
+  const ids = items.map((i) => i.glassPricesId);
+  const rows = await db
+    .select()
+    .from(glassPricesTranslations)
+    .where(and(inArray(glassPricesTranslations.glassPricesId, ids), eq(glassPricesTranslations.locale, locale)));
+  const m = new Map(rows.map((r) => [r.glassPricesId, r]));
+
+  return withKey
+    .filter((item) => m.has(item.glassPricesId))
+    .map((item) => {
+      const tr = m.get(item.glassPricesId)!;
+      return { ...item, variant: tr.variant, variantKey: item.variantKey };
+    });
 }
 
 // ---- Social Media ----

@@ -72,6 +72,7 @@ export async function POST(request: Request) {
     const inputBuffer = Buffer.from(bytes);
 
     const optimizedBuffer = await sharp(inputBuffer)
+      .autoOrient()
       .resize(MAX_WIDTH, null, { fit: "inside", withoutEnlargement: true })
       .webp({ quality: WEBP_QUALITY })
       .toBuffer();

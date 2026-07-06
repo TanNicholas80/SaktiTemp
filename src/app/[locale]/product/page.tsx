@@ -37,6 +37,8 @@ import type {
   PortofolioTypeOption,
 } from "@/components/product/product-filter-toolbar";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string }>;
 };

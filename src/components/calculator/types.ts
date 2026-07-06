@@ -10,7 +10,10 @@ export type GlassPrice = {
   glassPricesId: string;
   glassTypeId: string;
   thicknessId: string;
+  /** Nama varian untuk tampilan (terjemahan sesuai locale). */
   variant: string;
+  /** Kunci varian dasar (bahasa Indonesia) untuk pencocokan internal. */
+  variantKey: string;
   variantImageUrl: string;
   composition: string | null;
   compositionDetail: string | null;
@@ -23,7 +26,8 @@ export type GlassPrice = {
 
 export type GlassSpec = {
   glassTypeId: string | null;
-  variant: string | null;
+  /** Kunci varian dasar yang dipilih user (bukan label terjemahan). */
+  variantKey: string | null;
   thicknessId: string | null;
   panjang: string;
   lebar: string;

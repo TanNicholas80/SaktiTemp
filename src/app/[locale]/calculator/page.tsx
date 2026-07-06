@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { asc, eq } from "drizzle-orm";
 
+export const revalidate = 300;
+
 type Props = {
   params: Promise<{ locale: string }>;
 };
@@ -31,8 +33,8 @@ import { heroSection } from "@/db/schema/hero-section";
 import { getFooterData } from "@/lib/footer/get-footer-data";
 import {
   applyHeroSectionTranslation,
-  applyGlassTypesTranslations,
-  applyGlassPricesTranslations,
+  applyCalculatorGlassTypesTranslations,
+  applyCalculatorGlassPricesTranslations,
   applyThicknessTranslations,
 } from "@/lib/translate/get-translated";
 import { glassTypes } from "@/db/schema/glass_types";
@@ -109,15 +111,11 @@ export default async function CalculatorPage({ params }: Props) {
           .orderBy(asc(glassPrices.variant), asc(thickness.thicknessValue)),
       ]);
 
-      const translatedGlassTypes = await applyGlassTypesTranslations(
-        glassTypeList,
-        locale
-      );
       const glassPricesWithIds = glassPriceList.map((row) => ({
         ...row,
         pricePerSqm: Number(row.pricePerSqm),
       }));
-      const variantTranslated = await applyGlassPricesTranslations(
+      const variantTranslated = await applyCalculatorGlassPricesTranslations(
         glassPricesWithIds,
         locale
       );
@@ -125,6 +123,12 @@ export default async function CalculatorPage({ params }: Props) {
         variantTranslated,
         locale
       );
+      const visibleTypeIds = new Set(
+        fullyTranslatedPrices.map((p) => p.glassTypeId)
+      );
+      const translatedGlassTypes = (
+        await applyCalculatorGlassTypesTranslations(glassTypeList, locale)
+      ).filter((gt) => visibleTypeIds.has(gt.glassTypeId));
 
       return {
         heroRow,
