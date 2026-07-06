@@ -15,6 +15,7 @@ import {
 import { AnimatedStatValue } from "@/components/shared/animated-stat-value";
 import { getBenefitIcon } from "@/components/shared/icon-preview-card";
 import { cn } from "@/lib/utils";
+import { BrandText } from "@/components/shared/brand-text";
 
 import type { BenefitOutput, CompanyStatOutput } from "@/lib/translate";
 
@@ -137,7 +138,7 @@ export function BenefitSection({ benefits, stats }: BenefitSectionProps) {
             ref={titleRef}
             className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-[2.5rem]"
           >
-            {t("title")}
+            <BrandText text={t("title")} />
           </h2>
           <p
             ref={subtitleRef}
@@ -173,12 +174,12 @@ export function BenefitSection({ benefits, stats }: BenefitSectionProps) {
                       <Icon className="size-6 text-primary transition-colors duration-300 group-hover:text-white sm:size-7" />
                     </div>
                     <CardTitle className="text-base font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-white sm:text-lg">
-                      {benefit.benefitName}
+                      <BrandText text={benefit.benefitName} />
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col px-6 pb-6 pt-0">
                     <p className="flex-1 text-sm leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-white/90">
-                      {benefit.benefitDescription}
+                      <BrandText text={benefit.benefitDescription} />
                     </p>
                   </CardContent>
                 </Card>

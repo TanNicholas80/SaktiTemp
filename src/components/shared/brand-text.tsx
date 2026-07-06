@@ -7,7 +7,7 @@ type BrandTextProps = {
 
 // Regex to match "saktitemp" safely (only as a standalone brand name, not in URLs/emails/filenames)
 // Also matches optional existing trademark symbols to prevent duplication.
-const BRAND_REGEX = /(<[^>]+>|(?<![\w@/-])(saktitemp)(?![\w.-])(?:\s*®|\s*&reg;|\s*<sup>\s*(?:®|&reg;)\s*<\/sup>)?)/gi;
+const BRAND_REGEX = /(<[^>]+>|(?<![\w@/-])saktitemp(?![\w.-])(?:\s*®|\s*&reg;|\s*<sup>\s*(?:®|&reg;)\s*<\/sup>)?)/gi;
 
 /**
  * React component that renders text, wrapping any occurrence of "Saktitemp" with a superscript ®.
@@ -59,13 +59,13 @@ export function BrandText({ text, className }: BrandTextProps) {
 export function formatBrandHtml(html: string): string {
   if (!html) return "";
 
-  return html.replace(BRAND_REGEX, (match, p1, p2) => {
+  return html.replace(BRAND_REGEX, (match) => {
     if (match.startsWith("<")) {
       // It's an HTML tag, leave it unchanged
       return match;
     }
     // It's the brand name, strip any existing trademark symbol variations and replace with <sup>®</sup>
-    const brandName = p2 || match.replace(/(?:\s*®|\s*&reg;|\s*<sup>\s*(?:®|&reg;)\s*<\/sup>)/gi, "");
+    const brandName = match.replace(/(?:\s*®|\s*&reg;|\s*<sup>\s*(?:®|&reg;)\s*<\/sup>)/gi, "");
     return `${brandName}<sup>®</sup>`;
   });
 }
