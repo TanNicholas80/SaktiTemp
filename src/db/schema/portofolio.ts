@@ -11,7 +11,6 @@ export const portofolio = pgTable("portofolio", {
     portofolioName: varchar("portofolio_name").notNull(),
     portofolioSlug: varchar("portofolio_slug").notNull(),
     portofolioShortDescription: varchar("portofolio_short_description", { length: 500 }).notNull().default(""),
-    portofolioAbout: text("portofolio_about").notNull(),
     portofolioGalleryImages: jsonb("portofolio_gallery_images")
       .$type<{ url: string; publicId: string }[]>()
       .notNull()

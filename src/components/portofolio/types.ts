@@ -24,7 +24,6 @@ export type PortofolioCardData = {
   portofolioName: string;
   portofolioSlug: string;
   portofolioShortDescription?: string;
-  portofolioAbout: string;
   portofolioLocation: string;
   portofolioImageUrl: string;
   portofolioIsPublishedAt: string;
@@ -55,7 +54,7 @@ export type PortofolioDetailData = {
   portofolioId: string;
   portofolioName: string;
   portofolioSlug: string;
-  portofolioAbout: string;
+  portofolioShortDescription?: string;
   portofolioGalleryImages: { url: string; publicId: string }[];
   portofolioLocation: string;
   portofolioImageUrl: string;

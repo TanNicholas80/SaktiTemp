@@ -38,7 +38,6 @@ export async function GET(_request: Request, { params }: Params) {
         portofolioName: portofolio.portofolioName,
         portofolioSlug: portofolio.portofolioSlug,
         portofolioShortDescription: portofolio.portofolioShortDescription,
-        portofolioAbout: portofolio.portofolioAbout,
         portofolioGalleryImages: portofolio.portofolioGalleryImages,
         portofolioLocation: portofolio.portofolioLocation,
         portofolioImageUrl: portofolio.portofolioImageUrl,
@@ -235,8 +234,7 @@ export async function PATCH(request: Request, { params }: Params) {
       updateData.portofolioSlug = parsed.data.portofolioSlug.trim();
     if (parsed.data.portofolioShortDescription !== undefined)
       updateData.portofolioShortDescription = parsed.data.portofolioShortDescription ?? "";
-    if (parsed.data.portofolioAbout !== undefined)
-      updateData.portofolioAbout = parsed.data.portofolioAbout ?? "";
+
     if (parsed.data.portofolioLocation !== undefined)
       updateData.portofolioLocation = parsed.data.portofolioLocation;
     if (
@@ -340,7 +338,6 @@ export async function PATCH(request: Request, { params }: Params) {
     translateAndSavePortofolio(updated, {
       portofolioName: existing.portofolioName,
       portofolioShortDescription: existing.portofolioShortDescription,
-      portofolioAbout: existing.portofolioAbout,
       portofolioLocation: existing.portofolioLocation,
     }).catch((err) => console.error("Translation failed:", err));
 

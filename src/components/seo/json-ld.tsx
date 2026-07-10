@@ -100,7 +100,7 @@ export function PortofolioJsonLd({
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     name: portofolio.portofolioName,
-    description: portofolio.portofolioAbout ?? undefined,
+    description: portofolio.portofolioShortDescription ?? undefined,
     image: portofolio.portofolioImageUrl
       ? [portofolio.portofolioImageUrl]
       : [`${BASE_URL}/og-default.jpg`],

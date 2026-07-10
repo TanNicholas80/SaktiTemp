@@ -113,7 +113,6 @@ export default async function PortofolioDetailPage({ params }: Props) {
       portofolioId: portofolio.portofolioId,
       portofolioName: portofolio.portofolioName,
       portofolioSlug: portofolio.portofolioSlug,
-      portofolioAbout: portofolio.portofolioAbout,
       portofolioGalleryImages: portofolio.portofolioGalleryImages,
       portofolioLocation: portofolio.portofolioLocation,
       portofolioImageUrl: portofolio.portofolioImageUrl,
@@ -144,7 +143,6 @@ export default async function PortofolioDetailPage({ params }: Props) {
       portofolioId: dbRow.portofolioId,
       portofolioName: dbRow.portofolioName,
       portofolioShortDescription: "",
-      portofolioAbout: dbRow.portofolioAbout,
       portofolioLocation: dbRow.portofolioLocation ?? "",
     },
     locale
@@ -153,7 +151,6 @@ export default async function PortofolioDetailPage({ params }: Props) {
   const row = {
     ...dbRow,
     portofolioName: translatedPortofolio.portofolioName,
-    portofolioAbout: translatedPortofolio.portofolioAbout,
     portofolioLocation: translatedPortofolio.portofolioLocation || dbRow.portofolioLocation,
   };
 
@@ -280,7 +277,6 @@ export default async function PortofolioDetailPage({ params }: Props) {
     portofolioId: row.portofolioId,
     portofolioName: row.portofolioName,
     portofolioSlug: row.portofolioSlug,
-    portofolioAbout: row.portofolioAbout,
     portofolioGalleryImages: Array.isArray(row.portofolioGalleryImages)
       ? row.portofolioGalleryImages
       : [],

@@ -17,7 +17,6 @@ export const createPortofolioSchema = z.object({
     .max(255, "Slug maksimal 255 karakter")
     .regex(slugRegex, "Slug hanya boleh huruf kecil, angka, dan strip"),
   portofolioShortDescription: z.string().max(500, "Deskripsi singkat maksimal 500 karakter").optional(),
-  portofolioAbout: z.string().optional(),
   portofolioGalleryImages: z
     .array(galleryImageSchema)
     .max(3, "Maksimal 3 gambar galeri")
@@ -53,7 +52,6 @@ export const updatePortofolioSchema = z.object({
     .regex(slugRegex, "Slug hanya boleh huruf kecil, angka, dan strip")
     .optional(),
   portofolioShortDescription: z.string().max(500, "Deskripsi singkat maksimal 500 karakter").optional(),
-  portofolioAbout: z.string().optional(),
   portofolioGalleryImages: z
     .array(galleryImageSchema)
     .max(3, "Maksimal 3 gambar galeri")

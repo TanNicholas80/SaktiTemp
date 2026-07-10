@@ -8,7 +8,6 @@ import type { ProductOption } from "./types";
 
 type PortofolioDetailPreviewProps = {
   portofolioName: string;
-  portofolioAbout: string;
   portofolioLocation: string;
   imageUrl: string | null;
   products: ProductOption[];
@@ -17,7 +16,6 @@ type PortofolioDetailPreviewProps = {
 
 export function PortofolioDetailPreview({
   portofolioName,
-  portofolioAbout,
   portofolioLocation,
   imageUrl,
   products,
@@ -98,17 +96,6 @@ export function PortofolioDetailPreview({
               </div>
             </div>
           </div>
-        </div>
-
-        {/* About */}
-        <div>
-          <h4 className="mb-2 font-semibold">Tentang Proyek</h4>
-          <p
-            className="text-muted-foreground line-clamp-3 text-sm"
-            dangerouslySetInnerHTML={{
-              __html: portofolioAbout || "Deskripsi proyek",
-            }}
-          />
         </div>
 
         {/* Aplikasi Kaca */}

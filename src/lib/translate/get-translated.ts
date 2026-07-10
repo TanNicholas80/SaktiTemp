@@ -222,7 +222,6 @@ export async function applyPortofolioDetailTranslations<
     portofolioId: string;
     portofolioName: string;
     portofolioShortDescription: string;
-    portofolioAbout: string;
     portofolioLocation: string;
   },
 >(item: T, locale: string): Promise<T> {
@@ -237,7 +236,6 @@ export async function applyPortofolioDetailTranslations<
     ...item,
     portofolioName: tr.portofolioName,
     portofolioShortDescription: tr.portofolioShortDescription,
-    portofolioAbout: tr.portofolioAbout,
     portofolioLocation: tr.portofolioLocation,
   };
 }

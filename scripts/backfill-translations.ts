@@ -161,7 +161,6 @@ async function main() {
       portofolioId: p.portofolioId,
       portofolioName: p.portofolioName,
       portofolioShortDescription: p.portofolioShortDescription,
-      portofolioAbout: p.portofolioAbout,
       portofolioLocation: p.portofolioLocation,
     })
   );

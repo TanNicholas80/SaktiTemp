@@ -28,7 +28,6 @@ export async function GET() {
         portofolioName: portofolio.portofolioName,
         portofolioSlug: portofolio.portofolioSlug,
         portofolioShortDescription: portofolio.portofolioShortDescription,
-        portofolioAbout: portofolio.portofolioAbout,
         portofolioGalleryImages: portofolio.portofolioGalleryImages,
         portofolioLocation: portofolio.portofolioLocation,
         portofolioImageUrl: portofolio.portofolioImageUrl,
@@ -48,7 +47,6 @@ export async function GET() {
       portofolioName: r.portofolioName,
       portofolioSlug: r.portofolioSlug,
       portofolioShortDescription: r.portofolioShortDescription,
-      portofolioAbout: r.portofolioAbout,
       portofolioGalleryImages: Array.isArray(r.portofolioGalleryImages)
         ? r.portofolioGalleryImages
         : [],
@@ -141,7 +139,6 @@ export async function POST(request: Request) {
         portofolioName: parsed.data.portofolioName,
         portofolioSlug: slug,
         portofolioShortDescription: parsed.data.portofolioShortDescription ?? "",
-        portofolioAbout: parsed.data.portofolioAbout ?? "",
         portofolioGalleryImages: promotedGalleryImages,
         portofolioLocation: parsed.data.portofolioLocation,
         portofolioImageUrl,

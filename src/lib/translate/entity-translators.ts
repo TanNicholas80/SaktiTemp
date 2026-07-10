@@ -574,7 +574,6 @@ export async function translateAndSavePortofolio(
     portofolioId: string;
     portofolioName: string;
     portofolioShortDescription: string;
-    portofolioAbout: string;
     portofolioLocation: string;
   },
   previous?: Partial<
@@ -582,7 +581,6 @@ export async function translateAndSavePortofolio(
       typeof data,
       | "portofolioName"
       | "portofolioShortDescription"
-      | "portofolioAbout"
       | "portofolioLocation"
     >
   > | null
@@ -594,7 +592,6 @@ export async function translateAndSavePortofolio(
       [
         "portofolioName",
         "portofolioShortDescription",
-        "portofolioAbout",
         "portofolioLocation",
       ]
     )
@@ -606,7 +603,6 @@ export async function translateAndSavePortofolio(
     {
       portofolioName: data.portofolioName,
       portofolioShortDescription: data.portofolioShortDescription,
-      portofolioAbout: data.portofolioAbout,
       portofolioLocation: data.portofolioLocation,
     },
     "portfolio/project showcase"
@@ -621,7 +617,6 @@ export async function translateAndSavePortofolio(
         locale,
         portofolioName: str(t.portofolioName),
         portofolioShortDescription: str(t.portofolioShortDescription),
-        portofolioAbout: str(t.portofolioAbout),
         portofolioLocation: str(t.portofolioLocation),
       })
       .onConflictDoUpdate({
@@ -629,7 +624,6 @@ export async function translateAndSavePortofolio(
         set: {
           portofolioName: str(t.portofolioName),
           portofolioShortDescription: str(t.portofolioShortDescription),
-          portofolioAbout: str(t.portofolioAbout),
           portofolioLocation: str(t.portofolioLocation),
         },
       });

@@ -41,9 +41,7 @@ export function PortofolioCard({
   onEdit,
   onDelete,
 }: PortofolioCardProps) {
-  const excerpt = portofolio.portofolioShortDescription?.trim()
-    ? portofolio.portofolioShortDescription
-    : stripHtml(portofolio.portofolioAbout, 120);
+  const excerpt = portofolio.portofolioShortDescription || "";
 
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-lg border bg-card shadow-sm transition-shadow hover:shadow-md">

@@ -80,7 +80,6 @@ export default function NewPortofolioPage() {
       portofolioName: values.name.trim(),
       portofolioSlug: values.slug.trim(),
       portofolioShortDescription: values.shortDescription.trim() || undefined,
-      portofolioAbout: undefined,
       portofolioGalleryImages: values.galleryImages.filter(
         (img) => img.url.trim() && img.publicId.trim()
       ),
