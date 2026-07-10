@@ -36,6 +36,14 @@ const SOCIAL_ICON_MAP: Record<string, SocialIconComponent> = {
   whatsapp: WhatsAppIcon,
 };
 
+const CONTACT_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Phone,
+  Mail,
+  MapPin,
+  "map-pin": MapPin,
+  WhatsApp: WhatsAppIcon,
+};
+
 type SocialMediaItem = {
   socialMediaId: string;
   platformName: string;
@@ -75,6 +83,10 @@ export function FooterSection({
   const addressContact = contacts.find((c) => c.contactType === "address");
   const phoneContact = contacts.find((c) => c.contactType === "phone");
   const emailContact = contacts.find((c) => c.contactType === "email");
+
+  const AddressIcon = addressContact ? (CONTACT_ICON_MAP[addressContact.contactIcon] ?? MapPin) : MapPin;
+  const PhoneIcon = phoneContact ? (CONTACT_ICON_MAP[phoneContact.contactIcon] ?? Phone) : Phone;
+  const EmailIcon = emailContact ? (CONTACT_ICON_MAP[emailContact.contactIcon] ?? Mail) : Mail;
 
   const quickLinks = [
     { href: "/", label: tNav("home") },
@@ -233,7 +245,7 @@ export function FooterSection({
             <ul className="flex flex-col gap-3">
               {addressContact && (
                 <li className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 size-5 shrink-0 text-accent" />
+                  <AddressIcon className="mt-0.5 size-5 shrink-0 text-accent" />
                   <span className="text-primary-foreground/90 text-sm">
                     {addressContact.contactValue}
                   </span>
@@ -241,7 +253,7 @@ export function FooterSection({
               )}
               {phoneContact && (
                 <li className="flex items-center gap-3">
-                  <Phone className="size-5 shrink-0 text-accent" />
+                  <PhoneIcon className="size-5 shrink-0 text-accent" />
                   <a
                     href={`https://wa.me/${formatWhatsAppNumber(phoneContact.contactValue)}`}
                     target="_blank"
@@ -257,7 +269,7 @@ export function FooterSection({
               )}
               {emailContact && (
                 <li className="flex items-center gap-3">
-                  <Mail className="size-5 shrink-0 text-accent" />
+                  <EmailIcon className="size-5 shrink-0 text-accent" />
                   <a
                     href={`mailto:${emailContact.contactValue}`}
                     className={cn(

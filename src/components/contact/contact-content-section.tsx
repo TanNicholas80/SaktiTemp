@@ -21,6 +21,7 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TiktokIcon } from "@/components/icons/tiktok-icon";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { cn } from "@/lib/utils";
 
 import type { ContactOutput, LocationOutput } from "@/lib/translate";
@@ -36,6 +37,15 @@ const SOCIAL_ICON_MAP: Record<string, SocialIconComponent> = {
   linkedin_in: Linkedin,
   tiktok: TiktokIcon,
   whatsapp: MessageCircle,
+};
+
+const CONTACT_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Phone,
+  Mail,
+  Clock,
+  MapPin,
+  "map-pin": MapPin,
+  WhatsApp: WhatsAppIcon,
 };
 
 type SocialMediaItem = {
@@ -80,6 +90,10 @@ export function ContactContentSection({
   const phoneContact = contacts.find((c) => c.contactType === "phone");
   const emailContact = contacts.find((c) => c.contactType === "email");
   const hoursContact = contacts.find((c) => c.contactType === "operational_hours");
+
+  const PhoneIcon = phoneContact ? (CONTACT_ICON_MAP[phoneContact.contactIcon] ?? Phone) : Phone;
+  const EmailIcon = emailContact ? (CONTACT_ICON_MAP[emailContact.contactIcon] ?? Mail) : Mail;
+  const HoursIcon = hoursContact ? (CONTACT_ICON_MAP[hoursContact.contactIcon] ?? Clock) : Clock;
 
   const projectTypes = [
     { value: "residential", labelKey: "projectTypeResidential" },
@@ -231,7 +245,7 @@ export function ContactContentSection({
                 className="flex items-center gap-3 transition-opacity duration-200 hover:opacity-90"
               >
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/20">
-                  <Phone className="size-5 text-accent" />
+                  <PhoneIcon className="size-5 text-accent" />
                 </div>
                 <div className="flex flex-col">
                   <p className="font-medium">{phoneContact.contactLabel}</p>
@@ -249,7 +263,7 @@ export function ContactContentSection({
                 className="flex items-center gap-3 transition-opacity duration-200 hover:opacity-90"
               >
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/20">
-                  <Mail className="size-5 text-accent" />
+                  <EmailIcon className="size-5 text-accent" />
                 </div>
                 <div className="flex flex-col">
                   <p className="font-medium">{emailContact.contactLabel}</p>
@@ -264,7 +278,7 @@ export function ContactContentSection({
             {hoursContact && (
               <div className="flex gap-3">
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-accent/20">
-                  <Clock className="size-5 text-accent" />
+                  <HoursIcon className="size-5 text-accent" />
                 </div>
                 <div>
                   <p className="font-medium">{hoursContact.contactLabel}</p>
