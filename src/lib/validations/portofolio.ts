@@ -23,6 +23,10 @@ export const createPortofolioSchema = z.object({
     .optional()
     .default([]),
   portofolioLocation: z.string().min(1, "Lokasi wajib diisi"),
+  portofolioApplicators: z
+    .array(z.string().trim())
+    .optional()
+    .default([]),
   portofolioImageUrl: z.string().min(1, "Gambar cover wajib diunggah"),
   portofolioImagePublicId: z.string().min(1, "Gambar cover wajib diunggah"),
   categoryPortofolioId: z
@@ -57,6 +61,9 @@ export const updatePortofolioSchema = z.object({
     .max(3, "Maksimal 3 gambar galeri")
     .optional(),
   portofolioLocation: z.string().min(1, "Lokasi wajib diisi").optional(),
+  portofolioApplicators: z
+    .array(z.string().trim())
+    .optional(),
   portofolioImageUrl: z
     .string()
     .min(1, "Gambar cover wajib diunggah")

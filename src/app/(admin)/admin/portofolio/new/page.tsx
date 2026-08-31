@@ -43,6 +43,7 @@ export default function NewPortofolioPage() {
     shortDescription: "",
     galleryImages: [],
     location: "",
+    applicators: [],
     image: null,
     categoryId: "",
     portofolioTypeId: "",
@@ -84,6 +85,9 @@ export default function NewPortofolioPage() {
         (img) => img.url.trim() && img.publicId.trim()
       ),
       portofolioLocation: values.location.trim(),
+      portofolioApplicators: (values.applicators ?? [])
+        .map((a) => a.trim())
+        .filter(Boolean),
       portofolioImageUrl: values.image?.url ?? "",
       portofolioImagePublicId: values.image?.publicId ?? "",
       categoryPortofolioId: values.categoryId || null,

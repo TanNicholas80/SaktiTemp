@@ -2,6 +2,9 @@
 
 import * as React from "react";
 
+import { Plus, Trash2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import {
   Field,
   FieldGroup,
@@ -33,6 +36,7 @@ export type PortofolioFormValues = {
   shortDescription: string;
   galleryImages: { url: string; publicId: string }[];
   location: string;
+  applicators: string[];
   image: { url: string; publicId: string } | null;
   categoryId: string;
   portofolioTypeId: string;
@@ -110,6 +114,24 @@ export function PortofolioForm({
       next.splice(index, 1);
     }
     onChange({ ...values, galleryImages: next });
+  }
+
+  function addApplicator() {
+    onChange({
+      ...values,
+      applicators: [...(values.applicators ?? []), ""],
+    });
+  }
+
+  function updateApplicator(index: number, val: string) {
+    const next = [...(values.applicators ?? [])];
+    next[index] = val;
+    onChange({ ...values, applicators: next });
+  }
+
+  function removeApplicator(index: number) {
+    const next = (values.applicators ?? []).filter((_, i) => i !== index);
+    onChange({ ...values, applicators: next });
   }
 
   return (
@@ -278,6 +300,47 @@ export function PortofolioForm({
               : []
           }
         />
+      </Field>
+      <Field>
+        <div className="flex items-center justify-between">
+          <FieldLabel>Aplikator (Opsional)</FieldLabel>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addApplicator}
+          >
+            <Plus className="mr-1 size-4" />
+            Tambah Aplikator
+          </Button>
+        </div>
+        {(values.applicators ?? []).length === 0 ? (
+          <p className="text-xs text-muted-foreground">
+            Belum ada aplikator. Klik &quot;Tambah Aplikator&quot; jika proyek menggunakan aplikator.
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {(values.applicators ?? []).map((app, idx) => (
+              <div key={idx} className="flex gap-2">
+                <Input
+                  value={app}
+                  onChange={(e) => updateApplicator(idx, e.target.value)}
+                  placeholder={`Nama aplikator ${idx + 1} (contoh: PT Maju Jaya)`}
+                  className="flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => removeApplicator(idx)}
+                  className="shrink-0 text-muted-foreground hover:text-destructive"
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </Field>
       {productApplications.length > 0 && (
         <Field>

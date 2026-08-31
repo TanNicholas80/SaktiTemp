@@ -79,6 +79,29 @@
     "relatedEmpty": "Belum ada proyek lain yang tersedia.",
     "relatedEmptyDesc": "Kunjungi halaman portfolio kami untuk melihat koleksi proyek kami."
   },
+  "portofolioDetailSection": {
+    "projectGallery": "Galeri Proyek",
+    "projectGalleryDesc": "Klik gambar untuk memperbesar dan lihat detail proyek.",
+    "glassApplications": "Aplikasi Kaca Yang Digunakan",
+    "glassApplicationsDesc": "Berikut adalah dokumentasi pengaplikasian kaca tempered SAKTITEMP® pada berbagai area di {projectName}.",
+    "viewProduct": "Lihat Produk",
+    "projectDetail": "Detail Proyek",
+    "location": "Lokasi",
+    "applicator": "Aplikator",
+    "projectConsultation": "Konsultasi Proyek",
+    "closeGallery": "Tutup galeri",
+    "prevImage": "Gambar sebelumnya",
+    "nextImage": "Gambar berikutnya"
+  },
+  "productDetailSection": {
+    "productExcellence": "Keunggulan Produk",
+    "productDescription": "Deskripsi Produk",
+    "availableThickness": "Ketebalan Tersedia",
+    "application": "Aplikasi Penggunaan",
+    "exampleProjects": "Contoh Proyek Menggunakan Produk Ini",
+    "projectConsultation": "Konsultasi Proyek",
+    "calculatePrice": "Hitung Estimasi Harga"
+  },
   "blogSection": {
     "badge": "Blog & Artikel",
     "title": "Wawasan Industri",

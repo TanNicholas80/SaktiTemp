@@ -16,6 +16,10 @@ export const portofolio = pgTable("portofolio", {
       .notNull()
       .default(sql`'[]'::jsonb`),
     portofolioLocation: varchar("portofolio_location").notNull(),
+    portofolioApplicators: jsonb("portofolio_applicators")
+      .$type<string[]>()
+      .notNull()
+      .default(sql`'[]'::jsonb`),
     portofolioImageUrl: varchar("portofolio_image_url").notNull(),
     portofolioImagePublicId: varchar("portofolio_image_public_id").notNull(),
     portofolioViews: integer("portofolio_views").notNull().default(0),

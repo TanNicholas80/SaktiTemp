@@ -57,6 +57,7 @@ export type PortofolioDetailData = {
   portofolioShortDescription?: string;
   portofolioGalleryImages: { url: string; publicId: string }[];
   portofolioLocation: string;
+  portofolioApplicators?: string[];
   portofolioImageUrl: string;
   portofolioIsPublishedAt: string;
   category: { name: string; slug: string } | null;

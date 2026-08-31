@@ -182,26 +182,31 @@ export function ContactSection({
       ref={sectionRef}
       className="relative overflow-hidden bg-white py-16 sm:py-20 md:py-24 lg:py-28"
     >
-      {/* Header */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Two columns */}
-        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
+      {/* Header - Maroon band */}
+      <div className="bg-primary px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div ref={headerRef} className="space-y-3">
+            <Badge
+              variant="secondary"
+              className="border-accent/30 bg-accent/15 px-3 py-1 text-sm font-medium text-accent"
+            >
+              {t("badge")}
+            </Badge>
+            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-4xl">
+              {t("title")}
+            </h2>
+            <p className="max-w-3xl text-sm text-white/80 sm:text-base">
+              {t("subtitle")}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Content - 2 Columns (Info & Form) */}
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-16">
           {/* Left: Locations + Contacts + WhatsApp */}
-          <div ref={leftRef} className="space-y-8">
-            <div ref={headerRef} className="max-w-3xl text-left">
-              <Badge
-                variant="outline"
-                className="mb-4 border-primary/40 bg-primary/5 px-3 py-1 text-sm font-medium text-primary"
-              >
-                {t("badge")}
-              </Badge>
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-4xl">
-                {t("title")}
-              </h2>
-              <p className="mt-3 text-muted-foreground text-sm sm:text-base md:mt-4">
-                {t("subtitle")}
-              </p>
-            </div>
+          <div ref={leftRef} className="space-y-6">
             {/* Locations */}
             {locations.map((loc) => {
               const isHead = loc.locationType === "head";
@@ -299,7 +304,7 @@ export function ContactSection({
           </div>
 
           {/* Right: Form - centered horizontal & vertical, height fits content */}
-          <div ref={formBoxRef} className="flex items-center justify-center">
+          <div ref={formBoxRef} className="flex items-start justify-center">
             <Card className="w-full max-w-lg shrink-0 rounded-2xl border-border/60 p-6 sm:p-8">
               <CardHeader className="px-0 pt-0">
                 <CardTitle className="text-xl">{t("sendMessage")}</CardTitle>

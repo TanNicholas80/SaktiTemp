@@ -3,7 +3,8 @@
 import * as React from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MapPin } from "lucide-react";
+import { Building2, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { WHATSAPP_ME_URL } from "@/lib/constants/whatsapp";
@@ -22,6 +23,7 @@ export function PortofolioDetailSidebar({
   portofolio,
   variant = "admin",
 }: PortofolioDetailSidebarProps) {
+  const t = useTranslations("portofolioDetailSection");
   const asideRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
@@ -50,17 +52,34 @@ export function PortofolioDetailSidebar({
   return (
     <aside ref={asideRef}>
       <div className="overflow-hidden rounded-xl bg-primary px-5 py-5 text-white">
-        <h2 className="mb-5 text-xl font-bold">Detail Proyek</h2>
-        <div className="flex items-center gap-3">
-          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
-            <MapPin className="size-5 text-white" />
+        <h2 className="mb-5 text-xl font-bold">{t("projectDetail")}</h2>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
+              <MapPin className="size-5 text-white" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-normal text-white/80">{t("location")}</p>
+              <p className="text-base font-semibold text-white">
+                {portofolio.portofolioLocation}
+              </p>
+            </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-normal text-white/80">Lokasi</p>
-            <p className="text-base font-semibold text-white">
-              {portofolio.portofolioLocation}
-            </p>
-          </div>
+
+          {portofolio.portofolioApplicators &&
+            portofolio.portofolioApplicators.length > 0 && (
+              <div className="flex items-start gap-3">
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-white/10">
+                  <Building2 className="size-5 text-white" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-normal text-white/80">{t("applicator")}</p>
+                  <p className="text-base font-semibold text-white">
+                    {portofolio.portofolioApplicators.join(", ")}
+                  </p>
+                </div>
+              </div>
+            )}
         </div>
         <div className="mt-5 border-t border-white/20 pt-5">
           <Button
@@ -73,7 +92,7 @@ export function PortofolioDetailSidebar({
               rel="noopener noreferrer"
             >
               <WhatsAppIcon className="size-5" />
-              Konsultasi Proyek
+              {t("projectConsultation")}
             </a>
           </Button>
         </div>

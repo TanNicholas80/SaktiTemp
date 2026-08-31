@@ -30,6 +30,7 @@ export async function GET() {
         portofolioShortDescription: portofolio.portofolioShortDescription,
         portofolioGalleryImages: portofolio.portofolioGalleryImages,
         portofolioLocation: portofolio.portofolioLocation,
+        portofolioApplicators: portofolio.portofolioApplicators,
         portofolioImageUrl: portofolio.portofolioImageUrl,
         portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
         categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
@@ -51,6 +52,9 @@ export async function GET() {
         ? r.portofolioGalleryImages
         : [],
       portofolioLocation: r.portofolioLocation,
+      portofolioApplicators: Array.isArray(r.portofolioApplicators)
+        ? r.portofolioApplicators
+        : [],
       portofolioImageUrl: r.portofolioImageUrl,
       portofolioIsPublishedAt: r.portofolioIsPublishedAt,
       category: r.categoryPortofolioName
@@ -141,6 +145,7 @@ export async function POST(request: Request) {
         portofolioShortDescription: parsed.data.portofolioShortDescription ?? "",
         portofolioGalleryImages: promotedGalleryImages,
         portofolioLocation: parsed.data.portofolioLocation,
+        portofolioApplicators: parsed.data.portofolioApplicators ?? [],
         portofolioImageUrl,
         portofolioImagePublicId,
         categoryPortofolioId: parsed.data.categoryPortofolioId ?? null,

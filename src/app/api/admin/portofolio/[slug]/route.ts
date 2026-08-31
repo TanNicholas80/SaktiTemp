@@ -40,6 +40,7 @@ export async function GET(_request: Request, { params }: Params) {
         portofolioShortDescription: portofolio.portofolioShortDescription,
         portofolioGalleryImages: portofolio.portofolioGalleryImages,
         portofolioLocation: portofolio.portofolioLocation,
+        portofolioApplicators: portofolio.portofolioApplicators,
         portofolioImageUrl: portofolio.portofolioImageUrl,
         portofolioImagePublicId: portofolio.portofolioImagePublicId,
         portofolioViews: portofolio.portofolioViews,
@@ -165,6 +166,9 @@ export async function GET(_request: Request, { params }: Params) {
       portofolioGalleryImages: Array.isArray(row.portofolioGalleryImages)
         ? row.portofolioGalleryImages
         : [],
+      portofolioApplicators: Array.isArray(row.portofolioApplicators)
+        ? row.portofolioApplicators
+        : [],
       category: row.categoryPortofolioName
         ? {
             name: row.categoryPortofolioName,
@@ -237,6 +241,8 @@ export async function PATCH(request: Request, { params }: Params) {
 
     if (parsed.data.portofolioLocation !== undefined)
       updateData.portofolioLocation = parsed.data.portofolioLocation;
+    if (parsed.data.portofolioApplicators !== undefined)
+      updateData.portofolioApplicators = parsed.data.portofolioApplicators;
     if (
       parsed.data.portofolioImageUrl !== undefined &&
       parsed.data.portofolioImagePublicId !== undefined

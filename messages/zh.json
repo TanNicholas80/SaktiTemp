@@ -79,6 +79,29 @@
     "relatedEmpty": "暂无其他项目。",
     "relatedEmptyDesc": "访问我们的作品集页面以浏览项目合集。"
   },
+  "portofolioDetailSection": {
+    "projectGallery": "项目画廊",
+    "projectGalleryDesc": "点击图片放大查看项目详情。",
+    "glassApplications": "所使用的玻璃应用",
+    "glassApplicationsDesc": "以下为 SAKTITEMP® 钢化玻璃在 {projectName} 各区域的应用记录。",
+    "viewProduct": "查看产品",
+    "projectDetail": "项目详情",
+    "location": "位置",
+    "applicator": "施工方 / 申请方",
+    "projectConsultation": "项目咨询",
+    "closeGallery": "关闭画廊",
+    "prevImage": "上一张图片",
+    "nextImage": "下一张图片"
+  },
+  "productDetailSection": {
+    "productExcellence": "产品优势",
+    "productDescription": "产品描述",
+    "availableThickness": "可选厚度",
+    "application": "应用场景",
+    "exampleProjects": "使用该产品的项目案例",
+    "projectConsultation": "项目咨询",
+    "calculatePrice": "计算价格预估"
+  },
   "blogSection": {
     "badge": "博客与文章",
     "title": "行业洞察",

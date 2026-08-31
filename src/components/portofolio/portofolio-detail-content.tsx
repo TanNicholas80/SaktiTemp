@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ArrowRightIcon, Box, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import type { PortofolioDetailData } from "./types";
 import { BrandText } from "@/components/shared/brand-text";
 
@@ -26,6 +27,7 @@ export function PortofolioDetailContent({
   portofolio,
   variant = "admin",
 }: PortofolioDetailContentProps) {
+  const t = useTranslations("portofolioDetailSection");
   const productHrefPrefix =
     variant === "landing" ? "/product" : "/admin/product";
 
@@ -96,9 +98,9 @@ export function PortofolioDetailContent({
     <div ref={containerRef} className="space-y-8">
       {galleryImages.length > 0 && (
         <section ref={galleryRef}>
-          <h2 className="mb-3 text-xl font-bold">Galeri Proyek</h2>
+          <h2 className="mb-3 text-xl font-bold">{t("projectGallery")}</h2>
           <p className="mb-4 text-sm text-muted-foreground">
-            Klik gambar untuk memperbesar dan lihat detail proyek.
+            {t("projectGalleryDesc")}
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {galleryImages.map((img, idx) => (
@@ -124,10 +126,13 @@ export function PortofolioDetailContent({
 
       {portofolio.productApplications.length > 0 && (
         <section ref={appsRef}>
-          <h2 className="mb-3 font-bold text-xl">Aplikasi Kaca Yang Digunakan</h2>
+          <h2 className="mb-3 font-bold text-xl">{t("glassApplications")}</h2>
           <p className="text-muted-foreground mb-4 text-sm">
-            <BrandText text="Berikut adalah dokumentasi pengaplikasian kaca tempered SAKTITEMP" />{" "}
-            <BrandText text={`pada berbagai area di ${portofolio.portofolioName}.`} />
+            <BrandText
+              text={t("glassApplicationsDesc", {
+                projectName: portofolio.portofolioName,
+              })}
+            />
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {portofolio.productApplications.map((pa) => (
@@ -162,7 +167,7 @@ export function PortofolioDetailContent({
                       href={`${productHrefPrefix}/${pa.product.productSlug}`}
                       className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
                     >
-                      Lihat Produk
+                      {t("viewProduct")}
                       <ArrowRightIcon className="size-4" />
                     </Link>
                   )}
@@ -177,7 +182,7 @@ export function PortofolioDetailContent({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4">
           <button
             type="button"
-            aria-label="Tutup galeri"
+            aria-label={t("closeGallery")}
             onClick={() => setLightboxOpen(false)}
             className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
           >
@@ -187,7 +192,7 @@ export function PortofolioDetailContent({
           {galleryImages.length > 1 && (
             <button
               type="button"
-              aria-label="Gambar sebelumnya"
+              aria-label={t("prevImage")}
               onClick={showPrevImage}
               className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
             >
@@ -208,7 +213,7 @@ export function PortofolioDetailContent({
           {galleryImages.length > 1 && (
             <button
               type="button"
-              aria-label="Gambar berikutnya"
+              aria-label={t("nextImage")}
               onClick={showNextImage}
               className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
             >

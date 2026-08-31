@@ -79,6 +79,29 @@
     "relatedEmpty": "No other projects available yet.",
     "relatedEmptyDesc": "Visit our portfolio page to explore our project collection."
   },
+  "portofolioDetailSection": {
+    "projectGallery": "Project Gallery",
+    "projectGalleryDesc": "Click image to enlarge and view project details.",
+    "glassApplications": "Glass Applications Used",
+    "glassApplicationsDesc": "Below is the documentation of SAKTITEMP® tempered glass applications across various areas in {projectName}.",
+    "viewProduct": "View Product",
+    "projectDetail": "Project Details",
+    "location": "Location",
+    "applicator": "Applicator",
+    "projectConsultation": "Project Consultation",
+    "closeGallery": "Close gallery",
+    "prevImage": "Previous image",
+    "nextImage": "Next image"
+  },
+  "productDetailSection": {
+    "productExcellence": "Product Advantages",
+    "productDescription": "Product Description",
+    "availableThickness": "Available Thickness",
+    "application": "Usage Applications",
+    "exampleProjects": "Example Projects Using This Product",
+    "projectConsultation": "Project Consultation",
+    "calculatePrice": "Calculate Price Estimate"
+  },
   "blogSection": {
     "badge": "Blog & Articles",
     "title": "Industry Insights",

@@ -115,6 +115,7 @@ export default async function PortofolioDetailPage({ params }: Props) {
       portofolioSlug: portofolio.portofolioSlug,
       portofolioGalleryImages: portofolio.portofolioGalleryImages,
       portofolioLocation: portofolio.portofolioLocation,
+      portofolioApplicators: portofolio.portofolioApplicators,
       portofolioImageUrl: portofolio.portofolioImageUrl,
       portofolioIsPublishedAt: portofolio.portofolioIsPublishedAt,
       categoryPortofolioName: categoryPortofolio.categoryPortofolioName,
@@ -281,6 +282,9 @@ export default async function PortofolioDetailPage({ params }: Props) {
       ? row.portofolioGalleryImages
       : [],
     portofolioLocation: row.portofolioLocation,
+    portofolioApplicators: Array.isArray(row.portofolioApplicators)
+      ? row.portofolioApplicators
+      : [],
     portofolioImageUrl: row.portofolioImageUrl,
     portofolioIsPublishedAt: row.portofolioIsPublishedAt.toISOString(),
     category: row.categoryPortofolioName

@@ -46,7 +46,8 @@ function useProductView(productSlug: string) {
 }
 
 export function ProductDetailSection({ product }: ProductDetailSectionProps) {
-  const t = useTranslations("nav");
+  const tNav = useTranslations("nav");
+  const tProduct = useTranslations("productDetailSection");
   const sectionRef = React.useRef<HTMLElement>(null);
   const breadcrumbRef = React.useRef<HTMLElement>(null);
   const titleRef = React.useRef<HTMLHeadingElement>(null);
@@ -147,7 +148,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
                     href="/"
                     className="transition-colors hover:text-foreground"
                   >
-                    {t("home")}
+                    {tNav("home")}
                   </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -158,7 +159,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
                     href="/product"
                     className="transition-colors hover:text-foreground"
                   >
-                    {t("products")}
+                    {tNav("products")}
                   </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -213,7 +214,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
               >
                 <h3 className="mb-4 flex items-center gap-2 font-bold text-foreground text-lg">
                   <Shield className="size-5 shrink-0 text-primary" />
-                  Keunggulan Produk
+                  {tProduct("productExcellence")}
                 </h3>
                 <ul className="space-y-3">
                   {excellences.map((e, i) => (
@@ -238,7 +239,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
           <div className="space-y-6 lg:col-span-2">
             <div ref={descRef}>
               <h2 className="mb-3 font-bold text-foreground text-xl">
-                Deskripsi Produk
+                {tProduct("productDescription")}
               </h2>
               <div
                 className="prose prose-sm max-w-none text-muted-foreground [&_h1]:text-2xl [&_h2]:text-xl [&_ul]:list-disc [&_ol]:list-decimal"
@@ -255,7 +256,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
                 >
                   <h3 className="mb-4 flex items-center gap-2 font-bold text-foreground text-xl">
                     <Ruler className="size-5 shrink-0 text-primary" />
-                    Ketebalan Tersedia
+                    {tProduct("availableThickness")}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {thicknesses.map((t, i) => (
@@ -277,7 +278,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
                 >
                   <h3 className="mb-4 flex items-center gap-2 font-bold text-foreground text-xl">
                     <Layers className="size-5 shrink-0 text-primary" />
-                    Aplikasi Penggunaan
+                    {tProduct("application")}
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {portofolioTypes.map((t) => (
@@ -296,7 +297,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
             {displayPortofolios.length > 0 && (
               <div ref={portofolioRef}>
                 <h2 className="mb-4 font-bold text-xl">
-                  Contoh Proyek Menggunakan Produk Ini
+                  {tProduct("exampleProjects")}
                 </h2>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {displayPortofolios.map((p, i) => (
@@ -358,7 +359,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
                   rel="noopener noreferrer"
                 >
                   <WhatsAppIcon className="size-5" />
-                  Konsultasi Proyek
+                  {tProduct("projectConsultation")}
                 </a>
               </Button>
               <Button
@@ -369,7 +370,7 @@ export function ProductDetailSection({ product }: ProductDetailSectionProps) {
               >
                 <Link href="/calculator">
                   <Calculator className="size-5" />
-                  Hitung Estimasi Harga
+                  {tProduct("calculatePrice")}
                 </Link>
               </Button>
             </div>
