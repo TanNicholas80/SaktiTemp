@@ -93,7 +93,7 @@ export function ErrorFooter({ className }: ErrorFooterProps) {
           >
             <Link href={withLocale("/")} className="inline-flex items-center hover:opacity-90">
               <Image
-                src="/sakti_putih.png"
+                src="/logo_saktitemp_putih.png"
                 alt="SAKTITEMP"
                 width={160}
                 height={64}

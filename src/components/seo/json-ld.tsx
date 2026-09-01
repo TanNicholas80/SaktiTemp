@@ -68,7 +68,7 @@ export function BlogJsonLd({
       name: "SAKTITEMP®",
       logo: {
         "@type": "ImageObject",
-        url: `${BASE_URL}/logo_saktitemp.png`,
+        url: `${BASE_URL}/logo_baru_warna.png`,
       },
     },
     url,
@@ -132,7 +132,7 @@ export function OrganizationJsonLd() {
     "@type": "Organization",
     name: "SAKTITEMP®",
     url: BASE_URL,
-    logo: `${BASE_URL}/logo_saktitemp.png`,
+    logo: `${BASE_URL}/logo_baru_warna.png`,
     description:
       "Produsen kaca tempered berkualitas tinggi berstandar Eropa untuk proyek komersial, residensial, dan arsitektur.",
     address: {

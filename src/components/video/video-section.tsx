@@ -183,7 +183,7 @@ export function VideoSection() {
                 <Play className="size-7 fill-current pl-0.5 sm:size-8 sm:pl-1 md:size-9 lg:size-10 lg:pl-1" strokeWidth={2.5} />
               </Button>
               <Image
-                src="/sakti_putih.png"
+                src="/logo_saktitemp_putih.png"
                 alt="SAKTITEMP"
                 width={120}
                 height={48}

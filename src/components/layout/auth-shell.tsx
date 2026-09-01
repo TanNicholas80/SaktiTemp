@@ -21,7 +21,7 @@ export function AuthShell({ children }: AuthShellProps) {
           loop
           playsInline
           className="h-full w-full object-cover"
-          poster="/logo_saktitemp.png"
+          poster="/logo_baru_warna.png"
         >
           <source src="/aset_video_saktitemp.mp4" type="video/mp4" />
         </video>

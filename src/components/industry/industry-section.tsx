@@ -105,7 +105,7 @@ export function IndustrySection({ industries }: IndustrySectionProps) {
         <div className="mt-12 flex flex-wrap justify-center gap-6 sm:mt-14 sm:gap-8 lg:mt-16 lg:gap-10">
           {industries.map((industry, index) => {
             const hasImage = !!industry.categoryPortofolioImage?.trim();
-            const imageUrl = industry.categoryPortofolioImage?.trim() || "/logo_saktitemp.png";
+            const imageUrl = industry.categoryPortofolioImage?.trim() || "/logo_baru_warna.png";
 
             return (
               <div

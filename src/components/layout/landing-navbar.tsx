@@ -202,7 +202,7 @@ export function LandingNavbar() {
             className="relative flex h-10 w-32 shrink-0 items-center sm:h-11 sm:w-36 lg:h-14 lg:w-44 xl:w-52"
           >
             <Image
-              src="/logo_saktitemp.png"
+              src="/logo_baru_warna.png"
               alt="SaktiTemp"
               fill
               className="object-contain object-left"

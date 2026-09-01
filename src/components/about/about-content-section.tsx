@@ -301,7 +301,7 @@ export function AboutContentSection() {
                 )}
               >
                 <Image
-                  src="/logo_saktitemp.png"
+                  src="/logo_baru_warna.png"
                   alt="SAKTITEMP® Tempered Glass"
                   width={210}
                   height={84}

@@ -162,7 +162,7 @@ export function FooterSection({
               className="inline-flex items-center transition-opacity hover:opacity-90"
             >
               <Image
-                src="/sakti_putih.png"
+                src="/logo_saktitemp_putih.png"
                 alt="SAKTITEMP"
                 width={140}
                 height={56}
